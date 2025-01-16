@@ -1,0 +1,61 @@
+# Build files
+/build/
+.gradle/
+/caches/
+/out/
+
+# Local configuration file (for the IntelliJ IDEA user)
+.idea/
+
+# Log Files
+*.log
+
+# OSX files
+.DS_Store
+
+# Android Studio Navigation editor temp files
+.navigation/
+
+# Android Studio Profiler capture files
+.captures/
+
+# Generated files
+/bin/
+/gen/
+/tmp/
+
+# External native build folder generated in Android Studio 2.2 and later
+.externalNativeBuild/
+
+# Gradle Wrapper files
+gradle/wrapper/
+
+# Keeps Crashlytics logs out of version control.
+com_crashlytics_export_strings.xml
+
+# Ignore crash insights event logs
+crash_insights_event_aaid
+crash_insights_event_device_model
+crash_insights_event_os
+crash_insights_event_app_version_code
+
+# Google Services (e.g. Admob) related files
+google-services.json
+
+# Freeline intermediate & output directories
+/freeline/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/readme.md
+
+# Signing-Config Files
+*.jks
+/release.keystore
+
+# APK artifacts
+*.apk
+*.aab
