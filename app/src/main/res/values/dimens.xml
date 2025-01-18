@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="standart_text_size">16sp</dimen>
+    <dimen name="standart_padding_start">16dp</dimen>
+    <dimen name="standart_radius">16dp</dimen>
+</resources>

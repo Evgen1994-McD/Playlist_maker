@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1A1B22"
+    android:orientation="vertical"
+    android:padding="0dp"
+
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="0dp">
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageButton
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:src="@drawable/backlight"
+            android:padding="4dp"
+            android:backgroundTint="#1A1B22"
+            >
+        </ImageButton>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:text="@string/Settings_name"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:gravity="center_vertical"/>
+
+
+
+
+        <!-- Переключатель -->
+
+
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/switchButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:layout_weight="1"
+
+
+        android:paddingStart="@dimen/standart_padding_start"
+        android:text="@string/dark_theme"
+        android:textSize="@dimen/standart_text_size"
+        android:textColor="#ffffff"
+        tools:ignore="UseSwitchCompatOrMaterialXml"
+        android:thumbTint="@color/blue"
+        android:trackTint="@color/trackTint_dark"
+        />
+
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+
+            android:paddingStart="@dimen/standart_padding_start"
+            android:text="@string/share_name"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/standart_text_size" />
+
+        <ImageButton
+
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="12dp"
+            android:src="@drawable/share_dark"
+            android:padding="4dp"
+            android:layout_marginEnd="20dp"
+            android:backgroundTint="#1A1B22"
+            android:layout_gravity="end"
+
+            >
+        </ImageButton>
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:text="@string/support_name"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/standart_text_size"
+            android:paddingStart="@dimen/standart_padding_start"
+            />
+
+        <ImageButton
+
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="12dp"
+            android:src="@drawable/dark_mode_support"
+            android:layout_gravity="end"
+            android:padding="4dp"
+            android:backgroundTint="#1A1B22"
+            >
+        </ImageButton>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+android:layout_weight="1"
+        android:layout_marginBottom="476dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+
+
+            android:paddingStart="@dimen/standart_padding_start"
+            android:text="Пользовательское соглашение"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/standart_text_size" />
+
+        <ImageButton
+
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="12dp"
+            android:backgroundTint="#1A1B22"
+            android:padding="4dp"
+            android:src="@drawable/user_assets_dark"
+            android:layout_gravity="end">
+
+        </ImageButton>
+    </FrameLayout>
+
+</LinearLayout>
+
