@@ -32,6 +32,7 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/search_day"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/standart_padding_start"
@@ -52,6 +53,7 @@
             />
 
         <Button
+            android:id="@+id/media_day"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
@@ -68,6 +70,7 @@
             app:iconTint="@color/black"
             app:cornerRadius="16dp"/>
         <Button
+            android:id="@+id/settings_day"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
