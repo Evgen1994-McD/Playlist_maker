@@ -12,15 +12,17 @@
      android:id="@+id/settings"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="0dp"
-    tools:context=".SettingsActivity">
+    tools:context=".SettingsActivity"
+    >
 
 
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        >
         <ImageButton
             android:id="@+id/backToMain"
 
@@ -34,7 +36,7 @@ android:padding="4dp"
         </ImageButton>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:text="@string/Settings_name"
@@ -56,7 +58,7 @@ android:padding="4dp"
         android:id="@+id/switchButton"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="61"
         android:layout_marginTop="24dp"
         android:buttonTint="#9FBBF3"
         android:paddingStart="@dimen/standart_padding_start"
@@ -73,7 +75,7 @@ android:padding="4dp"
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="61"
 
         >
 
@@ -103,7 +105,7 @@ android:padding="4dp"
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="61"
         >
     <TextView
         android:layout_width="match_parent"
@@ -133,9 +135,9 @@ android:layout_gravity="end"
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="61"
 
-        android:layout_marginBottom="476dp">
+        android:layout_marginBottom="100dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -158,6 +160,12 @@ android:layout_gravity="end"
             android:layout_gravity="end">
 
         </ImageButton>
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="476">
+
     </FrameLayout>
 
 </LinearLayout>
