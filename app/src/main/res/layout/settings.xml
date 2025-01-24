@@ -13,7 +13,6 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="0dp"
     tools:context=".SettingsActivity"
-    android:layout_weight="376"
     >
 
 
