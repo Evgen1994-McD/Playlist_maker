@@ -13,6 +13,7 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="0dp"
     tools:context=".SettingsActivity"
+    android:layout_weight="376"
     >
 
 
@@ -20,8 +21,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="0dp"
         android:orientation="horizontal"
+        android:layout_weight="56"
         >
         <ImageButton
             android:id="@+id/backToMain"
@@ -136,8 +138,7 @@ android:layout_gravity="end"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="61"
-
-        android:layout_marginBottom="100dp">
+        >
 
         <TextView
             android:layout_width="match_parent"
@@ -161,12 +162,15 @@ android:layout_gravity="end"
 
         </ImageButton>
     </FrameLayout>
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="476">
 
-    </FrameLayout>
+    </LinearLayout>
 
 </LinearLayout>
+
+
+
 
