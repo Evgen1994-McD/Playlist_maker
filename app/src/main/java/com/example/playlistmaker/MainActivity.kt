@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -18,26 +19,30 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+// Пуш сдача работы
+
         }
         val searchClicker = findViewById<Button>(R.id.search_day)
         searchClicker.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                Toast.makeText(this@MainActivity, "Нажали на поиск!", Toast.LENGTH_SHORT).show()
+                val context = v?.context ?: return // Получаем контекст из представления
+                val displayIntentSrc = Intent(context, SearchActivity::class.java)
+                startActivity(displayIntentSrc)
             }
         })
 
 
-
-            val mediaClicker = findViewById<Button>(R.id.media_day)
+        val mediaClicker = findViewById<Button>(R.id.media_day)
         mediaClicker.setOnClickListener{
-            Toast.makeText(this@MainActivity, "Нажали на медиа!", Toast.LENGTH_SHORT).show()
+            val displayIntentMedia = Intent(this,MediaActivity::class.java)
+            startActivity(displayIntentMedia)
 
         }
-
         val settingsClicker = findViewById<Button>(R.id.settings_day)
         settingsClicker.setOnClickListener{
-            Toast.makeText(this@MainActivity, "Нажали на настройки!", Toast.LENGTH_SHORT).show()
+           val displayIntent = Intent(this, SettingsActivity::class.java)
+            startActivity(displayIntent)
         }
     }
-}
 
+}
