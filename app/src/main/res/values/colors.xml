@@ -6,4 +6,5 @@
     <color name="trackTint_dark">#9FBBF3</color>
     <color name="trackTint_light">#E6E8EB</color>
     <color name="thumbTint_light">#AEAFB4</color>
+    <color name="thumbTint_dark">#3772E7</color>
 </resources>

@@ -5,28 +5,32 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:orientation="vertical"
-    android:padding="20dp">
+   >
 
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="56">
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
+            android:layout_gravity="center_vertical"
             android:text="@string/app_name"
             android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textSize="@dimen/st_head_text_size"
+            style="@style/BoldTextStyle"
+            android:paddingStart="@dimen/standart_padding_start"/>
 
 
     </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="744"
 
         android:orientation="vertical">
 
@@ -43,7 +47,7 @@
             android:textColor="@color/black"
             app:icon="@drawable/searchicon"
             app:iconGravity="textStart"
-            app:iconPadding="8dp"
+            app:iconPadding="@dimen/st_padding_icon"
             app:iconTint="@color/black"
             app:cornerRadius="@dimen/standart_radius"
 
@@ -62,7 +66,7 @@
             android:textColor="@color/black"
             app:icon="@drawable/mediaicon"
             app:iconGravity="textStart"
-            app:iconPadding="3dp"
+            app:iconPadding="@dimen/st_padding_icon"
             app:iconTint="@color/black"
             app:cornerRadius="@dimen/standart_radius"/>
         <Button
@@ -79,9 +83,10 @@
             android:textColor="@color/black"
             app:icon="@drawable/settings"
             app:iconGravity="textStart"
-            app:iconPadding="3.4dp"
+            app:iconPadding="@dimen/st_padding_icon"
             app:iconTint="@color/black"
-            app:cornerRadius="@dimen/standart_radius"/>
+            app:cornerRadius="@dimen/standart_radius"
+            app:iconSize="@dimen/standart_size_for_icon"/>
 
     </LinearLayout>
 </LinearLayout>

@@ -5,22 +5,22 @@
     android:layout_height="match_parent"
     android:background="@color/blue"
     android:orientation="vertical"
-    android:padding="20dp"
     android:id="@+id/main">
 
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="56">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
+            android:layout_gravity="center_vertical"
             android:text="@string/app_name"
             android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:textSize="@dimen/st_head_text_size"
+            style="@style/BoldTextStyle"
             android:paddingStart="@dimen/standart_padding_start"/>
 
 
@@ -28,8 +28,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
+        android:layout_height="0dp"
+        android:layout_weight="744"
         android:orientation="vertical">
 
         <Button
@@ -47,8 +47,9 @@
             app:cornerRadius="@dimen/standart_radius"
             app:icon="@drawable/searchicon"
             app:iconGravity="textStart"
-            app:iconPadding="8dp"
+            app:iconPadding="@dimen/st_padding_icon"
             app:iconTint="@color/black"
+            app:iconSize="19dp"
 
 
             />
@@ -57,7 +58,7 @@
             android:id="@+id/media_day"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/standart_padding_start"
             android:layout_marginEnd="@dimen/standart_padding_start"
             android:layout_marginTop="@dimen/standart_padding_start"
             android:layout_weight="1"
@@ -67,14 +68,16 @@
             android:textColor="@color/black"
             app:icon="@drawable/mediaicon"
             app:iconGravity="textStart"
-            app:iconPadding="3dp"
+            app:iconPadding="@dimen/st_padding_icon"
             app:iconTint="@color/black"
-            app:cornerRadius="16dp"/>
+            app:cornerRadius="@dimen/standart_radius"
+            app:iconSize="20dp"
+            />
         <Button
             android:id="@+id/settings_day"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/standart_padding_start"
             android:layout_marginEnd="@dimen/standart_padding_start"
             android:layout_marginTop="@dimen/standart_padding_start"
             android:layout_marginBottom="28dp"
@@ -85,9 +88,10 @@
             android:textColor="@color/black"
             app:icon="@drawable/settings"
             app:iconGravity="textStart"
-            app:iconPadding="3.4dp"
+            app:iconPadding="@dimen/st_padding_icon"
             app:iconTint="@color/black"
-            app:cornerRadius="@dimen/standart_radius"/>
+            app:cornerRadius="@dimen/standart_radius"
+            app:iconSize="@dimen/standart_size_for_icon"/>
 
     </LinearLayout>
 </LinearLayout>

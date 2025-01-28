@@ -3,4 +3,14 @@
     <dimen name="standart_text_size">16sp</dimen>
     <dimen name="standart_padding_start">16dp</dimen>
     <dimen name="standart_radius">16dp</dimen>
+    <dimen name="st_padding_icon">8dp</dimen>
+    <dimen name="st_head_text_size">22sp</dimen>
+    <dimen name="margin_image_button_back_onsettings">4dp</dimen>
+    <dimen name="margin_start_head">12dp</dimen>
+    <dimen name="margin_top_head">10dp</dimen>
+    <dimen name="margin_bottom_head">12dp</dimen>
+    <dimen name="standart_size_for_icon">24dp</dimen>
+    <dimen name="standart_marginEnd_icon">12dp</dimen>
+    <dimen name="standart_margin_bottom_icon">18dp</dimen>
+    <dimen name="standart_margin_top_icon">19dp</dimen>
 </resources>
