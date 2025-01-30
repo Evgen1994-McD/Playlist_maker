@@ -3,15 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue"
+    android:background="@color/black"
     android:orientation="vertical"
-    android:id="@+id/main">
+   >
 
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="56">
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,32 +31,29 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="744"
+
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/search_day"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/standart_padding_start"
-            android:layout_marginTop="24dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="@dimen/standart_padding_start"
+            android:layout_marginTop="24dp"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
             android:text="@string/Search"
-            android:textColor="@color/black"
             android:textSize="@dimen/standart_text_size"
-            app:cornerRadius="@dimen/standart_radius"
+            android:textColor="@color/black"
             app:icon="@drawable/searchicon"
             app:iconGravity="textStart"
             app:iconPadding="@dimen/st_padding_icon"
             app:iconTint="@color/black"
-            app:iconSize="19dp"
+            app:cornerRadius="@dimen/standart_radius"
 
 
             />
-
         <Button
-            android:id="@+id/media_day"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/standart_padding_start"
@@ -70,11 +68,8 @@
             app:iconGravity="textStart"
             app:iconPadding="@dimen/st_padding_icon"
             app:iconTint="@color/black"
-            app:cornerRadius="@dimen/standart_radius"
-            app:iconSize="20dp"
-            />
+            app:cornerRadius="@dimen/standart_radius"/>
         <Button
-            android:id="@+id/settings_day"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/standart_padding_start"
