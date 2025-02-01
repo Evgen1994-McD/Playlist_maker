@@ -30,12 +30,12 @@
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:layout_width="match_parent"
-        android:layout_height="61dp"
+        android:layout_height="@dimen/standart_settings_height"
         android:gravity="center_vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="20dp"
+        android:paddingHorizontal="@dimen/standart_padding_start"
+        android:paddingVertical="@dimen/standart_padding_vertical"
         android:text="@string/dark_theme"
-        android:textSize="16sp"
+        android:textSize="@dimen/standart_text_size"
         app:thumbTint="@color/switch_thumb_color"
         app:trackTint="@color/switch_track_color"
         android:textColor="@color/black"
@@ -44,33 +44,46 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
-        android:layout_height="61dp"
+        android:layout_height="@dimen/standart_settings_height"
         android:drawableEnd="@drawable/sharelight"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="20dp"
+        android:paddingHorizontal="@dimen/standart_padding_start"
+        android:paddingVertical="@dimen/standart_padding_vertical"
         android:text="@string/share_name"
-        android:textSize="16sp"
-        android:textColor="@color/black"/>
+        android:textSize="@dimen/standart_text_size"
+        android:textColor="@color/black"
+        android:gravity="center_vertical"
+
+
+        />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
-        android:layout_height="61dp"
+        android:layout_height="@dimen/standart_settings_height"
         android:drawableEnd="@drawable/support_new"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="20dp"
+        android:paddingHorizontal="@dimen/standart_padding_start"
+        android:paddingVertical="@dimen/standart_padding_vertical"
         android:text="@string/support_name"
-        android:textSize="16sp"
-        android:textColor="@color/black"/>
+        android:textSize="@dimen/standart_text_size"
+        android:textColor="@color/black"
+        android:gravity="center_vertical"
+
+
+
+        />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
-        android:layout_height="61dp"
+        android:layout_height="@dimen/standart_settings_height"
         android:drawableEnd="@drawable/userassetlight"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="20dp"
+        android:paddingHorizontal="@dimen/standart_padding_start"
+        android:paddingVertical="@dimen/standart_padding_vertical"
         android:text="@string/user_assets_name"
-        android:textSize="16sp"
-        android:textColor="@color/black"/>
+        android:textSize="@dimen/standart_text_size"
+        android:textColor="@color/black"
+        android:gravity="center_vertical"
+
+
+        />
 
 
 
