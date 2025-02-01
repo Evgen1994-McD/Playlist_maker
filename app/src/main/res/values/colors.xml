@@ -3,8 +3,11 @@
     <color name="black">#1A1B22</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#3772E7</color>
-    <color name="trackTint_dark">#9FBBF3</color>
-    <color name="trackTint_light">#E6E8EB</color>
-    <color name="thumbTint_light">#AEAFB4</color>
-    <color name="thumbTint_dark">#3772E7</color>
+    <color name="trackTint_on">#9FBBF3</color>
+    <color name="trackTint_off">#E6E8EB</color>
+    <color name="thumbTint_off">#AEAFB4</color>
+    <color name="thumbTint_on">#3772E7</color>
+    <color name="light_icon_colors">#AEAFB4</color>
+
+
 </resources>

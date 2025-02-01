@@ -8,4 +8,13 @@
     <style name="BoldTextStyle">
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="TitleTextStyle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+
+
 </resources>

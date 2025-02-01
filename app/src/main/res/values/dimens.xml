@@ -7,10 +7,12 @@
     <dimen name="st_head_text_size">22sp</dimen>
     <dimen name="margin_image_button_back_onsettings">4dp</dimen>
     <dimen name="margin_start_head">12dp</dimen>
-    <dimen name="margin_top_head">10dp</dimen>
+    <dimen name="margin_top_head">12dp</dimen>
     <dimen name="margin_bottom_head">12dp</dimen>
     <dimen name="standart_size_for_icon">24dp</dimen>
     <dimen name="standart_marginEnd_icon">12dp</dimen>
-    <dimen name="standart_margin_bottom_icon">18dp</dimen>
-    <dimen name="standart_margin_top_icon">19dp</dimen>
+    <dimen name="standart_margin_bottom_icon">20dp</dimen>
+    <dimen name="standart_margin_top_icon">20dp</dimen>
+    <dimen name="Toolbar_height">56dp</dimen>
+
 </resources>

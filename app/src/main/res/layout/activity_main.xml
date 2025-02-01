@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/blue"
@@ -8,37 +9,26 @@
     android:id="@+id/main">
 
 
-    <FrameLayout
+    <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="56">
+        android:layout_height="@dimen/Toolbar_height"
+        app:title ="@string/app_name"
+       app:titleTextAppearance="@style/TitleTextStyle"
+        android:paddingStart="@dimen/standart_padding_start"
+        tools:ignore="RtlSymmetry"
+        app:titleTextColor="@color/white"
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="@string/app_name"
-            android:textColor="@color/white"
-            android:textSize="@dimen/st_head_text_size"
-            style="@style/BoldTextStyle"
-            android:paddingStart="@dimen/standart_padding_start"/>
+        >
 
+    </androidx.appcompat.widget.Toolbar>
 
-    </FrameLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="744"
-        android:orientation="vertical">
 
         <Button
             android:id="@+id/search_day"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/standart_padding_start"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/standart_padding_start"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="@dimen/standart_padding_start"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
             android:text="@string/Search"
@@ -49,7 +39,7 @@
             app:iconGravity="textStart"
             app:iconPadding="@dimen/st_padding_icon"
             app:iconTint="@color/black"
-            app:iconSize="19dp"
+            app:iconSize="20dp"
 
 
             />
@@ -57,9 +47,8 @@
         <Button
             android:id="@+id/media_day"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/standart_padding_start"
-            android:layout_marginEnd="@dimen/standart_padding_start"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/standart_padding_start"
             android:layout_marginTop="@dimen/standart_padding_start"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
@@ -76,9 +65,8 @@
         <Button
             android:id="@+id/settings_day"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/standart_padding_start"
-            android:layout_marginEnd="@dimen/standart_padding_start"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/standart_padding_start"
             android:layout_marginTop="@dimen/standart_padding_start"
             android:layout_marginBottom="28dp"
             android:layout_weight="1"
@@ -94,4 +82,3 @@
             app:iconSize="@dimen/standart_size_for_icon"/>
 
     </LinearLayout>
-</LinearLayout>
