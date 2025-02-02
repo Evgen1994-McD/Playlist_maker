@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <style name="Switch_Style" parent="Widget.AppCompat.CompoundButton.Switch">
+            <item name="trackTint">@color/switch_track_color</item>
+            <item name="thumbTint">@color/switch_thumb_color</item>
+        </style>
+
+    <style name="BoldTextStyle">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TitleTextStyle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+
+
+</resources>
