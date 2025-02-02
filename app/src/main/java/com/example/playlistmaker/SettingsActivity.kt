@@ -22,8 +22,8 @@ class SettingsActivity : AppCompatActivity() {
         }
         val backClicker = findViewById<androidx.appcompat.widget.Toolbar>(R.id.settings_toolbar_day)
         backClicker.setNavigationOnClickListener{
-            val displayIntentBack = Intent(this,MainActivity::class.java)
-            startActivity(displayIntentBack)
+
+
             finish()
         }
 
