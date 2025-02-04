@@ -42,10 +42,10 @@
     <style name="MySettings_Toolbar_style" parent="TextAppearance.AppCompat.Title">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/Toolbar_height</item>
-        <item name="titleTextColor">@color/black</item>
+        <item name="titleTextColor">@color/white</item>
         <item name="titleTextAppearance">@style/TitleTextStyle</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
-        <item name="navigationIcon">@drawable/backlight</item>
+
 
 
     </style>
@@ -58,16 +58,19 @@
         <item name="android:textSize">@dimen/standart_text_size</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/white</item>
+
     </style>
 
 
     <style name="Day_night_style" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <item name="android:background">@color/blue</item>
+        <item name="background">@color/black</item>
     </style>
 
     <style name="Settings_Day_night_style" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <item name="background">@color/white</item>
+        <item name="android:background">@color/black</item>
+        <item name="android:textColor">@color/white</item>
+
     </style>
 
 

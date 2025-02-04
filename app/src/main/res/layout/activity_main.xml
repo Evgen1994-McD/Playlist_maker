@@ -4,81 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue"
+    style="@style/Day_night_style"
     android:orientation="vertical"
     android:id="@+id/main">
 
 
     <androidx.appcompat.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/Toolbar_height"
         app:title ="@string/app_name"
-       app:titleTextAppearance="@style/TitleTextStyle"
+       style="@style/MyToolbar_style"
         android:paddingStart="@dimen/standart_padding_start"
         tools:ignore="RtlSymmetry"
-        app:titleTextColor="@color/white"
-
         >
-
     </androidx.appcompat.widget.Toolbar>
 
 
         <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:id="@+id/search_day"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="@dimen/standart_padding_start"
-            android:layout_marginTop="24dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
             android:text="@string/Search"
-            android:textColor="@color/black"
-            android:textSize="@dimen/standart_text_size"
-            app:cornerRadius="@dimen/standart_radius"
             app:icon="@drawable/searchicon"
-            app:iconGravity="textStart"
-            app:iconPadding="@dimen/st_padding_icon"
-            app:iconTint="@color/black"
             app:iconSize="20dp"
-
+            style="@style/MainButtonStyle"
+            android:layout_marginTop="24dp"
 
             />
 
         <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:id="@+id/media_day"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="@dimen/standart_padding_start"
-            android:layout_marginTop="@dimen/standart_padding_start"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
             android:text="@string/Media_name"
-            android:textSize="@dimen/standart_text_size"
-            android:textColor="@color/black"
             app:icon="@drawable/mediaicon"
-            app:iconGravity="textStart"
-            app:iconPadding="@dimen/st_padding_icon"
-            app:iconTint="@color/black"
-            app:cornerRadius="@dimen/standart_radius"
             app:iconSize="20dp"
+            style="@style/MainButtonStyle"
+            android:layout_marginTop="@dimen/standart_padding_start"
+
             />
         <Button
-            android:id="@+id/settings_day"
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginHorizontal="@dimen/standart_padding_start"
-            android:layout_marginTop="@dimen/standart_padding_start"
+            android:id="@+id/settings_day"
             android:layout_marginBottom="28dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
             android:text="@string/Settings_name"
-            android:textSize="@dimen/standart_text_size"
-            android:textColor="@color/black"
             app:icon="@drawable/settings"
-            app:iconGravity="textStart"
-            app:iconPadding="@dimen/st_padding_icon"
-            app:iconTint="@color/black"
-            app:cornerRadius="@dimen/standart_radius"
-            app:iconSize="@dimen/standart_size_for_icon"/>
+            app:iconSize="@dimen/standart_size_for_icon"
+            style="@style/MainButtonStyle"
+            android:layout_marginTop="@dimen/standart_padding_start"
+            />
 
     </LinearLayout>

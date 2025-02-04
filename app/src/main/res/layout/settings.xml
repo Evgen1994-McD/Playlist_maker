@@ -1,44 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    style="@style/Settings_Day_night_style"
     android:orientation="vertical"
     android:padding="0dp"
      android:id="@+id/settings"
     tools:context=".SettingsActivity"
     >
 
-
-
-
     <androidx.appcompat.widget.Toolbar
         android:id ="@+id/settings_toolbar_day"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/Toolbar_height"
+        style="@style/MySettings_Toolbar_style"
         app:title="@string/Settings_name"
-        app:titleTextAppearance="@style/TitleTextStyle"
-        app:titleTextColor="@color/black"
-        app:navigationIcon="@drawable/backlight"
-
         >
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:layout_width="match_parent"
         android:layout_height="@dimen/standart_settings_height"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="@dimen/standart_padding_start"
-        android:paddingVertical="@dimen/standart_padding_vertical"
         android:text="@string/dark_theme"
-        android:textSize="@dimen/standart_text_size"
         app:thumbTint="@color/switch_thumb_color"
         app:trackTint="@color/switch_track_color"
-        android:textColor="@color/black"
+        style="@style/MySettingsStyle"
         />
 
 
@@ -46,43 +32,24 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/standart_settings_height"
         android:drawableEnd="@drawable/sharelight"
-        android:paddingHorizontal="@dimen/standart_padding_start"
-        android:paddingVertical="@dimen/standart_padding_vertical"
         android:text="@string/share_name"
-        android:textSize="@dimen/standart_text_size"
-        android:textColor="@color/black"
-        android:gravity="center_vertical"
-
-
+        style="@style/MySettingsStyle"
         />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="@dimen/standart_settings_height"
         android:drawableEnd="@drawable/support_new"
-        android:paddingHorizontal="@dimen/standart_padding_start"
-        android:paddingVertical="@dimen/standart_padding_vertical"
         android:text="@string/support_name"
-        android:textSize="@dimen/standart_text_size"
-        android:textColor="@color/black"
-        android:gravity="center_vertical"
-
-
-
+        style="@style/MySettingsStyle"
         />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="@dimen/standart_settings_height"
         android:drawableEnd="@drawable/userassetlight"
-        android:paddingHorizontal="@dimen/standart_padding_start"
-        android:paddingVertical="@dimen/standart_padding_vertical"
         android:text="@string/user_assets_name"
-        android:textSize="@dimen/standart_text_size"
-        android:textColor="@color/black"
-        android:gravity="center_vertical"
-
-
+        style="@style/MySettingsStyle"
         />
 
 
