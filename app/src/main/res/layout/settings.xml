@@ -38,6 +38,7 @@
         />
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/sMesToSuport"
         android:layout_width="match_parent"
         android:layout_height="@dimen/standart_settings_height"
         android:drawableEnd="@drawable/support_new"
