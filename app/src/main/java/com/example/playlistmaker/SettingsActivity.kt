@@ -46,15 +46,7 @@ class SettingsActivity : AppCompatActivity() {
         userAssetClicker.setOnClickListener {
             // Ссылка, которую нужно открыть
             val url = "https://yandex.ru/legal/practicum_offer/"
-
-            // Получаем список всех установленных браузеров
-            val browsers = getInstalledBrowsers()
-
-            // Находим браузер по умолчанию
-            val defaultBrowser = getDefaultBrowser(browsers)
-
-            // Открываем ссылку в браузере по умолчанию
-            openUrlInDefaultBrowser(defaultBrowser, url)
+            openUrlInDefaultBrowser(url)
         }
 
 
@@ -82,11 +74,13 @@ class SettingsActivity : AppCompatActivity() {
         val body = "Спасибо разработчикам и разработчицам за крутое приложение!"
 
         val intent = Intent(Intent.ACTION_SEND).apply {
+            // Указание категории электронной почты
             type = "message/rfc822"
 
             putExtra(Intent.EXTRA_EMAIL, arrayOf(myEmail))
             putExtra(Intent.EXTRA_SUBJECT, subject)
             putExtra(Intent.EXTRA_TEXT, body)
+
         }
         if (intent.resolveActivity(packageManager) != null) {
             startActivity(intent)
@@ -98,33 +92,18 @@ class SettingsActivity : AppCompatActivity() {
     }
 
 
-    private fun getInstalledBrowsers(): List<String> {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://"))
-        val pm = packageManager
-        return pm.queryIntentActivities(intent, 0)
-            .map { it.activityInfo.packageName }
-            .distinct()
-    }
 
-    private fun getDefaultBrowser(browserPackages: List<String>): String? {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://"))
-        val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
-        return resolveInfo?.activityInfo?.packageName
-    }
 
-    private fun openUrlInDefaultBrowser(pkg: String?, url: String) {
-        if (pkg != null) {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            intent.`package` = pkg
-            try {
-                startActivity(intent)
-            } catch (e: Exception) {
-                Toast.makeText(this, "Не удалось открыть ссылку в браузере.", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        } else {
-            Toast.makeText(this, "Браузера по умолчанию не установлено.", Toast.LENGTH_SHORT).show()
+
+
+    private fun openUrlInDefaultBrowser(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+            addCategory(Intent.CATEGORY_BROWSABLE)
         }
+        startActivity(intent)
 
-    }
+
+            }
+
+
 }
