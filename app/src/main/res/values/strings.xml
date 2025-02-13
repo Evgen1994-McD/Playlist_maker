@@ -7,4 +7,6 @@
     <string name="share_name" translatable="false">Поделиться приложением</string>
     <string name="support_name" translatable="false">Написать в поддержку</string>
     <string name="user_assets_name" translatable="false">Пользовательское соглашение</string>
+    <string name="search_toolbar" translatable="false">Поиск</string>
+
 </resources>
