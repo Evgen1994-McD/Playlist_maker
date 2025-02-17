@@ -87,7 +87,7 @@
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:background">@drawable/edittext_background</item>
         <item name="android:hint">@string/Search</item>
-        <item name="android:drawableStart">@drawable/search_icon__2_</item>
+
         <item name="android:drawablePadding">@dimen/st_padding_icon</item>
         <item name="android:paddingStart">30dp</item>
         <item name="android:paddingEnd">30dp</item>
@@ -95,11 +95,16 @@
         <item name="android:paddingVertical">@dimen/st_padding_icon</item>
         <item name="android:paddingHorizontal">@dimen/standart_radius</item>
         <item name="android:textColorHint">@color/black</item>
+        <item name="android:textColor">@color/black</item>
         <item name="android:iconifiedByDefault">false</item>
         <item name="iconSize">16dp</item>
         <item name="android:maxLines">1</item>
         <item name="android:inputType">textShortMessage</item>
-        <item name="android:maxLength">20</item>
+        <item name="android:maxLength">50</item>
+        <item name="android:drawableStart">@drawable/searchforhint_icon</item>
+
+
+
     </style>
 
 
