@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:drawable="@drawable/searchforhint_icon"
+        android:gravity="center_vertical|left"
+
+        />
+    <item
+        android:bottom="8.5dp"
+        android:top="8.5dp"
+        android:left="28dp"
+        > <!-- Настройте отступы по своему усмотрению -->
+        <bitmap android:src="@string/search_toolbar" /> <!-- Здесь должна быть строка, которая будет вашим hint -->
+    </item>
+</layer-list>
