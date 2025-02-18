@@ -1,14 +1,13 @@
 package com.example.playlistmaker
 
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MotionEvent
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.Toast
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -17,6 +16,8 @@ import androidx.core.view.WindowInsetsCompat
 
 
 class SearchActivity : AppCompatActivity() {
+    private lateinit var clearEditText : EditText
+    private var textFromInput : String = null.toString()
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +34,26 @@ class SearchActivity : AppCompatActivity() {
         }
 
         val clearEditText = findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.search_stroke)
+        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // Для того чтобы спрятать клаву
+
+        savedInstanceState?.let {     // Проверяем, есть ли сохранённый текст в эдит тексте
+           val savedText = it.getString("edit_text_key")
+            if (savedText!=null){
+                clearEditText.setText(savedText)
+            }
+        }
+
+
+
+
+
+
+
+
+
+        clearEditText.setOnClickListener {
+            inputMethodManager.showSoftInput(clearEditText, 0)  // Появление клавиатуры при нажатии на эдиттекст
+        }
 
         clearEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -47,6 +68,7 @@ class SearchActivity : AppCompatActivity() {
                         ContextCompat.getDrawable(this@SearchActivity, R.drawable.clearsearch),
                         null
                     )
+                   textFromInput = p0.toString()
 
                 }
                 else{
@@ -74,7 +96,9 @@ class SearchActivity : AppCompatActivity() {
                 if (x >= (view.width - (drawableEndBounds.width()+view.paddingRight)) &&
                     x <= view.width-view.paddingRight && y >= 0 && y <= view.height
                 ) {
-                    clearEditText.text?.clear()   // чистим эдит текст
+                    clearEditText.text?.clear()
+                    inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0) // Прячем клаву
+                    // чистим эдит текст
                     return@setOnTouchListener true
                 }
             }
@@ -83,6 +107,26 @@ class SearchActivity : AppCompatActivity() {
         }
 
 
+        }
 
+
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("edit_text_key", textFromInput)
     }
+
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        // Извлечение данных из Bundle
+        val savedText = savedInstanceState.getString("edit_text_key")
+        if (savedText != null) {
+            clearEditText.setText(savedText)
+        }
+    }
+
+
+
 }

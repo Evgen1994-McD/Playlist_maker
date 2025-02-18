@@ -45,7 +45,7 @@ class SettingsActivity : AppCompatActivity() {
             findViewById<com.google.android.material.textview.MaterialTextView>(R.id.userAssetUri)
         userAssetClicker.setOnClickListener {
             // Ссылка, которую нужно открыть
-            val url = "https://yandex.ru/legal/practicum_offer/"
+            val url = getString(R.string.Url_userasset)
             openUrlInDefaultBrowser(url)
         }
 
@@ -58,20 +58,20 @@ class SettingsActivity : AppCompatActivity() {
             action = Intent.ACTION_SEND
             putExtra(
                 Intent.EXTRA_TEXT,
-                "https://practicum.yandex.ru/android-developer/?from=catalog"
+                context.getString(R.string.Url_androidDeveloper)
             ) // Ссылка на курс андроид разработки
             type = "text/plain"
         }
         context.startActivity(
-            Intent.createChooser(sendIntent, "Поделитесь нашим приложением")
+            Intent.createChooser(sendIntent, context.getString(R.string.share_stroke))
         )
     }
 
 
     private fun sendSuppEmail() {  // Приватный метод для письма в поддержку
-        val myEmail = "mrmarwell@gmail.com"
-        val subject = "Сообщение разработчиками и разработчицам приложением Playlist Maker"
-        val body = "Спасибо разработчикам и разработчицам за крутое приложение!"
+        val myEmail = getString(R.string.address)
+        val subject = getString(R.string.subject)
+        val body = getString(R.string.body)
 
         val intent = Intent(Intent.ACTION_SEND).apply {
             // Указание категории электронной почты
@@ -85,7 +85,7 @@ class SettingsActivity : AppCompatActivity() {
         if (intent.resolveActivity(packageManager) != null) {
             startActivity(intent)
         } else {
-            Toast.makeText(this, "Приложения для отправки отстуствуют!!!", Toast.LENGTH_SHORT)
+            Toast.makeText(this, getString(R.string.noApp_stroke), Toast.LENGTH_SHORT)
                 .show()
         }
 

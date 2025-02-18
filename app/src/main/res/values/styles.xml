@@ -87,6 +87,9 @@
 
     <style name="Settings_Day_night_style" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="background">@color/white</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:orientation">vertical</item>
+
     </style>
 
 
