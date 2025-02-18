@@ -30,21 +30,15 @@ class MainActivity : AppCompatActivity() {
                 startActivity(displayIntentSrc)
             }
         })
-
-
         val mediaClicker = findViewById<Button>(R.id.media_day)
-        mediaClicker.setOnClickListener{
-            val displayIntentMedia = Intent(this,MediaActivity::class.java)
+        mediaClicker.setOnClickListener {
+            val displayIntentMedia = Intent(this, MediaActivity::class.java)
             startActivity(displayIntentMedia)
-
         }
         val settingsClicker = findViewById<Button>(R.id.settings_day)
-        settingsClicker.setOnClickListener{
-           val displayIntent = Intent(this, SettingsActivity::class.java)
+        settingsClicker.setOnClickListener {
+            val displayIntent = Intent(this, SettingsActivity::class.java)
             startActivity(displayIntent)
         }
-
-
     }
-
 }

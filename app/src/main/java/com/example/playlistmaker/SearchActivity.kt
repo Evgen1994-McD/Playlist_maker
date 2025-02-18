@@ -14,10 +14,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-
 class SearchActivity : AppCompatActivity() {
-    private lateinit var clearEditText : EditText
-    private var textFromInput : String = null.toString()
+    private lateinit var inputMethodManager: InputMethodManager
+    private lateinit var clearEditText: EditText
+    private var textFromInput: String = null.toString()
+    private val keyForWatcher: String =
+        "keyForWatcherSearch"  // Константа для ватчера. Спасибо большое за совет!
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,105 +31,118 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val backClicker = findViewById<androidx.appcompat.widget.Toolbar>(R.id.search_toolbar) // Назад в MainActivity
+        val backClicker =
+            findViewById<androidx.appcompat.widget.Toolbar>(R.id.search_toolbar) // Назад в MainActivity
         backClicker.setNavigationOnClickListener {
             finish()
         }
-
-        val clearEditText = findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.search_stroke)
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // Для того чтобы спрятать клаву
+        val clearEditText =
+            findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.search_stroke)
+        val inputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // Для того чтобы спрятать клаву
 
         savedInstanceState?.let {     // Проверяем, есть ли сохранённый текст в эдит тексте
-           val savedText = it.getString("edit_text_key")
-            if (savedText!=null){
+            val savedText = it.getString(keyForWatcher)
+            if (savedText != null) {
                 clearEditText.setText(savedText)
             }
         }
-
-
-
-
-
-
-
-
-
         clearEditText.setOnClickListener {
-            inputMethodManager.showSoftInput(clearEditText, 0)  // Появление клавиатуры при нажатии на эдиттекст
+            inputMethodManager.showSoftInput(
+                clearEditText,
+                0
+            )  // Появление клавиатуры при нажатии на эдиттекст
         }
 
         clearEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+                //empty
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (!p0.isNullOrBlank()){
-                    clearEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                        ContextCompat.getDrawable(this@SearchActivity, R.drawable.searchforhint_icon),
-                        null,
-                        ContextCompat.getDrawable(this@SearchActivity, R.drawable.clearsearch),
-                        null
-                    )
-                   textFromInput = p0.toString()
 
-                }
-                else{
-                    clearEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                        ContextCompat.getDrawable(this@SearchActivity, R.drawable.searchforhint_icon),
-                        null,
-                        null,
-                        null
-                    )
-                }
-
+                logicClearIc(p0)
             }
+            // функция логики отображения иконок
 
             override fun afterTextChanged(p0: Editable?) {
                 //empty
             }
         }
         )
-        clearEditText.setOnTouchListener { view, event ->
-            if (event.action == MotionEvent.ACTION_UP) {
-                val drawableEndBounds = clearEditText.compoundDrawables[2]?.bounds
-                if(drawableEndBounds!= null){
-                val x = event.x.toInt()
-                val y = event.y.toInt()
-                if (x >= (view.width - (drawableEndBounds.width()+view.paddingRight)) &&
-                    x <= view.width-view.paddingRight && y >= 0 && y <= view.height
-                ) {
-                    clearEditText.text?.clear()
-                    inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0) // Прячем клаву
-                    // чистим эдит текст
-                    return@setOnTouchListener true
-                }
-            }
-            }
-            false
-        }
 
 
-        }
 
+        ClearTextFromEditText()  //Логика очистки текста
 
+    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("edit_text_key", textFromInput)
+        outState.putString(keyForWatcher, textFromInput)
     }
-
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
 
         // Извлечение данных из Bundle
-        val savedText = savedInstanceState.getString("edit_text_key")
+        val savedText = savedInstanceState.getString(keyForWatcher)
         if (savedText != null) {
             clearEditText.setText(savedText)
         }
     }
 
 
+    private fun logicClearIc(s: CharSequence?) {
+        val clearEditText =
+            findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.search_stroke)
+        if (!s.isNullOrBlank()) {  // Перенести в функцию
+            clearEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                ContextCompat.getDrawable(this@SearchActivity, R.drawable.ic_hintsearch_16),
+                null,
+                ContextCompat.getDrawable(this@SearchActivity, R.drawable.clearsearch),
+                null
+            )
+            textFromInput = s.toString()
 
+        } else {
+            clearEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                ContextCompat.getDrawable(this@SearchActivity, R.drawable.ic_hintsearch_16),
+                null,
+                null,
+                null
+            )
+        }
+
+    }
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun ClearTextFromEditText() {
+        val clearEditText =
+            findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.search_stroke)
+        val inputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        clearEditText.setOnTouchListener { view, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                val drawableEndBounds = clearEditText.compoundDrawables[2]?.bounds
+                if (drawableEndBounds != null) {
+                    val x = event.x.toInt()
+                    val y = event.y.toInt()
+                    if (x >= (view.width - (drawableEndBounds.width() + view.paddingRight)) &&
+                        x <= view.width - view.paddingRight && y >= 0 && y <= view.height
+                    ) {
+                        clearEditText.text?.clear()
+                        inputMethodManager.hideSoftInputFromWindow(
+                            currentFocus?.windowToken,
+                            0
+                        ) // Прячем клаву
+                        // чистим эдит текст
+                        return@setOnTouchListener true
+                    }
+                }
+            }
+            false
+        }
+    }
 }

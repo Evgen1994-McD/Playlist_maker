@@ -30,7 +30,7 @@
         android:id="@+id/shareApp"
         android:layout_width="match_parent"
         android:layout_height="@dimen/standart_settings_height"
-        android:drawableEnd="@drawable/sharelight"
+        android:drawableEnd="@drawable/ic_share_24"
         android:text="@string/share_name"
         style="@style/MySettingsStyle"
         />
@@ -39,7 +39,7 @@
         android:id="@+id/sMesToSuport"
         android:layout_width="match_parent"
         android:layout_height="@dimen/standart_settings_height"
-        android:drawableEnd="@drawable/support_new"
+        android:drawableEnd="@drawable/ic_support_24"
         android:text="@string/support_name"
         style="@style/MySettingsStyle"
         />
@@ -48,7 +48,7 @@
         android:id="@+id/userAssetUri"
         android:layout_width="match_parent"
         android:layout_height="@dimen/standart_settings_height"
-        android:drawableEnd="@drawable/userassetlight"
+        android:drawableEnd="@drawable/ic_userasset_24"
         android:text="@string/user_assets_name"
         style="@style/MySettingsStyle"
         />
