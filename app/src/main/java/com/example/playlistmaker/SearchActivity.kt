@@ -100,7 +100,7 @@ class SearchActivity : AppCompatActivity() {
             clearEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 ContextCompat.getDrawable(this@SearchActivity, R.drawable.ic_hintsearch_16),
                 null,
-                ContextCompat.getDrawable(this@SearchActivity, R.drawable.clearsearch),
+                ContextCompat.getDrawable(this@SearchActivity, R.drawable.ic_clear_16),
                 null
             )
             textFromInput = s.toString()
