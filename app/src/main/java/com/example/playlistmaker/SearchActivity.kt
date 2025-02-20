@@ -15,7 +15,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class SearchActivity : AppCompatActivity() {
-    private lateinit var inputMethodManager: InputMethodManager
     private lateinit var clearEditText: EditText
     private var textFromInput: String = null.toString()
     private val keyForWatcher: String =
@@ -73,7 +72,7 @@ class SearchActivity : AppCompatActivity() {
 
 
 
-        ClearTextFromEditText()  //Логика очистки текста
+        clearTextFromEditText()  //Логика очистки текста
 
     }
 
@@ -118,7 +117,7 @@ class SearchActivity : AppCompatActivity() {
 
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun ClearTextFromEditText() {
+    private fun clearTextFromEditText() {
         val clearEditText =
             findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.search_stroke)
         val inputMethodManager =
