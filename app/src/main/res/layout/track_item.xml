@@ -6,12 +6,12 @@
     android:layout_height="61dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
 
     <ImageView
-        android:id="@+id/ivClouds"
+        android:id="@+id/trackImage"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="13dp"
         android:layout_marginVertical="8dp"
@@ -30,7 +30,7 @@
         >
 
     <TextView
-        android:id="@+id/tvTemperature"
+        android:id="@+id/track_name"
         android:layout_height="19dp"
         android:layout_width="match_parent"
         android:textColor="@color/black"
@@ -39,21 +39,46 @@
         android:layout_marginTop="14dp"
         android:layout_marginHorizontal="8dp"
         android:textSize="16sp"
+        android:ellipsize="end"
         />
 
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="13dp"
+    android:orientation="horizontal"
+    android:layout_marginTop="1dp"
+    android:layout_marginHorizontal="8dp"
+    >
         <TextView
-            android:id="@+id/tvTemperature"
-            android:layout_height="13dp"
-            android:layout_width="match_parent"
+            android:id="@+id/track_info"
+            android:layout_height="match_parent"
+            android:layout_width="54dp"
             android:textColor="@color/black"
-            tools:text="Исполнитель + длительность"
-            android:layout_marginTop="1dp"
-            android:layout_marginHorizontal="8dp"
+            tools:text="Исполнитель"
             android:textSize="11sp"
-
+            android:gravity="top"
+            android:ellipsize="end"
             />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_dot_13"
+        android:layout_gravity="center_vertical"
 
+        >
+
+    </ImageView>
+
+    <TextView
+        android:id="@+id/track_time"
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:textColor="@color/black"
+        tools:text="длительность"
+        android:textSize="11sp"
+        android:gravity="center_vertical"
+        />
+    </LinearLayout>
 
 
     </LinearLayout>
@@ -63,7 +88,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
     <ImageView
-        android:id="@+id/ivClouds"
+        android:id="@+id/arrow1"
         android:layout_gravity="center_vertical"
         android:layout_height="24dp"
         android:layout_width="24dp"

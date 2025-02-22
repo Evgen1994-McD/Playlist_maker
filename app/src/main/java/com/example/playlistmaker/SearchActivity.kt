@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var clearEditText: EditText
@@ -73,6 +75,12 @@ class SearchActivity : AppCompatActivity() {
 
 
         clearTextFromEditText()  //Логика очистки текста
+
+        val recyclerView = findViewById<RecyclerView>(R.id.track_list)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = TrackAdapter(myTrack)
+
+
 
     }
 

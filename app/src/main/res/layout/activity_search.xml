@@ -7,6 +7,7 @@
     style="@style/Settings_Day_night_style"
     android:id="@+id/searchLayout"
     tools:context=".SearchActivity"
+    android:orientation="vertical"
     >
 
     <androidx.appcompat.widget.Toolbar
@@ -22,11 +23,17 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         style="@style/Search_Base_style"
-
-
-
         >
-
     </androidx.appcompat.widget.AppCompatEditText>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/track_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
+        tools:listitem="@layout/track_item"
+        tools:itemCount="5"/>
 
 </LinearLayout>
