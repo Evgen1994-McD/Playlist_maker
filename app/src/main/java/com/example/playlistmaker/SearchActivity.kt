@@ -20,7 +20,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearEditText: EditText
     private var textFromInput: String = null.toString()
     private val keyForWatcher: String =
-        "keyForWatcherSearch"  // Константа для ватчера. Спасибо большое за совет!
+        "keyForWatcherSearch"  // Константа для ватчера
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {

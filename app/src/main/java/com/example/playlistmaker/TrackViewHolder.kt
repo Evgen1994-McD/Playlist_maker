@@ -32,6 +32,8 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .load(track.artworkUrl100)
             .transform(RoundedCorners(radiusInPX.toInt()))
             .apply { options }
+            .placeholder(R.drawable.ic_placeholder_45)
+            .error(R.drawable.ic_placeholder_45)
             .into(trackImage)
 
 

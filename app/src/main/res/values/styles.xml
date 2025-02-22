@@ -113,7 +113,11 @@
         <item name="android:maxLength">50</item>
         <item name="android:drawableStart">@drawable/ic_hintsearch_16</item>
 
+    </style>
 
+
+    <style name="tracl_item_style" parent="Widget.MaterialComponents.TextView">
+<item name="android:textColor">@color/black</item>
 
     </style>
 

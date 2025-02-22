@@ -19,15 +19,5 @@ class MediaActivity : AppCompatActivity() {
         }
 
 
-        val imageUrl =
-            "https://img.freepik.com/free-vector/open-blue-book-white_1308-69339.jpg"
-
-
-
-        setContentView(R.layout.activity_media)
-
-        val image = findViewById<ImageView>(R.id.image)
-        Glide.with(applicationContext).load(imageUrl).into(image)
-
     }
 }
