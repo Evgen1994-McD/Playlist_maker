@@ -6,7 +6,6 @@
     android:layout_height="61dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
 
@@ -17,8 +16,8 @@
         android:layout_marginStart="13dp"
         android:layout_marginVertical="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_height="45dp"
-        android:layout_width="45dp"
+        android:layout_height="@dimen/size_dp_45"
+        android:layout_width="@dimen/size_dp_45"
        />
 
 
@@ -30,20 +29,16 @@
 
         >
 
-    <TextView
-        android:id="@+id/track_name"
-        android:layout_height="19dp"
-        android:layout_width="match_parent"
-        tools:text="Название трека"
-        android:layout_marginTop="14dp"
-        android:layout_marginHorizontal="8dp"
-        android:textSize="16sp"
-        android:maxLines="1"
-        android:ellipsize="end"
-        style="@style/tracl_item_style"
-        />
+        <TextView
+            android:id="@+id/track_name"
+            style="@style/track_item_top"
+            android:layout_width="match_parent"
+            android:layout_height="19dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="14dp"
+            tools:text="Название трека" />
 
-<LinearLayout
+        <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="13dp"
     android:orientation="horizontal"
@@ -55,11 +50,7 @@
             android:layout_height="match_parent"
             android:layout_width="54dp"
             tools:text="Исполнитель"
-            android:textSize="11sp"
-            android:gravity="top"
-            android:maxLines="1"
-            android:ellipsize="end"
-            style="@style/tracl_item_style"
+            style="@style/track_item_bottom"
 
 
             />
@@ -67,7 +58,6 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:src="@drawable/ic_dot_13"
-        android:layout_gravity="center_vertical"
 
         >
 
@@ -78,9 +68,7 @@
         android:layout_height="match_parent"
         android:layout_width="wrap_content"
         tools:text="длительность"
-        android:textSize="11sp"
-        android:gravity="center_vertical"
-        style="@style/tracl_item_style"
+        style="@style/track_item_bottom"
 
         />
     </LinearLayout>
@@ -95,8 +83,8 @@
     <ImageView
         android:id="@+id/arrow1"
         android:layout_gravity="center_vertical"
-        android:layout_height="24dp"
-        android:layout_width="24dp"
+        android:layout_height="@dimen/size_dp_24"
+        android:layout_width="@dimen/size_dp_24"
         android:src="@drawable/ic_arrow_24"
         android:layout_marginVertical="18dp"
         android:layout_marginEnd="12dp"

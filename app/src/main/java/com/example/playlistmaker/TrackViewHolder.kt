@@ -1,4 +1,5 @@
 package com.example.playlistmaker
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.util.TypedValue
 import android.view.RoundedCorner
@@ -18,20 +19,20 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val trackImage : ImageView = itemView.findViewById(R.id.trackImage)
     private val options = RequestOptions().centerCrop()
     private val radiusInDP = 2f
-    val densityMultiplier = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f, Resources.getSystem().displayMetrics)
-    val radiusInPX = radiusInDP * densityMultiplier
+    private val densityMultiplier = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f, Resources.getSystem().displayMetrics)
+    private val radiusInPX = radiusInDP * densityMultiplier
 
 
 
+    @SuppressLint("CheckResult")
     fun bind(track: Track) {
         trackName.text = track.trackName
         artistName.text = track.artistName
         trackTime.text = track.trackTime
-        options.centerCrop()
         Glide.with(itemView.context)
             .load(track.artworkUrl100)
             .transform(RoundedCorners(radiusInPX.toInt()))
-            .apply { options }
+            .apply(options)
             .placeholder(R.drawable.ic_placeholder_45)
             .error(R.drawable.ic_placeholder_45)
             .into(trackImage)

@@ -125,10 +125,24 @@
     </style>
 
 
-    <style name="tracl_item_style" parent="Widget.MaterialComponents.TextView">
+    <style name="track_item_top" parent="Widget.MaterialComponents.TextView">
         <item name="android:textColor">@color/white</item>
+        <item name="font">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/standart_text_size</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
 
     </style>
+
+    <style name="track_item_bottom" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/white</item>
+        <item name="font">@font/ys_display_regular</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">@dimen/txt_11</item>
+
+    </style>
+
 
 
 
