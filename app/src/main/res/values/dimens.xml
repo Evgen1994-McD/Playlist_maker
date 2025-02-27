@@ -3,7 +3,7 @@
     <dimen name="standart_text_size">16sp</dimen>
     <dimen name="standart_padding_start">16dp</dimen>
     <dimen name="standart_padding_vertical">20dp</dimen>
-
+<dimen name="txt_11">11sp</dimen>
     <dimen name="standart_radius">16dp</dimen>
     <dimen name="st_padding_icon">8dp</dimen>
     <dimen name="st_head_text_size">22sp</dimen>
@@ -17,6 +17,8 @@
     <dimen name="standart_margin_top_icon">20dp</dimen>
     <dimen name="Toolbar_height">56dp</dimen>
     <dimen name="standart_settings_height">61dp</dimen>
+    <dimen name="size_dp_24">24dp</dimen>
+    <dimen name="size_dp_45">45dp</dimen>
 
 
 </resources>

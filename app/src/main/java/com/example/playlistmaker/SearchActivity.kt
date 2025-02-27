@@ -13,13 +13,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class SearchActivity : AppCompatActivity() {
-    private lateinit var inputMethodManager: InputMethodManager
     private lateinit var clearEditText: EditText
     private var textFromInput: String = null.toString()
     private val keyForWatcher: String =
-        "keyForWatcherSearch"  // Константа для ватчера. Спасибо большое за совет!
+        "keyForWatcherSearch"  // Константа для ватчера
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +74,13 @@ class SearchActivity : AppCompatActivity() {
 
 
 
-        ClearTextFromEditText()  //Логика очистки текста
+        clearTextFromEditText()  //Логика очистки текста
+
+        val recyclerView = findViewById<RecyclerView>(R.id.track_list)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = TrackAdapter(myTrack)
+
+
 
     }
 
@@ -118,7 +125,7 @@ class SearchActivity : AppCompatActivity() {
 
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun ClearTextFromEditText() {
+    private fun clearTextFromEditText() {
         val clearEditText =
             findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.search_stroke)
         val inputMethodManager =
