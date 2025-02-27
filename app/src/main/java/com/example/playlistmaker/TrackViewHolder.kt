@@ -19,7 +19,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val trackImage : ImageView = itemView.findViewById(R.id.trackImage)
     private val options = RequestOptions().centerCrop()
     private val radiusInDP = 2f
-    private val densityMultiplier = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f, Resources.getSystem().displayMetrics)
+    private val densityMultiplier = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f, itemView.context.resources.displayMetrics)
     private val radiusInPX = radiusInDP * densityMultiplier
 
 
