@@ -23,6 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         style="@style/Search_Base_style"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
         >
     </androidx.appcompat.widget.AppCompatEditText>
 

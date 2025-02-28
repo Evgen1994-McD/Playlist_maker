@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MotionEvent
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
@@ -15,12 +16,28 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.retrofit.ITunesApi
+import com.example.playlistmaker.retrofit.Track
+import com.example.playlistmaker.retrofit.myTrack
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
+import retrofit2.http.HTTP
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var clearEditText: EditText
+    private lateinit var txtForSearch: String
     private var textFromInput: String = null.toString()
     private val keyForWatcher: String =
         "keyForWatcherSearch"  // Константа для ватчера
+    private val iTunesBaseUrl = "https://itunes.apple.com/"  // базовый урл
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,13 +49,39 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val clearEditText =
+            findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.search_stroke)
+
+        val interceptor =
+            HttpLoggingInterceptor()  // Вылетает при запросах, попробую интерсепотором понять почему
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        val client = OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .build()
+
+
+        val retroFit = Retrofit.Builder()
+            .baseUrl(iTunesBaseUrl)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create()).build()
+        val iTunesApi = retroFit.create(ITunesApi::class.java)
+
+        clearEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                txtForSearch = clearEditText.text.toString()
+                searchSongs(txtForSearch, iTunesApi)
+                true
+            }
+            false
+        }
+
+
         val backClicker =
             findViewById<androidx.appcompat.widget.Toolbar>(R.id.search_toolbar) // Назад в MainActivity
         backClicker.setNavigationOnClickListener {
             finish()
         }
-        val clearEditText =
-            findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.search_stroke)
+
         val inputMethodManager =
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // Для того чтобы спрятать клаву
 
@@ -75,11 +118,6 @@ class SearchActivity : AppCompatActivity() {
 
 
         clearTextFromEditText()  //Логика очистки текста
-
-        val recyclerView = findViewById<RecyclerView>(R.id.track_list)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = TrackAdapter(myTrack)
-
 
 
     }
@@ -152,4 +190,20 @@ class SearchActivity : AppCompatActivity() {
             false
         }
     }
+
+    private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
+        CoroutineScope(Dispatchers.IO).launch {      // Используем корутины чтобы не грузить поток
+            val response = iTunesApi.getSong(txtFromInput)
+            val tracks = response.results
+            runOnUiThread {  // главный поток
+                val recyclerView = findViewById<RecyclerView>(R.id.track_list)
+                recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+                recyclerView.adapter = TrackAdapter(tracks)
+
+
+            }
+
+        }
+    }
+
 }
