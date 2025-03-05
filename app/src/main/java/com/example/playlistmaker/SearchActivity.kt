@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -17,10 +19,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.retrofit.ITunesApi
-import com.example.playlistmaker.retrofit.Track
-import com.example.playlistmaker.retrofit.myTrack
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,8 +26,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
-import retrofit2.http.HTTP
+import java.io.IOException
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var clearEditText: EditText
@@ -38,7 +35,8 @@ class SearchActivity : AppCompatActivity() {
     private val keyForWatcher: String =
         "keyForWatcherSearch"  // Константа для ватчера
     private val iTunesBaseUrl = "https://itunes.apple.com/"  // базовый урл
-
+    private lateinit var phForNothingToShow: ImageView
+private lateinit var recyclerView: RecyclerView
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,9 +47,12 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val clearEditText =
+        phForNothingToShow =
+            findViewById<ImageView>(R.id.ph_ntsh_120)
+        clearEditText =
             findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.search_stroke)
-
+recyclerView =
+    findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.track_list)
         val interceptor =
             HttpLoggingInterceptor()  // Вылетает при запросах, попробую интерсепотором понять почему
         interceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -68,6 +69,8 @@ class SearchActivity : AppCompatActivity() {
 
         clearEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                phForNothingToShow.visibility = View.GONE
+                recyclerView.visibility=View.GONE
                 txtForSearch = clearEditText.text.toString()
                 searchSongs(txtForSearch, iTunesApi)
                 true
@@ -193,12 +196,47 @@ class SearchActivity : AppCompatActivity() {
 
     private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
         CoroutineScope(Dispatchers.IO).launch {      // Используем корутины чтобы не грузить поток
+
+            try{
             val response = iTunesApi.getSong(txtFromInput)
-            val tracks = response.results
+            val trackResponse = response.body()
+            val tracks = trackResponse?.results   // не получалось пока не изменил тип возвращаемого значения в интерфейсе !
             runOnUiThread {  // главный поток
-                val recyclerView = findViewById<RecyclerView>(R.id.track_list)
-                recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
-                recyclerView.adapter = TrackAdapter(tracks)
+                if (response.isSuccessful) {
+                    if (tracks.isNullOrEmpty()) {
+                        val phNts = ContextCompat.getDrawable(
+                            this@SearchActivity,
+                            R.drawable.ph_nothing_to_show_120
+                        )
+                        phForNothingToShow.setImageDrawable(phNts)
+                        phForNothingToShow.visibility = View.VISIBLE
+                    }
+                    else {
+                        phForNothingToShow.visibility = View.GONE
+                        val recyclerView = findViewById<RecyclerView>(R.id.track_list)
+                        recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+                        recyclerView.adapter = TrackAdapter(tracks)
+                        recyclerView.visibility=View.VISIBLE
+
+                    }
+                } else {
+                    val phNts = ContextCompat.getDrawable(
+                        this@SearchActivity,
+                        R.drawable.ph_no_internet_120
+                    )
+                    phForNothingToShow.setImageDrawable(phNts) // To do
+                    phForNothingToShow.visibility = View.VISIBLE
+                }
+            }
+            }catch (e:IOException){
+                runOnUiThread{
+                    val phNts = ContextCompat.getDrawable(
+                        this@SearchActivity,
+                        R.drawable.ph_no_internet_120
+                    )
+                    phForNothingToShow.setImageDrawable(phNts) // To do
+                    phForNothingToShow.visibility = View.VISIBLE
+                }
 
 
             }
