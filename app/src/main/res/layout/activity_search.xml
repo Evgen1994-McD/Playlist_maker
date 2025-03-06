@@ -36,7 +36,45 @@
     android:visibility="gone"
     >
 </ImageView>
+    <TextView
+        style="@style/msg_nts_nointernet_style"
+        android:id="@+id/msg_noint_top_txt"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/ys_display_medium"
+        android:visibility="gone"
 
+
+        >
+    </TextView>
+
+    <TextView
+        style="@style/msg_nts_nointernet_style"
+        android:id="@+id/msg_noint_bottom_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:fontFamily="@font/ys_display_medium"
+        android:visibility="gone"
+        >
+    </TextView>
+    <Button
+        android:id="@+id/button_nointernet"
+        style="@style/msg_nointernet_button"
+        android:layout_width="91dp"
+        android:layout_height="40dp"
+        android:textSize="12sp"
+        android:layout_marginTop="24dp"
+        android:visibility="gone"
+
+        >
+
+
+    </Button>
+    
+    
+    
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/track_list"
         android:layout_width="match_parent"

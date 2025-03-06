@@ -15,6 +15,13 @@
     <string name="noApp_stroke" translatable="false">Приложения для отправки отстуствуют!!!</string>
 
 
+    <string name="msg_nothing_to_show" translatable="false">Ничего не нашлось</string>
+    <string name="msg_no_internet_top" translatable="false">Проблемы со связью</string>
+    <string name="msg_no_internet_bottom" translatable="false">Загрузка не удалась. Проверьте \nподключение к интернету</string>
+    <string name="txt_nointernet_button" translatable="false">Обновить</string>
+
+
+
 
     <string name="Url_androidDeveloper" translatable="false">https://practicum.yandex.ru/android-developer/?from=catalog</string>
     <string name="Url_userasset" translatable="false">https://yandex.ru/legal/practicum_offer/</string>

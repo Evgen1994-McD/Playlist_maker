@@ -9,8 +9,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -36,8 +38,13 @@ class SearchActivity : AppCompatActivity() {
         "keyForWatcherSearch"  // Константа для ватчера
     private val iTunesBaseUrl = "https://itunes.apple.com/"  // базовый урл
     private lateinit var phForNothingToShow: ImageView
-private lateinit var recyclerView: RecyclerView
-    @SuppressLint("ClickableViewAccessibility")
+    private lateinit var msgTopTxt: TextView
+    private lateinit var msgBotTxt: TextView
+    private lateinit var buttonNoInternet : Button
+
+    private lateinit var recyclerView: RecyclerView
+
+    @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -51,29 +58,52 @@ private lateinit var recyclerView: RecyclerView
             findViewById<ImageView>(R.id.ph_ntsh_120)
         clearEditText =
             findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.search_stroke)
-recyclerView =
-    findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.track_list)
+
+        msgTopTxt =
+            findViewById<TextView>(R.id.msg_noint_top_txt)
+
+        msgBotTxt =
+            findViewById<TextView>(R.id.msg_noint_bottom_txt)
+
+        buttonNoInternet =
+            findViewById<Button>(R.id.button_nointernet)
+
+        recyclerView =
+            findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.track_list)
         val interceptor =
-            HttpLoggingInterceptor()  // Вылетает при запросах, попробую интерсепотором понять почему
+            HttpLoggingInterceptor()  // Вылетает при запросах, пробую интерсепотором понять почему
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         val client = OkHttpClient.Builder()
             .addInterceptor(interceptor)
             .build()
 
 
-        val retroFit = Retrofit.Builder()
+        val retroFit = Retrofit.Builder()  // ретрофит
             .baseUrl(iTunesBaseUrl)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create()).build()
         val iTunesApi = retroFit.create(ITunesApi::class.java)
+buttonNoInternet.setOnClickListener { // Кнопка поиска при отсутствии интернета
+    phForNothingToShow.visibility = View.GONE
+    recyclerView.visibility = View.GONE
+    msgTopTxt.visibility = View.GONE
+    msgBotTxt.visibility = View.GONE
+    buttonNoInternet.visibility = View.GONE
+    txtForSearch = clearEditText.text.toString() // текст для поиска
+    searchSongs(txtForSearch, iTunesApi) // передаю параметры для поиска в метод. Пробую передать ту же логику, что и в поиске, ведь кнопку будет видно только при определенных условиях
 
-        clearEditText.setOnEditorActionListener { _, actionId, _ ->
+}
+        clearEditText.setOnEditorActionListener { _, actionId, _ ->        // слушатель done-enter
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 phForNothingToShow.visibility = View.GONE
-                recyclerView.visibility=View.GONE
-                txtForSearch = clearEditText.text.toString()
-                searchSongs(txtForSearch, iTunesApi)
+                recyclerView.visibility = View.GONE
+                msgTopTxt.visibility = View.GONE
+                msgBotTxt.visibility = View.GONE
+                buttonNoInternet.visibility = View.GONE
+                txtForSearch = clearEditText.text.toString() // текст для поиска
+                searchSongs(txtForSearch, iTunesApi) // передаю параметры для поиска в метод
                 true
+
             }
             false
         }
@@ -142,7 +172,7 @@ recyclerView =
 
 
     private fun logicClearIc(s: CharSequence?) {
-        val clearEditText =
+        val clearEditText =  // инициализирую эдиттекст
             findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.search_stroke)
         if (!s.isNullOrBlank()) {  // Перенести в функцию
             clearEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
@@ -195,47 +225,64 @@ recyclerView =
     }
 
     private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
-        CoroutineScope(Dispatchers.IO).launch {      // Используем корутины чтобы не грузить поток
+        CoroutineScope(Dispatchers.IO).launch {      // Используем корутины чтобы не грузить поток метод для поиска песен
 
-            try{
-            val response = iTunesApi.getSong(txtFromInput)
-            val trackResponse = response.body()
-            val tracks = trackResponse?.results   // не получалось пока не изменил тип возвращаемого значения в интерфейсе !
-            runOnUiThread {  // главный поток
-                if (response.isSuccessful) {
-                    if (tracks.isNullOrEmpty()) {
+            try {
+                val response = iTunesApi.getSong(txtFromInput)
+                val trackResponse = response.body()
+                val tracks =
+                    trackResponse?.results   // не получалось пока не изменил тип возвращаемого значения в интерфейсе !
+                runOnUiThread {  // главный поток
+                    if (response.isSuccessful) {
+                        if (tracks.isNullOrEmpty()) {
+                            val phNts = ContextCompat.getDrawable(
+                                this@SearchActivity,
+                                R.drawable.ph_nothing_to_show_120
+                            )
+                            phForNothingToShow.setImageDrawable(phNts)
+                            phForNothingToShow.visibility = View.VISIBLE
+                            msgTopTxt.visibility = View.VISIBLE
+                            msgTopTxt.text = getString(R.string.msg_nothing_to_show)
+                        } else {
+                            phForNothingToShow.visibility = View.GONE
+                            msgBotTxt.visibility = View.GONE
+                            msgTopTxt.visibility = View.GONE
+                            buttonNoInternet.visibility = View.GONE
+                            val recyclerView = findViewById<RecyclerView>(R.id.track_list)
+                            recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+                            recyclerView.adapter = TrackAdapter(tracks)
+                            recyclerView.visibility = View.VISIBLE
+
+                        }
+                    } else {
                         val phNts = ContextCompat.getDrawable(
                             this@SearchActivity,
-                            R.drawable.ph_nothing_to_show_120
+                            R.drawable.ph_no_internet_120
                         )
-                        phForNothingToShow.setImageDrawable(phNts)
+                        phForNothingToShow.setImageDrawable(phNts) // To do
                         phForNothingToShow.visibility = View.VISIBLE
-                    }
-                    else {
-                        phForNothingToShow.visibility = View.GONE
-                        val recyclerView = findViewById<RecyclerView>(R.id.track_list)
-                        recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
-                        recyclerView.adapter = TrackAdapter(tracks)
-                        recyclerView.visibility=View.VISIBLE
+                        msgTopTxt.visibility = View.VISIBLE
+                        msgTopTxt.text = getString(R.string.msg_no_internet_top)
+                        msgBotTxt.visibility = View.VISIBLE
+                        msgBotTxt.text = getString(R.string.msg_no_internet_bottom)
+                        buttonNoInternet.visibility = View.VISIBLE
 
                     }
-                } else {
-                    val phNts = ContextCompat.getDrawable(
-                        this@SearchActivity,
-                        R.drawable.ph_no_internet_120
-                    )
-                    phForNothingToShow.setImageDrawable(phNts) // To do
-                    phForNothingToShow.visibility = View.VISIBLE
                 }
-            }
-            }catch (e:IOException){
-                runOnUiThread{
+            } catch (e: IOException) {
+                runOnUiThread {
                     val phNts = ContextCompat.getDrawable(
                         this@SearchActivity,
                         R.drawable.ph_no_internet_120
                     )
                     phForNothingToShow.setImageDrawable(phNts) // To do
                     phForNothingToShow.visibility = View.VISIBLE
+                    msgTopTxt.visibility = View.VISIBLE
+                    msgTopTxt.text = getString(R.string.msg_no_internet_top)
+                    msgBotTxt.visibility = View.VISIBLE
+                    msgBotTxt.text = getString(R.string.msg_no_internet_bottom)
+                    buttonNoInternet.visibility = View.VISIBLE
+
                 }
 
 
