@@ -36,11 +36,11 @@ class SearchActivity : AppCompatActivity() {
     private var textFromInput: String = null.toString()
     private val keyForWatcher: String =
         "keyForWatcherSearch"  // Константа для ватчера
-    private val iTunesBaseUrl = "https://itunes.apple.com/"  // базовый урл
     private lateinit var phForNothingToShow: ImageView
     private lateinit var msgTopTxt: TextView
     private lateinit var msgBotTxt: TextView
     private lateinit var buttonNoInternet : Button
+    private val iTunesBaseUrl = "https://itunes.apple.com"
 
     private lateinit var recyclerView: RecyclerView
 
@@ -216,6 +216,12 @@ buttonNoInternet.setOnClickListener { // Кнопка поиска при отс
                             0
                         ) // Прячем клаву
                         // чистим эдит текст
+                        recyclerView.visibility = View.INVISIBLE  // убрали список треков при очистке эдиттекста
+                        msgTopTxt.visibility = View.GONE  //Убрали сообщение топ
+                        msgBotTxt.visibility = View.GONE // убрали сообщение бот
+                        phForNothingToShow.visibility = View.GONE // убрали плейсхолдер
+                        buttonNoInternet.visibility = View.GONE // убрали кнопку
+
                         return@setOnTouchListener true
                     }
                 }
