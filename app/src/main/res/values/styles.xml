@@ -147,18 +147,17 @@
     </style>
 
 
-    <style name="msg_nointernet_button" parent="TextAppearance.AppCompat.Button">
+    <style name="msg_nointernet_button" parent="Widget.MaterialComponents.TextView">
         <item name="font">@font/ys_display_medium</item>
         <item name="android:textSize">@dimen/button_nts_txtsize_14sp</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
         <item name="android:text">@string/txt_nointernet_button</item>
-        <item name="backgroundTint">@color/black</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:paddingHorizontal">@dimen/button_nointernet_padding_6dp</item>
         <item name="android:paddingVertical">@dimen/button_nointernet_padding_6dp</item>
         <item name="android:layout_gravity">center</item>
         <item name="cornerRadius">@dimen/button_nointernet_radius_54dp</item>
         <item name="textAllCaps">false</item>
-
     </style>
 
 

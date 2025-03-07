@@ -39,7 +39,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var phForNothingToShow: ImageView
     private lateinit var msgTopTxt: TextView
     private lateinit var msgBotTxt: TextView
-    private lateinit var buttonNoInternet : Button
+    private lateinit var buttonNoInternet: TextView
     private val iTunesBaseUrl = "https://itunes.apple.com"
 
     private lateinit var recyclerView: RecyclerView
@@ -66,7 +66,7 @@ class SearchActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.msg_noint_bottom_txt)
 
         buttonNoInternet =
-            findViewById<Button>(R.id.button_nointernet)
+            findViewById<TextView>(R.id.button_nointernet)
 
         recyclerView =
             findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.track_list)
@@ -83,16 +83,19 @@ class SearchActivity : AppCompatActivity() {
             .client(client)
             .addConverterFactory(GsonConverterFactory.create()).build()
         val iTunesApi = retroFit.create(ITunesApi::class.java)
-buttonNoInternet.setOnClickListener { // Кнопка поиска при отсутствии интернета
-    phForNothingToShow.visibility = View.GONE
-    recyclerView.visibility = View.GONE
-    msgTopTxt.visibility = View.GONE
-    msgBotTxt.visibility = View.GONE
-    buttonNoInternet.visibility = View.GONE
-    txtForSearch = clearEditText.text.toString() // текст для поиска
-    searchSongs(txtForSearch, iTunesApi) // передаю параметры для поиска в метод. Пробую передать ту же логику, что и в поиске, ведь кнопку будет видно только при определенных условиях
+        buttonNoInternet.setOnClickListener { // Кнопка поиска при отсутствии интернета
+            phForNothingToShow.visibility = View.GONE
+            recyclerView.visibility = View.GONE
+            msgTopTxt.visibility = View.GONE
+            msgBotTxt.visibility = View.GONE
+            buttonNoInternet.visibility = View.GONE
+            txtForSearch = clearEditText.text.toString() // текст для поиска
+            searchSongs(
+                txtForSearch,
+                iTunesApi
+            ) // передаю параметры для поиска в метод. Пробую передать ту же логику, что и в поиске, ведь кнопку будет видно только при определенных условиях
 
-}
+        }
         clearEditText.setOnEditorActionListener { _, actionId, _ ->        // слушатель done-enter
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 phForNothingToShow.visibility = View.GONE
@@ -216,7 +219,8 @@ buttonNoInternet.setOnClickListener { // Кнопка поиска при отс
                             0
                         ) // Прячем клаву
                         // чистим эдит текст
-                        recyclerView.visibility = View.INVISIBLE  // убрали список треков при очистке эдиттекста
+                        recyclerView.visibility =
+                            View.INVISIBLE  // убрали список треков при очистке эдиттекста
                         msgTopTxt.visibility = View.GONE  //Убрали сообщение топ
                         msgBotTxt.visibility = View.GONE // убрали сообщение бот
                         phForNothingToShow.visibility = View.GONE // убрали плейсхолдер
