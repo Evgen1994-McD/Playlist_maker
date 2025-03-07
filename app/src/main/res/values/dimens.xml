@@ -19,6 +19,11 @@
     <dimen name="standart_settings_height">61dp</dimen>
     <dimen name="size_dp_24">24dp</dimen>
     <dimen name="size_dp_45">45dp</dimen>
+    <dimen name="msg_nts_txtsize">19sp</dimen>
+    <dimen name="button_nts_txtsize_14sp">14sp</dimen>
+    <dimen name="button_nointernet_padding_6dp">6dp</dimen>
+    <dimen name="button_nointernet_radius_54dp">54dp</dimen>
+
 
 
 </resources>
