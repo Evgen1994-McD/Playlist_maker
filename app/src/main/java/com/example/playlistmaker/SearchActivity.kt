@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -34,6 +35,7 @@ import java.io.IOException
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var clearEditText: AppCompatEditText
+    lateinit var sharedPref: SharedPreferences
 
     private lateinit var txtForSearch: String
     private var textFromInput: String = null.toString()
@@ -57,6 +59,8 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        sharedPref = getSharedPreferences(resources.getString(R.string.shared_prefs_name), MODE_PRIVATE ) // инициализируем шаред префс
+
        clearEditText =  // инициализирую эдиттекст
             findViewById<AppCompatEditText>(R.id.search_stroke)
 
@@ -316,5 +320,6 @@ class SearchActivity : AppCompatActivity() {
     private fun View.makeInvisible(){
         this.visibility = View.INVISIBLE // функция для вью инвизибл
     }
+
 
 }
