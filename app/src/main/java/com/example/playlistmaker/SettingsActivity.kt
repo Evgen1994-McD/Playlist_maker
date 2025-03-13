@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +43,14 @@ class SettingsActivity : AppCompatActivity() {
             val url = getString(R.string.Url_userasset)
             openUrlInDefaultBrowser(url)
         }
+
+        val switcherTheme = findViewById<SwitchMaterial>(R.id.switchTheme)  // импорт свитч - поменяли тему приложения
+
+                switcherTheme.setOnCheckedChangeListener { switcher, checked ->
+                    (applicationContext as App).switchTheme(checked)
+                }
+
+
     } // Скоба OnCreate. Ниже нее делаю методы для задания.
 
     fun shareApp(context: Context) {  // Метод - интент для отправки сообщений

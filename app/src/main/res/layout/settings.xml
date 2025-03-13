@@ -19,14 +19,14 @@
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchTheme"
+        style="@style/MySettingsStyle"
         android:layout_width="match_parent"
         android:layout_height="@dimen/standart_settings_height"
         android:text="@string/dark_theme"
         app:thumbTint="@color/switch_thumb_color"
-        app:trackTint="@color/switch_track_color"
-        style="@style/MySettingsStyle"
 
-        />
+        app:trackTint="@color/switch_track_color" />
 
 
     <com.google.android.material.textview.MaterialTextView
