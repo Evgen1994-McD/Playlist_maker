@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.retrofit.Track
+import com.example.playlistmaker.utils.OnTrackClickListener
 import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -21,7 +22,9 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 
-class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class TrackViewHolder(itemView: View,
+                      private val listener: OnTrackClickListener) : RecyclerView.ViewHolder(itemView) { // Добавили листенер в конструктор класса
+
     private val trackName: TextView = itemView.findViewById(R.id.track_name)
     private val artistName: TextView = itemView.findViewById(R.id.track_info)
     private val trackTime: TextView = itemView.findViewById(R.id.track_time)
@@ -48,6 +51,9 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         trackName.text = track.trackName
         artistName.text = track.artistName
         trackTime.text = formatMillisecondsAsMinSec(track.trackTimeMillis.toLong())
+        itemView.setOnClickListener {  // Передали слушатель нажатий в байнд, который вернет Трек
+            listener.onTrackClicked(track)
+        }
 
         Glide.with(itemView.context)
             .load(track.artworkUrl100)
@@ -59,4 +65,5 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 
     }
+
 }

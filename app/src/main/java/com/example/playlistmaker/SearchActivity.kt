@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
@@ -23,6 +24,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.retrofit.ITunesApi
+import com.example.playlistmaker.retrofit.Track
+import com.example.playlistmaker.utils.OnTrackClickListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,7 +36,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Добавили имлементацию нашего интерфейса OnTrackClickListener для того чтобы определить трек
     private lateinit var clearEditText: AppCompatEditText
     lateinit var sharedPref: SharedPreferences
 
@@ -60,6 +63,7 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
         sharedPref = getSharedPreferences(resources.getString(R.string.shared_prefs_name), MODE_PRIVATE ) // инициализируем шаред префс
+       val searchHistory = SearchHistory(sharedPref) // инициализировал дата класс серч хистори
 
        clearEditText =  // инициализирую эдиттекст
             findViewById<AppCompatEditText>(R.id.search_stroke)
@@ -244,6 +248,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
+        sharedPref = getSharedPreferences(resources.getString(R.string.shared_prefs_name), MODE_PRIVATE ) // инициализируем шаред префс
+        val searchHistory = SearchHistory(sharedPref) // инициализировал дата класс серч хистори
         CoroutineScope(Dispatchers.IO).launch {      // Используем корутины чтобы не грузить поток метод для поиска песен
 
             try {
@@ -269,7 +275,7 @@ class SearchActivity : AppCompatActivity() {
                             buttonNoInternet.makeGone()
                             val recyclerView = findViewById<RecyclerView>(R.id.track_list)
                             recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
-                            recyclerView.adapter = TrackAdapter(tracks)
+                            recyclerView.adapter = TrackAdapter(tracks, this@SearchActivity) // передал this@SearchActivity так как он имплементирует интефейс onTrackClickListener
                             recyclerView.makeVisible()
 
                         }
@@ -320,6 +326,12 @@ class SearchActivity : AppCompatActivity() {
     private fun View.makeInvisible(){
         this.visibility = View.INVISIBLE // функция для вью инвизибл
     }
+    override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
+        // Здесь вы получаете объект Track при нажатии на элемент списка
+        Toast.makeText(this@SearchActivity, "Трек ${track.trackName} выбран", Toast.LENGTH_SHORT).show()
+        // Логика обработки нажатия на конкретный трек
+    }
+
 
 
 }
