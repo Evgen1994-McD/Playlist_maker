@@ -1,8 +1,6 @@
 package com.example.playlistmaker
 
 import android.annotation.SuppressLint
-import android.icu.lang.UCharacter.GraphemeClusterBreak.L
-import android.icu.util.LocaleData
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -13,17 +11,11 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.retrofit.Track
 import com.example.playlistmaker.utils.OnTrackClickListener
-import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
-import kotlin.time.Duration
-import java.time.LocalDate
 import java.time.LocalTime
 
 
-class TrackViewHolder(itemView: View,
-                      private val listener: OnTrackClickListener) : RecyclerView.ViewHolder(itemView) { // Добавили листенер в конструктор класса
+class TrackViewHolder(itemView: View, listener: OnTrackClickListener) : RecyclerView.ViewHolder(itemView) { // Добавили листенер в конструктор класса
 
     private val trackName: TextView = itemView.findViewById(R.id.track_name)
     private val artistName: TextView = itemView.findViewById(R.id.track_info)
@@ -47,7 +39,7 @@ class TrackViewHolder(itemView: View,
 
 
     @SuppressLint("CheckResult")
-    fun bind(track: Track) {
+    fun bind(track: Track, listener: OnTrackClickListener) {
         trackName.text = track.trackName
         artistName.text = track.artistName
         trackTime.text = formatMillisecondsAsMinSec(track.trackTimeMillis.toLong())

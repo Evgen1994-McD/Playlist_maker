@@ -1,7 +1,6 @@
 package com.example.playlistmaker
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.retrofit.Track
@@ -20,7 +19,7 @@ class TrackAdapter(private val tracks: List<Track>?,
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int)  {
-        holder.bind(tracks!![position])
+        holder.bind(tracks!![position], listener)
 
     }
 

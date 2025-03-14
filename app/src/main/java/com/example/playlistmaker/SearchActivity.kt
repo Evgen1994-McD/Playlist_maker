@@ -38,7 +38,6 @@ import java.io.IOException
 
 class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Добавили имлементацию нашего интерфейса OnTrackClickListener для того чтобы определить трек
     private lateinit var clearEditText: AppCompatEditText
-    lateinit var sharedPref: SharedPreferences
 
     private lateinit var txtForSearch: String
     private var textFromInput: String = null.toString()
@@ -52,6 +51,7 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
 
     private lateinit var recyclerView: RecyclerView
 
+
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,10 +62,12 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        sharedPref = getSharedPreferences(resources.getString(R.string.shared_prefs_name), MODE_PRIVATE ) // инициализируем шаред префс
-       val searchHistory = SearchHistory(sharedPref) // инициализировал дата класс серч хистори
 
-       clearEditText =  // инициализирую эдиттекст
+
+
+
+
+        clearEditText =  // инициализирую эдиттекст
             findViewById<AppCompatEditText>(R.id.search_stroke)
 
         phForNothingToShow =
@@ -242,15 +244,18 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
                         return@setOnTouchListener true
                     }
                 }
+
+
             }
             false
         }
     }
 
     private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
-        sharedPref = getSharedPreferences(resources.getString(R.string.shared_prefs_name), MODE_PRIVATE ) // инициализируем шаред префс
-        val searchHistory = SearchHistory(sharedPref) // инициализировал дата класс серч хистори
         CoroutineScope(Dispatchers.IO).launch {      // Используем корутины чтобы не грузить поток метод для поиска песен
+
+
+
 
             try {
                 val response = iTunesApi.getSong(txtFromInput)
@@ -260,15 +265,19 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
                 runOnUiThread {  // главный поток
                     if (response.isSuccessful) {
                         if (tracks.isNullOrEmpty()) {
-                            val phNts = ContextCompat.getDrawable(
+                           val phNts = ContextCompat.getDrawable(
                                 this@SearchActivity,
                                 R.drawable.ph_nothing_to_show_120
                             )
                             phForNothingToShow.setImageDrawable(phNts)
                             phForNothingToShow.makeVisible()
-                            msgTopTxt.makeVisible()
+                           msgTopTxt.makeVisible()
                             msgTopTxt.text = getString(R.string.msg_nothing_to_show)
                         } else {
+
+                            val storage = TrackStorage(this@SearchActivity)
+                            val myTracks = storage.getAllTracks()
+
                             phForNothingToShow.makeGone()
                             msgBotTxt.makeGone()
                             msgTopTxt.makeGone()
@@ -330,8 +339,11 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
         // Здесь вы получаете объект Track при нажатии на элемент списка
         Toast.makeText(this@SearchActivity, "Трек ${track.trackName} выбран", Toast.LENGTH_SHORT).show()
         // Логика обработки нажатия на конкретный трек
-    }
+val storage = TrackStorage(this@SearchActivity)
+        storage.addTrack(track)
+        val myTracks = storage.getAllTracks()
 
+    }
 
 
 }

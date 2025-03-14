@@ -1,0 +1,66 @@
+package com.example.playlistmaker
+
+import android.content.Context
+import com.example.playlistmaker.retrofit.Track
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+
+class TrackStorage(private val context: Context) {
+    companion object {
+        const val PREFS_NAME = "TRACK_STORAGE_PREFERENCES"
+        const val TRACKS_KEY = "stored_tracks"
+    }
+
+    private val gson = Gson()
+    private var tracks = mutableListOf<Track>() // Список для хранения треков
+
+    init {
+        loadTracksFromPrefs() // Загрузим треки при создании объекта
+    }
+
+    fun addTrack(track: Track) {
+        if (tracks.any { it.trackName == track.trackName }) {
+            // Обновляем существующий трек
+            tracks.find { it.trackName == track.trackName }?.let {
+                it.copy(
+                    artistName = track.artistName,
+                    trackTimeMillis = track.trackTimeMillis,
+                    artworkUrl100 = track.artworkUrl100
+                )
+            }
+        } else {
+            // Добавляем новый трек
+            tracks.add(track)
+        }
+
+        // Ограничиваем количество треков до 10
+        if (tracks.size > 10) {
+            tracks = tracks.takeLast(10).toMutableList()
+        }
+
+        saveTracksToPrefs() // Сохраняем изменения в SharedPreferences
+    }
+
+    fun getAllTracks(): List<Track> {
+        return tracks
+    }
+
+    // Метод для загрузки треков из SharedPreferences
+    private fun loadTracksFromPrefs() {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val tracksJson = prefs.getString(TRACKS_KEY, null)
+        if (!tracksJson.isNullOrBlank()) {
+            val type = object : TypeToken<List<Track>>() {}.type
+            tracks = gson.fromJson(tracksJson, type) ?: mutableListOf()
+        }
+    }
+
+    // Метод для сохранения треков в SharedPreferences
+    private fun saveTracksToPrefs() {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val editor = prefs.edit()
+        val tracksJson = gson.toJson(tracks)
+        editor.putString(TRACKS_KEY, tracksJson)
+        editor.apply()
+    }
+}
