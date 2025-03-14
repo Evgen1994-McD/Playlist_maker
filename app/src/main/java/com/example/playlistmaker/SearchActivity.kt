@@ -265,14 +265,21 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
                 runOnUiThread {  // главный поток
                     if (response.isSuccessful) {
                         if (tracks.isNullOrEmpty()) {
-                           val phNts = ContextCompat.getDrawable(
-                                this@SearchActivity,
-                                R.drawable.ph_nothing_to_show_120
-                            )
-                            phForNothingToShow.setImageDrawable(phNts)
-                            phForNothingToShow.makeVisible()
-                           msgTopTxt.makeVisible()
-                            msgTopTxt.text = getString(R.string.msg_nothing_to_show)
+                            val storage = TrackStorage(this@SearchActivity)
+                            val myTracks = storage.getAllTracks()
+                            val recyclerView = findViewById<RecyclerView>(R.id.track_list)
+                            recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+                            recyclerView.adapter = FavoriteTrackAdapter(myTracks as MutableList<Track>?) // передал this@SearchActivity так как он имплементирует интефейс onTrackClickListener
+                            recyclerView.makeVisible()
+
+                           //val phNts = ContextCompat.getDrawable(
+                               // this@SearchActivity,
+                              //  R.drawable.ph_nothing_to_show_120
+                          //  )
+                           // phForNothingToShow.setImageDrawable(phNts)
+                          //  phForNothingToShow.makeVisible()
+                          // msgTopTxt.makeVisible()
+                          //  msgTopTxt.text = getString(R.string.msg_nothing_to_show)
                         } else {
 
                             val storage = TrackStorage(this@SearchActivity)
@@ -344,6 +351,7 @@ val storage = TrackStorage(this@SearchActivity)
         val myTracks = storage.getAllTracks()
 
     }
+
 
 
 }
