@@ -118,19 +118,23 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
             ) // передаю параметры для поиска в метод. Пробую передать ту же логику, что и в поиске, ведь кнопку будет видно только при определенных условиях
 
         }
-
+        var storage = TrackStorage(this@SearchActivity)
         clearEditText.setOnFocusChangeListener{_, hasFocus ->
-            if (hasFocus && clearEditText.text?.isEmpty() == true) {
+            if (hasFocus && clearEditText.text?.isEmpty() == true && (!storage.getAllTracks().isEmpty())) {    // таким образом, вызываю подсказку "вы искали" только когда соблюдаем : (фокус + текст пуст + сторейждж не пуст)
                 tvMsgSearch.makeVisible()
-                btCleanHistory.makeVisible()
                 recyclerView.makeVisible()
-                val storage = TrackStorage(this@SearchActivity)
+                btCleanHistory.makeVisible()
+                 storage = TrackStorage(this@SearchActivity)
                 val myTracks = storage.getAllTracks()
                 val recyclerView = findViewById<RecyclerView>(R.id.track_list)
                 recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
                 recyclerView.adapter = FavoriteTrackAdapter(myTracks as MutableList<Track>?) // передал this@SearchActivity так как он имплементирует интефейс onTrackClickListener
                 recyclerView.makeVisible()
-                btCleanHistory.setOnClickListener { myTracks.clear()} //очистка списка
+                btCleanHistory.setOnClickListener { storage.clearHistory()
+                    recyclerView.makeInvisible()
+                    tvMsgSearch.makeInvisible()
+                    btCleanHistory.makeInvisible()
+                } //очистка списка
             }
             else{
                 tvMsgSearch.makeGone()

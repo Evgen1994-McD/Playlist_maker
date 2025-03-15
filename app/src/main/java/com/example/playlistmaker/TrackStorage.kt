@@ -59,4 +59,11 @@ class TrackStorage(private val context: Context) {
         editor.putString(TRACKS_KEY, tracksJson)
         editor.apply()
     }
+
+    fun clearHistory(){
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val editor = prefs.edit()
+        editor.clear()
+        editor.apply()
+    }
 }

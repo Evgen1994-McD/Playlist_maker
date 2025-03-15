@@ -71,6 +71,13 @@
 
         >
     </TextView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
     <TextView
         style="@style/msg_nts_nointernet_style"
         android:text="@string/msg_youHasSearch"
@@ -86,7 +93,7 @@
         >
     </TextView>
 
-    
+
     
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/track_list"
@@ -96,19 +103,20 @@
         android:orientation="vertical"
         tools:listitem="@layout/track_item"
         tools:itemCount="10"
-
-     />
+        android:layout_marginBottom="40dp"
+         />
     <TextView
 
         android:id="@+id/bt_cleanHistory"
         style="@style/msg_searchHistory_button"
         android:layout_width="148dp"
         android:layout_height="36dp"
-        android:layout_marginTop="24dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="@drawable/round_texview_backgr"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="34dp"
 
         >
     </TextView>
-
+    </LinearLayout>
 </LinearLayout>
