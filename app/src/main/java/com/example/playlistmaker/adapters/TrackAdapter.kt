@@ -1,8 +1,9 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.R
 import com.example.playlistmaker.retrofit.Track
 import com.example.playlistmaker.utils.OnTrackClickListener
 

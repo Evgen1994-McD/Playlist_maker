@@ -14,6 +14,8 @@
     <string name="share_stroke" translatable="false">Поделитесь нашим приложением</string>
     <string name="noApp_stroke" translatable="false">Приложения для отправки отстуствуют!!!</string>
     <string name="shared_prefs_name" translatable="false">searchHistory</string>
+    <string name="msg_youHasSearch" translatable="false">Вы искали</string>
+    <string name="msg_cleanHistory" translatable="false">Очистить историю</string>
 
 
     <string name="msg_nothing_to_show" translatable="false">Ничего не нашлось</string>

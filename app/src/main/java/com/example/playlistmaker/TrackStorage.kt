@@ -19,32 +19,28 @@ class TrackStorage(private val context: Context) {
     }
 
     fun addTrack(track: Track) {
-        if (tracks.any { it.trackName == track.trackName }) {
-            // Обновляем существующий трек
-            tracks.find { it.trackName == track.trackName }?.let {
-                it.copy(
-                    artistName = track.artistName,
-                    trackTimeMillis = track.trackTimeMillis,
-                    artworkUrl100 = track.artworkUrl100
-                )
-            }
-        } else {
-            // Добавляем новый трек
-            tracks.add(track)
+           if( tracks.removeIf{ it.trackId == track.trackId }) {
+
+            // Добавляем новый трек в начало списка
+            tracks.add(0, track)
         }
 
+         else {
+            // Добавляем новый трек
+               if (tracks.size >= 10) {
+                   tracks.removeAt(tracks.lastIndex) // Удаляем последний трек
+               }
+               tracks.add(0, track) // Добавляем новый трек в начало
+        }
         // Ограничиваем количество треков до 10
-        if (tracks.size > 10) {
+        if (tracks.size >= 10) {
             tracks = tracks.takeLast(10).toMutableList()
         }
-
         saveTracksToPrefs() // Сохраняем изменения в SharedPreferences
     }
-
     fun getAllTracks(): List<Track> {
         return tracks
     }
-
     // Метод для загрузки треков из SharedPreferences
     private fun loadTracksFromPrefs() {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

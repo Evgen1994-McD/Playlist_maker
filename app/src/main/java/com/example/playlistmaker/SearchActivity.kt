@@ -2,7 +2,6 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -21,8 +20,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.adapters.FavoriteTrackAdapter
+import com.example.playlistmaker.adapters.TrackAdapter
 import com.example.playlistmaker.retrofit.ITunesApi
 import com.example.playlistmaker.retrofit.Track
 import com.example.playlistmaker.utils.OnTrackClickListener
@@ -62,6 +64,11 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val tvMsgSearch =
+            findViewById<TextView>(R.id.tv_msg_search)
+
+        val btCleanHistory =
+            findViewById<TextView>(R.id.bt_cleanHistory)
 
 
 
@@ -111,6 +118,30 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
             ) // передаю параметры для поиска в метод. Пробую передать ту же логику, что и в поиске, ведь кнопку будет видно только при определенных условиях
 
         }
+
+        clearEditText.setOnFocusChangeListener{_, hasFocus ->
+            if (hasFocus && clearEditText.text?.isEmpty() == true) {
+                tvMsgSearch.makeVisible()
+                btCleanHistory.makeVisible()
+                recyclerView.makeVisible()
+                val storage = TrackStorage(this@SearchActivity)
+                val myTracks = storage.getAllTracks()
+                val recyclerView = findViewById<RecyclerView>(R.id.track_list)
+                recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+                recyclerView.adapter = FavoriteTrackAdapter(myTracks as MutableList<Track>?) // передал this@SearchActivity так как он имплементирует интефейс onTrackClickListener
+                recyclerView.makeVisible()
+                btCleanHistory.setOnClickListener { myTracks.clear()} //очистка списка
+            }
+            else{
+                tvMsgSearch.makeGone()
+                btCleanHistory.makeGone()
+                recyclerView.makeInvisible()
+            }
+        }
+
+
+
+
         clearEditText.setOnEditorActionListener { _, actionId, _ ->        // слушатель done-enter
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 phForNothingToShow.makeGone()
@@ -254,9 +285,6 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
     private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
         CoroutineScope(Dispatchers.IO).launch {      // Используем корутины чтобы не грузить поток метод для поиска песен
 
-
-
-
             try {
                 val response = iTunesApi.getSong(txtFromInput)
                 val trackResponse = response.body()
@@ -265,25 +293,19 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
                 runOnUiThread {  // главный поток
                     if (response.isSuccessful) {
                         if (tracks.isNullOrEmpty()) {
-                            val storage = TrackStorage(this@SearchActivity)
-                            val myTracks = storage.getAllTracks()
-                            val recyclerView = findViewById<RecyclerView>(R.id.track_list)
-                            recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
-                            recyclerView.adapter = FavoriteTrackAdapter(myTracks as MutableList<Track>?) // передал this@SearchActivity так как он имплементирует интефейс onTrackClickListener
-                            recyclerView.makeVisible()
 
-                           //val phNts = ContextCompat.getDrawable(
-                               // this@SearchActivity,
-                              //  R.drawable.ph_nothing_to_show_120
-                          //  )
-                           // phForNothingToShow.setImageDrawable(phNts)
-                          //  phForNothingToShow.makeVisible()
-                          // msgTopTxt.makeVisible()
-                          //  msgTopTxt.text = getString(R.string.msg_nothing_to_show)
+
+                           val phNts = ContextCompat.getDrawable(
+                                this@SearchActivity,
+                                R.drawable.ph_nothing_to_show_120
+                            )
+                            phForNothingToShow.setImageDrawable(phNts)
+                            phForNothingToShow.makeVisible()
+                           msgTopTxt.makeVisible()
+                            msgTopTxt.text = getString(R.string.msg_nothing_to_show)
                         } else {
 
-                            val storage = TrackStorage(this@SearchActivity)
-                            val myTracks = storage.getAllTracks()
+
 
                             phForNothingToShow.makeGone()
                             msgBotTxt.makeGone()
