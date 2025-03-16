@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -50,8 +51,11 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
     private lateinit var msgBotTxt: TextView
     private lateinit var buttonNoInternet: TextView
     private val iTunesBaseUrl = "https://itunes.apple.com"
-
     private lateinit var recyclerView: RecyclerView
+    private lateinit var tvMsgSearch : TextView
+    private lateinit var btCleanHistory : TextView
+    private lateinit var storage: TrackStorage
+    private lateinit var myTracks: List<Track>
 
 
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
@@ -64,10 +68,10 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val tvMsgSearch =
+        tvMsgSearch =
             findViewById<TextView>(R.id.tv_msg_search)
 
-        val btCleanHistory =
+       btCleanHistory =
             findViewById<TextView>(R.id.bt_cleanHistory)
 
 
@@ -118,30 +122,88 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
             ) // передаю параметры для поиска в метод. Пробую передать ту же логику, что и в поиске, ведь кнопку будет видно только при определенных условиях
 
         }
-        var storage = TrackStorage(this@SearchActivity)
+        storage = TrackStorage(this@SearchActivity) // инициализируем экземпляр класса Trackstorage
+        myTracks = storage.getAllTracks()  // инициализируем список треков
+
         clearEditText.setOnFocusChangeListener{_, hasFocus ->
-            if (hasFocus && clearEditText.text?.isEmpty() == true && (!storage.getAllTracks().isEmpty())) {    // таким образом, вызываю подсказку "вы искали" только когда соблюдаем : (фокус + текст пуст + сторейждж не пуст)
-                tvMsgSearch.makeVisible()
-                recyclerView.makeVisible()
-                btCleanHistory.makeVisible()
-                 storage = TrackStorage(this@SearchActivity)
-                val myTracks = storage.getAllTracks()
-                val recyclerView = findViewById<RecyclerView>(R.id.track_list)
-                recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
-                recyclerView.adapter = FavoriteTrackAdapter(myTracks as MutableList<Track>?) // передал this@SearchActivity так как он имплементирует интефейс onTrackClickListener
-                recyclerView.makeVisible()
-                btCleanHistory.setOnClickListener { storage.clearHistory()
-                    recyclerView.makeInvisible()
-                    tvMsgSearch.makeInvisible()
-                    btCleanHistory.makeInvisible()
-                } //очистка списка
-            }
-            else{
-                tvMsgSearch.makeGone()
-                btCleanHistory.makeGone()
-                recyclerView.makeInvisible()
-            }
-        }
+            if (hasFocus && clearEditText.text?.isNullOrEmpty() == true && !myTracks.isNullOrEmpty()) {    // таким образом, вызываю подсказку "вы искали" только когда соблюдаем : (фокус + текст пуст + сторейждж не пуст)
+             tvMsgSearch.makeVisible()
+            recyclerView.makeVisible()
+               btCleanHistory.makeVisible()
+               val recyclerView = findViewById<RecyclerView>(R.id.track_list)
+              recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+              recyclerView.adapter = FavoriteTrackAdapter(myTracks as MutableList<Track>?) // передал this@SearchActivity так как он имплементирует интефейс onTrackClickListener
+              recyclerView.makeVisible()
+              btCleanHistory.setOnClickListener {
+                  storage.clearHistory()
+                  recyclerView.makeInvisible()
+                  tvMsgSearch.makeInvisible()
+                  btCleanHistory.makeInvisible()
+
+              }
+                }
+
+            //очистка списка
+
+            //if(hasFocus && !myTracks.isNullOrEmpty()) {
+              //  clearEditText.addTextChangedListener(object : TextWatcher {
+
+                //    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                        //емпти
+
+                   // }
+
+                  //  override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                      //  if (p0.isNullOrEmpty()) {
+                      //      tvMsgSearch.makeVisible()
+                        //    recyclerView.makeVisible()
+                        //    btCleanHistory.makeVisible()
+                         //   val recyclerView = findViewById<RecyclerView>(R.id.track_list)
+                          //  recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+                          //  recyclerView.adapter =
+                          //      FavoriteTrackAdapter(myTracks as MutableList<Track>?) // передал this@SearchActivity так как он имплементирует интефейс onTrackClickListener
+                        //    btCleanHistory.setOnClickListener {
+                       //         storage.clearHistory()
+                    //            recyclerView.makeInvisible()
+                    //            tvMsgSearch.makeInvisible()
+                   //             btCleanHistory.makeInvisible()
+                 //           } //очистка списка
+                //        } else if (!p0.isNullOrEmpty()) {
+                //            tvMsgSearch.makeInvisible()
+                //            btCleanHistory.makeInvisible()
+                //            recyclerView.makeInvisible()
+                  //      }
+
+                    }
+                    // функция логики отображения иконок
+
+           //         override fun afterTextChanged(p0: Editable?) {
+                        //empty
+             //       }
+
+
+               // }//)
+           // }
+      //  }
+
+          //  if (hasFocus && clearEditText.text?.isEmpty() == true && (!storage.getAllTracks().isEmpty())) {    // таким образом, вызываю подсказку "вы искали" только когда соблюдаем : (фокус + текст пуст + сторейждж не пуст)
+              //  tvMsgSearch.makeVisible()
+               // recyclerView.makeVisible()
+             //   btCleanHistory.makeVisible()
+              //   storage = TrackStorage(this@SearchActivity)
+             //   val myTracks = storage.getAllTracks()
+             //   val recyclerView = findViewById<RecyclerView>(R.id.track_list)
+              //  recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+              //  recyclerView.adapter = FavoriteTrackAdapter(myTracks as MutableList<Track>?) // передал this@SearchActivity так как он имплементирует интефейс onTrackClickListener
+              //  recyclerView.makeVisible()
+              //  btCleanHistory.setOnClickListener { storage.clearHistory()
+               //     recyclerView.makeInvisible()
+                 //   tvMsgSearch.makeInvisible()
+                 //   btCleanHistory.makeInvisible()
+                 //очистка списка
+
+
+
 
 
 
@@ -178,6 +240,7 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
             }
         }
         clearEditText.setOnClickListener {
+            clearEditText.requestFocus() // установка фокуса на эдиттекст
             inputMethodManager.showSoftInput(
                 clearEditText,
                 0
@@ -186,12 +249,16 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
 
         clearEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                //empty
+              //  empty
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
                 logicClearIc(p0)
+                if (!p0.isNullOrEmpty()) {
+                    tvMsgSearch.makeInvisible()
+                    btCleanHistory.makeInvisible()
+                    recyclerView.makeInvisible()
+                }
             }
             // функция логики отображения иконок
 
@@ -226,7 +293,7 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
 
 
         private fun logicClearIc(s: CharSequence?) {
-            var clearEditText=  // инициализирую эдиттекст
+            clearEditText=  // инициализирую эдиттекст
                 findViewById<AppCompatEditText>(R.id.search_stroke)
             if (!s.isNullOrBlank()) {  // Перенести в функцию
                 clearEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
@@ -250,8 +317,8 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
 
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun clearTextFromEditText() {
-        var clearEditText =
+    private fun clearTextFromEditText() { // метод очистки текста в эдиттексте
+        clearEditText =
             findViewById<AppCompatEditText>(R.id.search_stroke)
         val inputMethodManager =
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -270,12 +337,14 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
                             0
                         ) // Прячем клаву
                         // чистим эдит текст
-                        recyclerView.makeInvisible()  // убрали список треков при очистке эдиттекста
+                        recyclerView.makeInvisible() // убрали список треков при очистке эдиттекста
                         msgTopTxt.makeGone()  //Убрали сообщение топ
                         msgBotTxt.makeGone() // убрали сообщение бот
                         phForNothingToShow.makeGone() // убрали плейсхолдер
                         buttonNoInternet.makeGone() // убрали кнопку
-
+                      btCleanHistory.makeInvisible()
+                        tvMsgSearch.makeInvisible()
+                        clearEditText.clearFocus() // убираем фокус с эдиттекста чтобы при нажатии снова появился фокус + история поиска
                         return@setOnTouchListener true
                     }
                 }
@@ -297,8 +366,6 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
                 runOnUiThread {  // главный поток
                     if (response.isSuccessful) {
                         if (tracks.isNullOrEmpty()) {
-
-
                            val phNts = ContextCompat.getDrawable(
                                 this@SearchActivity,
                                 R.drawable.ph_nothing_to_show_120
@@ -307,10 +374,14 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
                             phForNothingToShow.makeVisible()
                            msgTopTxt.makeVisible()
                             msgTopTxt.text = getString(R.string.msg_nothing_to_show)
+                            tvMsgSearch.makeGone() // Скрываю сообщение " Вы искали"
+                            btCleanHistory.makeGone() // Скрываю кнопку Очистить историю
+
                         } else {
 
 
-
+                            tvMsgSearch.makeGone() // Скрываю сообщение " Вы искали"
+                            btCleanHistory.makeGone() // Скрываю кнопку Очистить историю
                             phForNothingToShow.makeGone()
                             msgBotTxt.makeGone()
                             msgTopTxt.makeGone()
@@ -333,6 +404,8 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
                         msgBotTxt.makeVisible()
                         msgBotTxt.text = getString(R.string.msg_no_internet_bottom)
                         buttonNoInternet.makeVisible()
+                        tvMsgSearch.makeGone() // Скрываю сообщение " Вы искали"
+                        btCleanHistory.makeGone() // Скрываю кнопку Очистить историю
 
                     }
                 }
@@ -349,6 +422,8 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
                     msgBotTxt.makeVisible()
                     msgBotTxt.text = getString(R.string.msg_no_internet_bottom)
                     buttonNoInternet.makeVisible()
+                   // tvMsgSearch.makeGone() // Скрываю сообщение " Вы искали"
+                    //btCleanHistory.makeGone() // Скрываю кнопку Очистить историю
 
                 }
 
@@ -372,9 +447,7 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
         // Здесь вы получаете объект Track при нажатии на элемент списка
         Toast.makeText(this@SearchActivity, "Трек ${track.trackName} выбран", Toast.LENGTH_SHORT).show()
         // Логика обработки нажатия на конкретный трек
-val storage = TrackStorage(this@SearchActivity)
         storage.addTrack(track)
-        val myTracks = storage.getAllTracks()
 
     }
 
