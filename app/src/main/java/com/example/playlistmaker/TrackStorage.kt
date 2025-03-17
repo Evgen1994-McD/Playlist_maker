@@ -65,12 +65,8 @@ class TrackStorage(private val context: Context) {
         val editor = prefs.edit()
         editor.clear()
         editor.apply()
-        prefs.registerOnSharedPreferenceChangeListener { prefs, key -> // мысль - зарегать изменения по ключу чтобы потом подписаться на обновления
-            when(key) {
-                TRACKS_KEY -> {
 
-                }
             }
-        }
-    }
+
+
 }

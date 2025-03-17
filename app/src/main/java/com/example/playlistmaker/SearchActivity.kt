@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -56,10 +57,13 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
     private lateinit var btCleanHistory : TextView
     private lateinit var storage: TrackStorage
     private lateinit var myTracks: List<Track>
+    // объявить листенер изменений шаредпреференсес тут
 
 
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
+        val sharedprefs = getSharedPreferences(TrackStorage.PREFS_NAME, MODE_PRIVATE) //Объявили sharedPreferences для подписки в дальнейшем на обновления
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
@@ -73,6 +77,8 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
 
        btCleanHistory =
             findViewById<TextView>(R.id.bt_cleanHistory)
+
+
 
 
 
@@ -124,16 +130,9 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
         }
         storage = TrackStorage(this@SearchActivity) // инициализируем экземпляр класса Trackstorage
         myTracks = storage.getAllTracks()  // инициализируем список треков
-
         clearEditText.setOnFocusChangeListener{_, hasFocus ->
             if (hasFocus && clearEditText.text?.isNullOrEmpty() == true && !myTracks.isNullOrEmpty()) {    // таким образом, вызываю подсказку "вы искали" только когда соблюдаем : (фокус + текст пуст + сторейждж не пуст)
-             tvMsgSearch.makeVisible()
-            recyclerView.makeVisible()
-               btCleanHistory.makeVisible()
-               val recyclerView = findViewById<RecyclerView>(R.id.track_list)
-              recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
-              recyclerView.adapter = FavoriteTrackAdapter(myTracks as MutableList<Track>?) // передал this@SearchActivity так как он имплементирует интефейс onTrackClickListener
-              recyclerView.makeVisible()
+                sharedprefs.registerOnSharedPreferenceChangeListener(sharedPrefListener)  // регистрируем изменения в шаредпрефс (сам листенер внизу)
               btCleanHistory.setOnClickListener {
                   storage.clearHistory()
                   recyclerView.makeInvisible()
@@ -451,6 +450,26 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {  // Доба�
 
     }
 
+    private fun updateTracksFromStorage() {
+        val updaterTracks = storage.getAllTracks()
+        tvMsgSearch.makeVisible()
+        recyclerView.makeVisible()
+        btCleanHistory.makeVisible()
+        runOnUiThread {
+            recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+            recyclerView.adapter = FavoriteTrackAdapter(updaterTracks as MutableList<Track>?) // передал this@SearchActivity так как он имплементирует интефейс onTrackClickListener
+            recyclerView.makeVisible()
+        }
+
+    }
 
 
+
+    // Слушатель для отслеживания изменений в SharedPreferences
+    private val sharedPrefListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        if (key == TrackStorage.TRACKS_KEY) {
+            // Логика обновления треков
+            updateTracksFromStorage()
+        }
+    }
 }
