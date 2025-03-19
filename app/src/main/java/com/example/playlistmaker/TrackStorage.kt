@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.playlistmaker.retrofit.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import androidx.core.content.edit
 
 class TrackStorage(private val context: Context) {
     companion object {
@@ -61,12 +62,10 @@ class TrackStorage(private val context: Context) {
     }
 
     fun clearHistory(){
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val editor = prefs.edit()
-        editor.clear()
-        editor.apply()
+       tracks.clear() // Метод теперь очищает список треков
+        saveTracksToPrefs() // сохраняет очищенный список треков
+        }
 
             }
 
 
-}
