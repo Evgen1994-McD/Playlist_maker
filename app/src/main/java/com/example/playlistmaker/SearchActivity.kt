@@ -90,11 +90,6 @@ class SearchActivity : AppCompatActivity(),
             findViewById<TextView>(R.id.bt_cleanHistory)
 
 
-        storage = TrackStorage(this@SearchActivity) // инициализируем экземпляр класса Trackstorage
-        myTracks = storage.getAllTracks()
-        sharedprefs.registerOnSharedPreferenceChangeListener(sharedPrefListener)
-        myLikeAdapter =
-            FavoriteTrackAdapter(storage.getAllTracks() as MutableList<Track>?) // инициализировали фаворит адаптер
 
 
         clearEditText =  // инициализирую эдиттекст
@@ -141,11 +136,19 @@ class SearchActivity : AppCompatActivity(),
             ) // передаю параметры для поиска в метод. Пробую передать ту же логику, что и в поиске, ведь кнопку будет видно только при определенных условиях
 
         }
+
+        storage = TrackStorage(this@SearchActivity) // инициализируем экземпляр класса Trackstorage
+        myTracks = storage.getAllTracks() //все треки
+        sharedprefs.registerOnSharedPreferenceChangeListener(sharedPrefListener) //регистрируем слушатель изменений на наш sharedprefs чтобы сразу подгрузить изменения в список адаптера
+        myLikeAdapter =
+            FavoriteTrackAdapter(storage.getAllTracks() as MutableList<Track>?) // инициализировали фаворит адаптер
+
+
         btCleanHistory.setOnClickListener {  // кнопка очистки истории
-            storage.clearHistory()
-            recyclerView.makeInvisible()
-            tvMsgSearch.makeInvisible()
-            btCleanHistory.makeInvisible()
+            storage.clearHistory()  //очищаю историю, метод прописан в классе TrackStorage
+            recyclerView.makeInvisible() // делаю ресайклер вью невидимым
+            tvMsgSearch.makeInvisible() //делаем сообщение "Вы искали" невидимым
+            btCleanHistory.makeInvisible() // делаем саму кнопку невидимой при выполнении логики
             clearEditText.clearFocus()  // убираю фокус
         }
         clearEditText.setOnFocusChangeListener { _, hasFocus ->
@@ -159,7 +162,7 @@ class SearchActivity : AppCompatActivity(),
                 recyclerView.adapter = myLikeAdapter
             }
         }
-        clearEditText.setOnEditorActionListener { _, actionId, _ ->        // слушатель done-enter
+        clearEditText.setOnEditorActionListener { _, actionId, _ ->        // слушатель done-enter - ищет треки когда нажимаем энтер на клаве
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 phForNothingToShow.makeGone()
                 recyclerView.makeGone()
