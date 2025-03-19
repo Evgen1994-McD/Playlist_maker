@@ -5,11 +5,12 @@ import com.example.playlistmaker.retrofit.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import androidx.core.content.edit
+import com.example.playlistmaker.utils.Constants
 
 class TrackStorage(private val context: Context) {
     companion object {
-        const val PREFS_NAME = "TRACK_STORAGE_PREFERENCES"
-        const val TRACKS_KEY = "stored_tracks"
+        const val PREFS_NAME = Constants.TRACK_STORAGE_PREFS_NAME
+        const val TRACKS_KEY = Constants.TRACK_STORAGE_TRACKS_KEY
     }
 
     private val gson = Gson()

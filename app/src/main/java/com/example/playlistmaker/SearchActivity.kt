@@ -29,6 +29,7 @@ import com.example.playlistmaker.adapters.FavoriteTrackAdapter
 import com.example.playlistmaker.adapters.TrackAdapter
 import com.example.playlistmaker.retrofit.ITunesApi
 import com.example.playlistmaker.retrofit.Track
+import com.example.playlistmaker.utils.Constants
 import com.example.playlistmaker.utils.OnTrackClickListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -63,6 +64,12 @@ class SearchActivity : AppCompatActivity(),
 
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
+        val sharedPrefsTheme = getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE) // загрузка сохранённой темы в SharedPreferences
+        var savedTheme = sharedPrefsTheme.getBoolean(Constants.KEY_THEME_MODE, false)
+        val theme = applicationContext as App
+        theme.switchTheme(savedTheme)
+
+
         val sharedprefs = getSharedPreferences(
             TrackStorage.PREFS_NAME,
             MODE_PRIVATE
@@ -376,9 +383,6 @@ class SearchActivity : AppCompatActivity(),
     }
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
-        // Здесь вы получаете объект Track при нажатии на элемент списка
-        Toast.makeText(this@SearchActivity, "Трек ${track.trackName} выбран", Toast.LENGTH_SHORT)
-            .show() // удалить потом !!!
         // Логика обработки нажатия на конкретный трек
         storage.addTrack(track)
 

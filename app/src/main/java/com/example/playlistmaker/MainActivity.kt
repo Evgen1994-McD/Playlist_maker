@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -7,11 +8,15 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.utils.Constants
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
@@ -40,5 +45,10 @@ class MainActivity : AppCompatActivity() {
             val displayIntent = Intent(this, SettingsActivity::class.java)
             startActivity(displayIntent)
         }
+        val sharedPrefsTheme = getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE) // загрузка сохранённой темы в SharedPreferences
+        var savedTheme = sharedPrefsTheme.getBoolean(Constants.KEY_THEME_MODE, false)
+      val theme = applicationContext as App
+        theme.switchTheme(savedTheme)
+
     }
 }

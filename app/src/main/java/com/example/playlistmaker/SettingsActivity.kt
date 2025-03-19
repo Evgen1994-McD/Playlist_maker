@@ -7,12 +7,16 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.utils.Constants
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.settings)
@@ -44,14 +48,32 @@ class SettingsActivity : AppCompatActivity() {
             openUrlInDefaultBrowser(url)
         }
 
-        val switcherTheme = findViewById<SwitchMaterial>(R.id.switchTheme)  // импорт свитч - поменяли тему приложения
+        // Найти SwitchMaterial по id
+        val switcherTheme = findViewById<SwitchMaterial>(R.id.switchTheme)
 
-                switcherTheme.setOnCheckedChangeListener { switcher, checked ->
-                    (applicationContext as App).switchTheme(checked)
-                }
+        val sharedPrefs =
+            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
+        var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
+        switcherTheme.isChecked = savedTheme
+        switcherTheme.setOnCheckedChangeListener { _, isChecked ->
+            // Сохранить новое значение темы in Sharedpreferences
+            sharedPrefs.edit().putBoolean(Constants.KEY_THEME_MODE, isChecked).apply()
 
+            // Переключить тему
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
 
-    } // Скоба OnCreate. Ниже нее делаю методы для задания.
+            // Перезапустить активность для применения новой темы
+            recreate()
+        }
+
+        val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
+        theme.switchTheme(savedTheme)
+
+    }
 
     fun shareApp(context: Context) {  // Метод - интент для отправки сообщений
         val sendIntent = Intent().apply {
