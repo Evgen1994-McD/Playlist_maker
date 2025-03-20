@@ -40,13 +40,11 @@ class TrackViewHolder(itemView: View, listener: OnTrackClickListener) : Recycler
 
 
     @SuppressLint("CheckResult")
-    fun bind(track: Track, listener: OnTrackClickListener) {
+    fun bind(track: Track) {
         trackName.text = track.trackName
         artistName.text = track.artistName
         trackTime.text = formatMillisecondsAsMinSec(track.trackTimeMillis.toLong())
-        itemView.setOnClickListener {  // Передали слушатель нажатий в байнд, который вернет Трек
-            listener.onTrackClicked(track)
-        }
+
 
         Glide.with(itemView.context)
             .load(track.artworkUrl100)

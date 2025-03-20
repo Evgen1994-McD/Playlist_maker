@@ -17,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -25,6 +26,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.MainActivity
 import com.example.playlistmaker.adapters.FavoriteTrackAdapter
 import com.example.playlistmaker.adapters.TrackAdapter
 import com.example.playlistmaker.retrofit.ITunesApi
@@ -64,11 +66,15 @@ class SearchActivity : AppCompatActivity(),
 
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
-        val sharedPrefsTheme = getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE) // загрузка сохранённой темы в SharedPreferences
-        var savedTheme = sharedPrefsTheme.getBoolean(Constants.KEY_THEME_MODE, false)
-        val theme = applicationContext as App
-        theme.switchTheme(savedTheme)
-
+        val sharedPrefs =
+            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
+        val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
+        if(theme.hasBooleanValue(this@SearchActivity, Constants.KEY_THEME_MODE)) {
+            var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
+            theme.switchTheme(savedTheme)
+        }else {
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
 
         val sharedprefs = getSharedPreferences(
             TrackStorage.PREFS_NAME,

@@ -1,7 +1,9 @@
 package com.example.playlistmaker
 
+import android.app.UiModeManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
@@ -53,8 +55,17 @@ class SettingsActivity : AppCompatActivity() {
 
         val sharedPrefs =
             getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
-        var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
-        switcherTheme.isChecked = savedTheme
+
+        val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
+        if(theme.hasBooleanValue(this@SettingsActivity, Constants.KEY_THEME_MODE)) {
+            var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
+            theme.switchTheme(savedTheme)
+            switcherTheme.isChecked = savedTheme
+        }else {
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            switcherTheme.isChecked = theme.isSystemInDarkTheme(this)
+        }
+
         switcherTheme.setOnCheckedChangeListener { _, isChecked ->
             // Сохранить новое значение темы in Sharedpreferences
             sharedPrefs.edit().putBoolean(Constants.KEY_THEME_MODE, isChecked).apply()
@@ -70,8 +81,6 @@ class SettingsActivity : AppCompatActivity() {
             recreate()
         }
 
-        val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
-        theme.switchTheme(savedTheme)
 
     }
 
@@ -115,4 +124,5 @@ class SettingsActivity : AppCompatActivity() {
         }
         startActivity(intent)
     }
+
 }

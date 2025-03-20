@@ -20,8 +20,10 @@ class TrackAdapter(private val tracks: List<Track>?,
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int)  {
-        holder.bind(tracks!![position], listener)
-
+        holder.itemView.setOnClickListener {
+            listener.onTrackClicked(tracks!![position])
+        }
+holder.bind(tracks!![position])
     }
 
     override fun getItemCount(): Int {
