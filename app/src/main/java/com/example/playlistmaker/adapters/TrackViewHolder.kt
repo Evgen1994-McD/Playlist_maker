@@ -1,8 +1,6 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.adapters
 
 import android.annotation.SuppressLint
-import android.icu.lang.UCharacter.GraphemeClusterBreak.L
-import android.icu.util.LocaleData
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -11,17 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.example.playlistmaker.R
 import com.example.playlistmaker.retrofit.Track
-import java.text.SimpleDateFormat
+import com.example.playlistmaker.utils.OnTrackClickListener
 import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
-import kotlin.time.Duration
-import java.time.LocalDate
 import java.time.LocalTime
 
 
-class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class TrackViewHolder(itemView: View, listener: OnTrackClickListener) : RecyclerView.ViewHolder(itemView) { // Добавили листенер в конструктор класса
+
     private val trackName: TextView = itemView.findViewById(R.id.track_name)
     private val artistName: TextView = itemView.findViewById(R.id.track_info)
     private val trackTime: TextView = itemView.findViewById(R.id.track_time)
@@ -49,6 +45,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         artistName.text = track.artistName
         trackTime.text = formatMillisecondsAsMinSec(track.trackTimeMillis.toLong())
 
+
         Glide.with(itemView.context)
             .load(track.artworkUrl100)
             .transform(RoundedCorners(radiusInPX.toInt()))
@@ -59,4 +56,5 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 
     }
+
 }

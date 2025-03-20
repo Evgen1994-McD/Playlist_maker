@@ -1,17 +1,24 @@
 package com.example.playlistmaker
 
+import android.app.UiModeManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.utils.Constants
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.settings)
@@ -42,7 +49,40 @@ class SettingsActivity : AppCompatActivity() {
             val url = getString(R.string.Url_userasset)
             openUrlInDefaultBrowser(url)
         }
-    } // Скоба OnCreate. Ниже нее делаю методы для задания.
+
+        // Найти SwitchMaterial по id
+        val switcherTheme = findViewById<SwitchMaterial>(R.id.switchTheme)
+
+        val sharedPrefs =
+            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
+
+        val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
+        if(theme.hasBooleanValue(this@SettingsActivity, Constants.KEY_THEME_MODE)) {
+            var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
+            theme.switchTheme(savedTheme)
+            switcherTheme.isChecked = savedTheme
+        }else {
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            switcherTheme.isChecked = theme.isSystemInDarkTheme(this)
+        }
+
+        switcherTheme.setOnCheckedChangeListener { _, isChecked ->
+            // Сохранить новое значение темы in Sharedpreferences
+            sharedPrefs.edit().putBoolean(Constants.KEY_THEME_MODE, isChecked).apply()
+
+            // Переключить тему
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+
+            // Перезапустить активность для применения новой темы
+            recreate()
+        }
+
+
+    }
 
     fun shareApp(context: Context) {  // Метод - интент для отправки сообщений
         val sendIntent = Intent().apply {
@@ -84,4 +124,5 @@ class SettingsActivity : AppCompatActivity() {
         }
         startActivity(intent)
     }
+
 }
