@@ -5,6 +5,6 @@ import retrofit2.Response
 
 interface ITunesApi {
     @GET("/search?entity=song")
-    suspend  fun getSong (@Query("term") text : String,
-    @Query("limit") limit: Int = 5) : Response<TrackResponse> // сделал 5 треков пока что
+    suspend  fun getSong (@Query("term") text : String)
+     : Response<TrackResponse>
 }
