@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -393,8 +394,23 @@ class SearchActivity : AppCompatActivity(),
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек
+        val intent = Intent(this, MediaActivity::class.java) // создали интент для перехода на активити
         storage.addTrack(track)
+        intent.putExtra("trackName", track.trackName)
+        intent.putExtra("collectionName", track.collectionName)
+        intent.putExtra("trackTimeMillis", track.trackTimeMillis)
+        intent.putExtra("artistName", track.artistName)
+        intent.putExtra("primaryGenreName", track.primaryGenreName)
+        intent.putExtra("country", track.country)
+        intent.putExtra("artworkUrl100", track.artworkUrl100)
 
+
+
+
+
+
+
+        startActivity(intent) // запускаем активити
 
     }
 
