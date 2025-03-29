@@ -16,6 +16,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.MainActivity
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.utils.Constants
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 class MediaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
@@ -68,15 +70,18 @@ val intent = intent // получаем интент который запуст
         binding.tvGenre.text = primaryGenreName
         binding.tvCountry.text = country
         binding.tvAlbum.text=collectionName
-        binding.tvTime.text = trackTimeMillis
+        binding.tvTime.text = formatMillisecondsAsMinSec(trackTimeMillis!!.toLong())
+
         binding.tvGroup.text = artistName
         binding.tvTrackName.text = trackName
 
 
 
 
+
+
         Glide.with(binding.imMine.context)
-            .load(artworkUrl100)
+            .load(getCoverArtwork(artworkUrl100.toString()))
             .transform(RoundedCorners(radiusInPX.toInt()))
             .apply(options)
             .placeholder(R.drawable.ic_placeholder_45)
@@ -88,4 +93,15 @@ val intent = intent // получаем интент который запуст
 
 
     }
+
+
+    fun formatMillisecondsAsMinSec(milliseconds: Long): String { // функция перевода времени
+        val localTime = LocalTime.ofNanoOfDay(milliseconds * 1_000_000)
+        val formatter = DateTimeFormatter.ofPattern("mm:ss")
+        return localTime.format(formatter)
+    }
+
+    fun getCoverArtwork(artworkUrl100 : String) = artworkUrl100?.replaceAfterLast('/',"512x512bb.jpg")
+
+
 }
