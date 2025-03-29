@@ -10,13 +10,16 @@ import com.bumptech.glide.Glide
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.MainActivity
+import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.utils.Constants
 
 class MediaActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMediaBinding // делаю байдинг
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_media)
+        binding = ActivityMediaBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_media)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -29,8 +32,11 @@ class MediaActivity : AppCompatActivity() {
             var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
             theme.switchTheme(savedTheme)
         }else {
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM // Выше идёт определение темы приложения
         }
+
+
+
 
     }
 }
