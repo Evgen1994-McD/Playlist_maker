@@ -427,7 +427,12 @@ class SearchActivity : AppCompatActivity(),
         val intent =
             Intent(this, MediaActivity::class.java) // создали интент для перехода на активити
         intent.putExtra("trackName", track.trackName)
-        intent.putExtra("collectionName", track.collectionName)
+        if (!track.collectionName.isNullOrEmpty()) {
+            intent.putExtra(
+                "collectionName",
+                track.collectionName
+            )  // отправим альбом только если он есть
+        }
         intent.putExtra("trackTimeMillis", track.trackTimeMillis)
         intent.putExtra("artistName", track.artistName)
         intent.putExtra("primaryGenreName", track.primaryGenreName)

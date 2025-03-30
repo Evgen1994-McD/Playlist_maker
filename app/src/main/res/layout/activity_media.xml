@@ -11,57 +11,71 @@
     >
 
     <TextView
-        style="@style/media_tv_right"
-
         android:id="@+id/tvCountry"
+
+        style="@style/media_tv_right"
         android:layout_width="wrap_content"
+
         android:layout_height="32dp"
         android:gravity="end"
         android:paddingVertical="8dp"
-        tools:text="Великобритания"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/tvGenre" />
+        app:layout_constraintStart_toEndOf="@+id/textView8"
+        app:layout_constraintTop_toBottomOf="@+id/tvGenre"
+        app:layout_constraintHorizontal_bias="1"
+
+        tools:text="Великобритания" />
 
     <TextView
-        style="@style/media_tv_right"
-
         android:id="@+id/tvGenre"
+
+        style="@style/media_tv_right"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:gravity="end"
         android:paddingVertical="8dp"
-        tools:text="Rock"
         app:layout_constraintBottom_toTopOf="@+id/tvCountry"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/tvYear" />
+        app:layout_constraintStart_toEndOf="@+id/textView7"
+        app:layout_constraintTop_toBottomOf="@+id/tvYear"
+        app:layout_constraintHorizontal_bias="1"
+
+        tools:text="Rock" />
 
     <TextView
-        style="@style/media_tv_right"
-
         android:id="@+id/tvYear"
+
+        style="@style/media_tv_right"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:gravity="end"
         android:paddingVertical="8dp"
-        tools:text="1965"
         android:textColorHighlight="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/tvGenre"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/tvAlbum" />
+        app:layout_constraintStart_toEndOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/tvAlbum"
+        app:layout_constraintHorizontal_bias="1"
+
+        tools:text="1965" />
 
     <TextView
-        style="@style/media_tv_right"
-
         android:id="@+id/tvAlbum"
-        android:layout_width="wrap_content"
+        android:paddingLeft="10dp"
+
+        style="@style/media_tv_right"
+        android:layout_width="0dp"
         android:layout_height="32dp"
         android:gravity="end"
         android:paddingVertical="8dp"
-        tools:text="Yesterday(Remastered)"
         app:layout_constraintBottom_toTopOf="@+id/tvYear"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/tvTime" />
+        app:layout_constraintStart_toEndOf="@+id/tv_album_left"
+        app:layout_constraintTop_toBottomOf="@+id/tvTime"
+        app:layout_constraintHorizontal_bias="1"
+
+        tools:text="Yesterday(Remastered)" />
 
     <TextView
         android:id="@+id/textView7"
@@ -86,11 +100,11 @@
 
         app:layout_constraintBottom_toTopOf="@+id/textView7"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/tv_album_left"
         android:text="@string/txt_year_media" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tv_album_left"
 
         android:layout_width="wrap_content"
         android:layout_height="32dp"
@@ -138,7 +152,7 @@
         android:layout_height="wrap_content"
         android:gravity="left|center_vertical"
         android:textSize="@dimen/st_head_text_size_22sp"
-        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintVertical_bias="0.24"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="@+id/imMine"
         app:layout_constraintHorizontal_bias="0.0"
@@ -158,7 +172,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tvTrackName"
         app:layout_constraintTop_toBottomOf="@+id/tvTrackName"
-        app:layout_constraintVertical_bias="0.4"
+        app:layout_constraintVertical_bias="0.78"
         />
 
     <ImageView
@@ -198,7 +212,7 @@
         android:layout_height="32dp"
         android:paddingVertical="8dp"
         android:text="@string/txt_time_media"
-        app:layout_constraintBottom_toTopOf="@id/textView5"
+        app:layout_constraintBottom_toTopOf="@id/tv_album_left"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@+id/guideline6"
         app:layout_constraintVertical_bias="0.5"
@@ -220,22 +234,23 @@ app:layout_constraintVertical_chainStyle="spread_inside"
         />
 
     <TextView
-        style="@style/media_tv_right"
-
         android:id="@+id/tvTime"
+
+        style="@style/media_tv_right"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:gravity="end"
         android:paddingVertical="8dp"
-        tools:text="5:35"
         app:layout_constraintBottom_toTopOf="@+id/tvAlbum"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toTopOf="@+id/guideline6"
         app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_bias="1"
         app:layout_constraintVertical_chainStyle="spread_inside"
 
 
-        />
+        tools:text="5:35" />
 
     <TextView
         android:id="@+id/textView13"

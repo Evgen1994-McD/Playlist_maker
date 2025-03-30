@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -29,6 +30,7 @@ class MediaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
     private lateinit var artworkUrl100: String
     private lateinit var storage: TrackStorage
+    private lateinit var collectionName: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +43,7 @@ class MediaActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+        collectionName = "" // инициализировал
 
         binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
             finish()
@@ -88,13 +90,26 @@ class MediaActivity : AppCompatActivity() {
     fun intentGetExtraBind() {
         val intent = intent // получаем интент который запустил активность
         val trackName = intent.getStringExtra("trackName")
-        val collectionName = intent.getStringExtra("collectionName")
         val trackTimeMillis = intent.getStringExtra("trackTimeMillis")
         val artistName = intent.getStringExtra("artistName")
         val primaryGenreName = intent.getStringExtra("primaryGenreName")
         val country = intent.getStringExtra("country")
         val relieseDate = intent.getStringExtra("relieseDate")
         artworkUrl100 = intent.getStringExtra("artworkUrl100").toString()
+
+        if (intent.getStringExtra("collectionName")
+                ?.isNullOrEmpty() == true || intent.getStringExtra("collectionName")
+                ?.contains("No Album") == true // Если нет альбома или ответ сервера содержит No Album то убираем поле с альбомом
+        ) {
+            binding.tvAlbum.makeGone()// убираем поле альбом если нет альбома
+            binding.tvAlbumLeft.makeGone()// убираем поле альбом если нет альбома
+
+        } else {
+            collectionName = intent.getStringExtra("collectionName")
+                .toString()// убираем поле альбом если нет альбома
+            binding.tvAlbum.makeVisible()// убираем поле альбом если нет альбома
+            binding.tvAlbum.text = collectionName// убираем поле альбом если нет альбома
+        }
         binding.tvGenre.text = primaryGenreName
         binding.tvCountry.text = country
         binding.tvAlbum.text = collectionName
@@ -125,9 +140,18 @@ class MediaActivity : AppCompatActivity() {
 
     }
 
-    fun loadLastLikedTrack(track: Track) {
-        val trackName = track.trackName
-        val collectionName = track.collectionName
+    fun loadLastLikedTrack(track: Track) {// убираем поле альбом если нет альбома
+        val trackName = track.trackName// убираем поле альбом если нет альбома
+        if (track.collectionName?.isNullOrEmpty() == true || track.collectionName?.contains("No Album") == true) {
+            binding.tvAlbum.makeGone()// убираем поле альбом если нет альбома
+            binding.tvAlbumLeft.makeGone()// убираем поле альбом если нет альбома
+
+        } else {
+            collectionName = track.collectionName.toString() // убираем поле альбом если нет альбома
+            binding.tvAlbum.makeVisible()// убираем поле альбом если нет альбома
+            binding.tvAlbum.text = collectionName// убираем поле альбом если нет альбома
+        }
+
         val trackTimeMillis = track.trackTimeMillis
         val artistName = track.artistName
         val primaryGenreName = track.primaryGenreName
@@ -136,7 +160,6 @@ class MediaActivity : AppCompatActivity() {
         artworkUrl100 = track.artworkUrl100
         binding.tvGenre.text = primaryGenreName
         binding.tvCountry.text = country
-        binding.tvAlbum.text = collectionName
         binding.tvTime.text = formatMillisecondsAsMinSec(trackTimeMillis!!.toLong())
 
         binding.tvGroup.text = artistName
@@ -172,20 +195,36 @@ class MediaActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) { // Восстановим активность
         super.onRestoreInstanceState(savedInstanceState) // Восстановим активность
-        if (savedInstanceState.containsKey("isAudioPlayerVisible") && savedInstanceState.getBoolean("isAudioPlayerVisible")) {
+        if (savedInstanceState.containsKey("isAudioPlayerVisible") && savedInstanceState.getBoolean(
+                "isAudioPlayerVisible"
+            )
+        ) {
             showAudioPlayerScreen()// Отображаем экран аудиоплеера
 
         }
     }
+
     fun showAudioPlayerScreen() { // Восстановим активность
         val intent = Intent(this, MediaActivity::class.java) // Восстановим активность
         startActivity(intent) // Восстановим активность
     }
 
-    fun formattedYear(date : String) : String {
+    fun formattedYear(date: String): String {
         val formatter = DateTimeFormatter.ISO_DATE_TIME
         val localDateTime = LocalDateTime.parse(date, formatter)
         val year = localDateTime.year
         return year.toString()
+    }
+
+    private fun View.makeGone() {
+        this.visibility = View.GONE // функция для вью гон
+    }
+
+    private fun View.makeVisible() {
+        this.visibility = View.VISIBLE // функция для вью визибл
+    }
+
+    private fun View.makeInvisible() {
+        this.visibility = View.INVISIBLE // функция для вью инвизибл
     }
 }
