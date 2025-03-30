@@ -18,7 +18,7 @@
         <item name="android:layout_marginHorizontal">@dimen/standart_padding_start</item>
         <item name="android:backgroundTint">@color/white</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">@dimen/standart_text_size</item>
+        <item name="android:textSize">@dimen/standart_text_size_16sp</item>
         <item name="cornerRadius">@dimen/standart_radius</item>
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">@dimen/st_padding_icon</item>
@@ -57,7 +57,7 @@
         <item name="titleTextColor">@color/black</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="navigationIcon">@drawable/ic_backblack_16</item>
-        <item name="android:textSize">@dimen/st_head_text_size</item>
+        <item name="android:textSize">@dimen/st_head_text_size_22sp</item>
 
     </style>
 
@@ -70,7 +70,7 @@
 
         <item name="android:paddingHorizontal">@dimen/standart_padding_start</item>
         <item name="android:paddingVertical">@dimen/standart_padding_vertical</item>
-        <item name="android:textSize">@dimen/standart_text_size</item>
+        <item name="android:textSize">@dimen/standart_text_size_16sp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:textColor">@color/black</item>
@@ -96,7 +96,7 @@
 
     <style name="Search_Base_style" parent="Widget.AppCompat.EditText">
 
-        <item name="android:textSize">@dimen/standart_text_size</item>
+        <item name="android:textSize">@dimen/standart_text_size_16sp</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:background">@drawable/edittext_background</item>
         <item name="android:hint">@string/Search</item>
@@ -105,7 +105,7 @@
         <item name="android:paddingEnd">30dp</item>
         <item name="android:paddingVertical">@dimen/st_padding_icon</item>
         <item name="android:paddingHorizontal">@dimen/standart_radius</item>
-        <item name="android:textColorHint">@color/thumbTint_off</item>
+        <item name="android:textColorHint">@color/yp_grey</item>
         <item name="android:iconifiedByDefault">false</item>
         <item name="iconSize">16dp</item>
         <item name="android:maxLines">1</item>
@@ -122,13 +122,13 @@
         <item name="font">@font/ys_display_regular</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:textSize">@dimen/standart_text_size</item>
+        <item name="android:textSize">@dimen/standart_text_size_16sp</item>
 
 
     </style>
 
     <style name="track_item_bottom" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textColor">@color/thumbTint_off</item>
+        <item name="android:textColor">@color/yp_grey</item>
         <item name="font">@font/ys_display_regular</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
@@ -172,6 +172,36 @@
         <item name="cornerRadius">@dimen/button_nointernet_radius_54dp</item>
         <item name="textAllCaps">false</item>
     </style>
+
+
+
+
+    <style name="media_tv_title" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/black</item>
+        <item name="font">@font/ys_display_medium</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textStyle">bold</item>
+
+
+    </style>
+
+    <style name="media_tv_left" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/yp_grey</item>
+        <item name="font">@font/ys_display_regular</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">@dimen/tv_size_13</item>
+    </style>
+    <style name="media_tv_right" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/black</item>
+        <item name="font">@font/ys_display_regular</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">@dimen/tv_size_13</item>
+    </style>
+
+
 
 
 

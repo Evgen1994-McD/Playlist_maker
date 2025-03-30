@@ -29,5 +29,13 @@
     <string name="Url_userasset" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
 
 
+    <string name="txt_time_media" translatable="false">Длительность</string>
+    <string name="txt_album_media" translatable="false">Альбом</string>
+    <string name="txt_year_media" translatable="false">Год</string>
+    <string name="txt_ganre_media" translatable="false">Жанр</string>
+    <string name="txt_country_media" translatable="false">Страна</string>
+
+
+
 
 </resources>

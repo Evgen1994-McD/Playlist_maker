@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="standart_text_size">16sp</dimen>
+    <dimen name="standart_text_size_16sp">16sp</dimen>
     <dimen name="standart_padding_start">16dp</dimen>
     <dimen name="standart_padding_vertical">20dp</dimen>
 <dimen name="txt_11">11sp</dimen>
+    <dimen name="tv_size_14">14sp</dimen>
+    <dimen name="tv_size_13">13sp</dimen>
+
     <dimen name="standart_radius">16dp</dimen>
     <dimen name="st_padding_icon">8dp</dimen>
-    <dimen name="st_head_text_size">22sp</dimen>
+    <dimen name="st_head_text_size_22sp">22sp</dimen>
     <dimen name="margin_image_button_back_onsettings">4dp</dimen>
     <dimen name="margin_start_head">12dp</dimen>
     <dimen name="margin_top_head">12dp</dimen>

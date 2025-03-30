@@ -11,46 +11,54 @@
     >
 
     <TextView
+        style="@style/media_tv_right"
+
         android:id="@+id/tvCountry"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:gravity="end"
         android:paddingVertical="8dp"
-        android:text="Великобритания"
+        tools:text="Великобритания"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/tvGenre" />
 
     <TextView
+        style="@style/media_tv_right"
+
         android:id="@+id/tvGenre"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:gravity="end"
         android:paddingVertical="8dp"
-        android:text="Rock"
+        tools:text="Rock"
         app:layout_constraintBottom_toTopOf="@+id/tvCountry"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/tvYear" />
 
     <TextView
+        style="@style/media_tv_right"
+
         android:id="@+id/tvYear"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:gravity="end"
         android:paddingVertical="8dp"
-        android:text="1965"
+        tools:text="1965"
         android:textColorHighlight="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/tvGenre"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/tvAlbum" />
 
     <TextView
+        style="@style/media_tv_right"
+
         android:id="@+id/tvAlbum"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:gravity="end"
         android:paddingVertical="8dp"
-        android:text="Yesterday(Remastered)"
+        tools:text="Yesterday(Remastered)"
         app:layout_constraintBottom_toTopOf="@+id/tvYear"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/tvTime" />
@@ -61,11 +69,12 @@
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:paddingVertical="8dp"
-        android:text="Жанр"
+        style="@style/media_tv_left"
+
         app:layout_constraintBottom_toTopOf="@+id/textView8"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
-        tools:text="Жанр" />
+        android:text="@string/txt_ganre_media" />
 
     <TextView
         android:id="@+id/textView6"
@@ -73,11 +82,12 @@
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:paddingVertical="8dp"
-        android:text="Год"
+        style="@style/media_tv_left"
+
         app:layout_constraintBottom_toTopOf="@+id/textView7"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView5"
-        tools:text="Год" />
+        android:text="@string/txt_year_media" />
 
     <TextView
         android:id="@+id/textView5"
@@ -85,11 +95,12 @@
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:paddingVertical="8dp"
-        android:text="Альбом"
+        style="@style/media_tv_left"
+
         app:layout_constraintBottom_toTopOf="@+id/textView6"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
-        tools:text="Альбом" />
+        android:text="@string/txt_album_media" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -120,13 +131,13 @@
         app:srcCompat="@drawable/ic_launcher_background" />
 
     <TextView
+        tools:text = "Название трека"
+        style="@style/media_tv_title"
         android:id="@+id/tvTrackName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="left|center_vertical"
-        android:text="Yesterday(Remastered 2009)"
-        android:textSize="22sp"
-        android:textStyle="bold"
+        android:textSize="@dimen/st_head_text_size_22sp"
         app:layout_constraintVertical_bias="0.3"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="@+id/imMine"
@@ -135,11 +146,13 @@
         app:layout_constraintTop_toBottomOf="@+id/imMine" />
 
     <TextView
+        tools:text = "Исполнитель"
+
+        style="@style/media_tv_title"
         android:id="@+id/tvGroup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="The Beatles"
-        android:textStyle="bold"
+        android:textSize="@dimen/tv_size_14"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="@+id/tvTrackName"
         app:layout_constraintHorizontal_bias="0.0"
@@ -179,38 +192,42 @@
         app:srcCompat="@drawable/ic_like_51dp" />
 
     <TextView
+        style="@style/media_tv_left"
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:paddingVertical="8dp"
-        android:text="Длительность"
+        android:text="@string/txt_time_media"
         app:layout_constraintBottom_toTopOf="@id/textView5"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@+id/guideline6"
         app:layout_constraintVertical_bias="0.5"
 
 app:layout_constraintVertical_chainStyle="spread_inside"
-        tools:text="Длительность" />
+        />
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:paddingVertical="8dp"
-        android:text="Страна"
+        style="@style/media_tv_left"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView7"
-        tools:text="Страна"
+        android:text="@string/txt_country_media"
         />
 
     <TextView
+        style="@style/media_tv_right"
+
         android:id="@+id/tvTime"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:gravity="end"
         android:paddingVertical="8dp"
-        android:text="5:35"
+        tools:text="5:35"
         app:layout_constraintBottom_toTopOf="@+id/tvAlbum"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="@+id/guideline6"
