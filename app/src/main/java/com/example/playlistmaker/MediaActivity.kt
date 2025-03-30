@@ -20,8 +20,10 @@ import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.retrofit.Track
 import com.example.playlistmaker.utils.Constants
 import okio.IOException
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import kotlin.toString
 
 class MediaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
@@ -91,11 +93,13 @@ class MediaActivity : AppCompatActivity() {
         val artistName = intent.getStringExtra("artistName")
         val primaryGenreName = intent.getStringExtra("primaryGenreName")
         val country = intent.getStringExtra("country")
+        val relieseDate = intent.getStringExtra("relieseDate")
         artworkUrl100 = intent.getStringExtra("artworkUrl100").toString()
         binding.tvGenre.text = primaryGenreName
         binding.tvCountry.text = country
         binding.tvAlbum.text = collectionName
         binding.tvTime.text = formatMillisecondsAsMinSec(trackTimeMillis!!.toLong())
+        binding.tvYear.text = formattedYear(relieseDate.toString())
 
         binding.tvGroup.text = artistName
         binding.tvTrackName.text = trackName
@@ -115,8 +119,8 @@ class MediaActivity : AppCompatActivity() {
             .load(getCoverArtwork(artworkUrl100.toString()))
             .transform(RoundedCorners(radiusInPX.toInt()))
             .apply(options)
-            .placeholder(R.drawable.ic_placeholder_45)
-            .error(R.drawable.ic_placeholder_45)
+            .placeholder(R.drawable.ph_media_312)
+            .error(R.drawable.ph_media_312)
             .into(binding.imMine)
 
     }
@@ -128,6 +132,7 @@ class MediaActivity : AppCompatActivity() {
         val artistName = track.artistName
         val primaryGenreName = track.primaryGenreName
         val country = track.country
+        val relieseDate = track.releaseDate
         artworkUrl100 = track.artworkUrl100
         binding.tvGenre.text = primaryGenreName
         binding.tvCountry.text = country
@@ -136,6 +141,7 @@ class MediaActivity : AppCompatActivity() {
 
         binding.tvGroup.text = artistName
         binding.tvTrackName.text = trackName
+        binding.tvYear.text = formattedYear(relieseDate.toString())
 
 
         val options = RequestOptions().centerCrop()//опции для Glide
@@ -152,8 +158,8 @@ class MediaActivity : AppCompatActivity() {
             .load(getCoverArtwork(artworkUrl100.toString()))
             .transform(RoundedCorners(radiusInPX.toInt()))
             .apply(options)
-            .placeholder(R.drawable.ic_placeholder_45)
-            .error(R.drawable.ic_placeholder_45)
+            .placeholder(R.drawable.ph_media_312)
+            .error(R.drawable.ph_media_312)
             .into(binding.imMine)
 
 
@@ -174,5 +180,12 @@ class MediaActivity : AppCompatActivity() {
     fun showAudioPlayerScreen() { // Восстановим активность
         val intent = Intent(this, MediaActivity::class.java) // Восстановим активность
         startActivity(intent) // Восстановим активность
+    }
+
+    fun formattedYear(date : String) : String {
+        val formatter = DateTimeFormatter.ISO_DATE_TIME
+        val localDateTime = LocalDateTime.parse(date, formatter)
+        val year = localDateTime.year
+        return year.toString()
     }
 }

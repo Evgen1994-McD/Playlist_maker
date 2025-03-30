@@ -433,6 +433,7 @@ class SearchActivity : AppCompatActivity(),
         intent.putExtra("primaryGenreName", track.primaryGenreName)
         intent.putExtra("country", track.country)
         intent.putExtra("artworkUrl100", track.artworkUrl100)
+        intent.putExtra("relieseDate", track.releaseDate)
         startActivity(intent) // запускаем активити
 
 
