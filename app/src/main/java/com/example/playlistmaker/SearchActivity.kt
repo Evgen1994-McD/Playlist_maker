@@ -70,10 +70,10 @@ class SearchActivity : AppCompatActivity(),
         val sharedPrefs =
             getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
         val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
-        if(theme.hasBooleanValue(this@SearchActivity, Constants.KEY_THEME_MODE)) {
+        if (theme.hasBooleanValue(this@SearchActivity, Constants.KEY_THEME_MODE)) {
             var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
             theme.switchTheme(savedTheme)
-        }else {
+        } else {
             AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
         }
 
@@ -148,7 +148,10 @@ class SearchActivity : AppCompatActivity(),
         myTracks = storage.getAllTracks() //все треки
         sharedprefs.registerOnSharedPreferenceChangeListener(sharedPrefListener) //регистрируем слушатель изменений на наш sharedprefs чтобы сразу подгрузить изменения в список адаптера
         myLikeAdapter =
-            FavoriteTrackAdapter(storage.getAllTracks() as MutableList<Track>?, this@SearchActivity) // инициализировали фаворит адаптер
+            FavoriteTrackAdapter(
+                storage.getAllTracks() as MutableList<Track>?,
+                this@SearchActivity
+            ) // инициализировали фаворит адаптер
 // передаю this@searchactivity потому что активити имплементирует интерфейс
 
         btCleanHistory.setOnClickListener {  // кнопка очистки истории
@@ -227,6 +230,7 @@ class SearchActivity : AppCompatActivity(),
         )
         clearTextFromEditText()  //Логика очистки текста
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(keyForWatcher, textFromInput)
@@ -242,6 +246,7 @@ class SearchActivity : AppCompatActivity(),
             clearEditText.setText(savedText)
         }
     }
+
     private fun logicClearIc(s: CharSequence?) {
         clearEditText =  // инициализирую эдиттекст
             findViewById<AppCompatEditText>(R.id.search_stroke)
@@ -264,6 +269,7 @@ class SearchActivity : AppCompatActivity(),
         }
 
     }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun clearTextFromEditText() { // метод очистки текста в эдиттексте
         clearEditText =
@@ -300,6 +306,7 @@ class SearchActivity : AppCompatActivity(),
             false
         }
     }
+
     private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
         CoroutineScope(Dispatchers.IO).launch {      // Используем корутины чтобы не грузить поток метод для поиска песен
 
@@ -369,7 +376,7 @@ class SearchActivity : AppCompatActivity(),
                     msgBotTxt.makeVisible()
                     msgBotTxt.text = getString(R.string.msg_no_internet_bottom)
                     buttonNoInternet.makeVisible()
-                     tvMsgSearch.makeGone() // Скрываю сообщение " Вы искали"
+                    tvMsgSearch.makeGone() // Скрываю сообщение " Вы искали"
                     btCleanHistory.makeGone() // Скрываю кнопку Очистить историю
 
                 }
@@ -394,8 +401,10 @@ class SearchActivity : AppCompatActivity(),
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек
+
+        intentAndStartActivity(track)
         storage.addTrack(track)
-     intentAndStartActivity(track) // вызову функцию и передам путэкстра
+        // вызову функцию и передам путэкстра
 
     }
 
@@ -414,8 +423,9 @@ class SearchActivity : AppCompatActivity(),
             }
         }
 
-    private fun intentAndStartActivity(track: Track){
-        val intent = Intent(this, MediaActivity::class.java) // создали интент для перехода на активити
+    private fun intentAndStartActivity(track: Track) {
+        val intent =
+            Intent(this, MediaActivity::class.java) // создали интент для перехода на активити
         intent.putExtra("trackName", track.trackName)
         intent.putExtra("collectionName", track.collectionName)
         intent.putExtra("trackTimeMillis", track.trackTimeMillis)

@@ -92,7 +92,7 @@
         tools:text="Альбом" />
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/search_toolbar2"
+        android:id="@+id/toolbar"
         style="@style/Search_Toolbar_style"
         android:layout_width="0dp"
         android:layout_height="0dp"
