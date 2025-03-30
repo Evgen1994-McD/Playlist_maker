@@ -148,8 +148,8 @@ class SearchActivity : AppCompatActivity(),
         myTracks = storage.getAllTracks() //все треки
         sharedprefs.registerOnSharedPreferenceChangeListener(sharedPrefListener) //регистрируем слушатель изменений на наш sharedprefs чтобы сразу подгрузить изменения в список адаптера
         myLikeAdapter =
-            FavoriteTrackAdapter(storage.getAllTracks() as MutableList<Track>?) // инициализировали фаворит адаптер
-
+            FavoriteTrackAdapter(storage.getAllTracks() as MutableList<Track>?, this@SearchActivity) // инициализировали фаворит адаптер
+// передаю this@searchactivity потому что активити имплементирует интерфейс
 
         btCleanHistory.setOnClickListener {  // кнопка очистки истории
             storage.clearHistory()  //очищаю историю, метод прописан в классе TrackStorage
@@ -394,23 +394,8 @@ class SearchActivity : AppCompatActivity(),
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек
-        val intent = Intent(this, MediaActivity::class.java) // создали интент для перехода на активити
         storage.addTrack(track)
-        intent.putExtra("trackName", track.trackName)
-        intent.putExtra("collectionName", track.collectionName)
-        intent.putExtra("trackTimeMillis", track.trackTimeMillis)
-        intent.putExtra("artistName", track.artistName)
-        intent.putExtra("primaryGenreName", track.primaryGenreName)
-        intent.putExtra("country", track.country)
-        intent.putExtra("artworkUrl100", track.artworkUrl100)
-
-
-
-
-
-
-
-        startActivity(intent) // запускаем активити
+     intentAndStartActivity(track) // вызову функцию и передам путэкстра
 
     }
 
@@ -428,5 +413,19 @@ class SearchActivity : AppCompatActivity(),
                 updateTracksFromStorage()
             }
         }
+
+    private fun intentAndStartActivity(track: Track){
+        val intent = Intent(this, MediaActivity::class.java) // создали интент для перехода на активити
+        intent.putExtra("trackName", track.trackName)
+        intent.putExtra("collectionName", track.collectionName)
+        intent.putExtra("trackTimeMillis", track.trackTimeMillis)
+        intent.putExtra("artistName", track.artistName)
+        intent.putExtra("primaryGenreName", track.primaryGenreName)
+        intent.putExtra("country", track.country)
+        intent.putExtra("artworkUrl100", track.artworkUrl100)
+        startActivity(intent) // запускаем активити
+
+
+    }
 
 }
