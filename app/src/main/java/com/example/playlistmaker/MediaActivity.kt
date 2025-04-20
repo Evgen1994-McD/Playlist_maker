@@ -121,18 +121,11 @@ class MediaActivity : AppCompatActivity() {
 
 
         val options = RequestOptions().centerCrop()//опции для Glide
-        val radiusInDP = 2f //опции для Glide
-        val densityMultiplier = TypedValue.applyDimension( //опции для Glide
-            TypedValue.COMPLEX_UNIT_DIP, //опции для Glide
-            1f,
-            binding.imMine.context.resources.displayMetrics  //опции для Glide
-        )
-        val radiusInPX = radiusInDP * densityMultiplier //опции для Glide
+
 
 
         Glide.with(binding.imMine.context)
             .load(getCoverArtwork(artworkUrl100.toString()))
-            .transform(RoundedCorners(radiusInPX.toInt()))
             .apply(options)
             .placeholder(R.drawable.ph_media_312)
             .error(R.drawable.ph_media_312)
