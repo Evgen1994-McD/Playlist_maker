@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MotionEvent
@@ -32,16 +34,22 @@ import com.example.playlistmaker.adapters.FavoriteTrackAdapter
 import com.example.playlistmaker.adapters.TrackAdapter
 import com.example.playlistmaker.retrofit.ITunesApi
 import com.example.playlistmaker.retrofit.Track
+import com.example.playlistmaker.retrofit.TrackResponse
 import com.example.playlistmaker.utils.Constants
 import com.example.playlistmaker.utils.OnTrackClickListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
+import retrofit2.Callback
 
 
 class SearchActivity : AppCompatActivity(),
@@ -63,10 +71,13 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var storage: TrackStorage
     private lateinit var myTracks: List<Track>
     private lateinit var myLikeAdapter: FavoriteTrackAdapter //адаптер будущий
-
-
+    private val handler =
+        Handler(Looper.getMainLooper()) // Сделал Хандлер для доступа к главному потоку
+private lateinit var task : Runnable // задача для потока для того чтобы сделать onDebounce
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         val sharedPrefs =
             getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
         val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
@@ -172,6 +183,7 @@ class SearchActivity : AppCompatActivity(),
                 recyclerView.adapter = myLikeAdapter
             }
         }
+
         clearEditText.setOnEditorActionListener { _, actionId, _ ->        // слушатель done-enter - ищет треки когда нажимаем энтер на клаве
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 phForNothingToShow.makeGone()
@@ -215,6 +227,7 @@ class SearchActivity : AppCompatActivity(),
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 logicClearIc(p0)
+                searchDebounce()
                 if (!p0.isNullOrEmpty()) {
                     tvMsgSearch.makeInvisible()
                     btCleanHistory.makeInvisible()
@@ -228,6 +241,8 @@ class SearchActivity : AppCompatActivity(),
             }
         }
         )
+
+
         clearTextFromEditText()  //Логика очистки текста
     }
 
@@ -306,9 +321,9 @@ class SearchActivity : AppCompatActivity(),
             false
         }
     }
-
+/*
     private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
-        CoroutineScope(Dispatchers.IO).launch {      // Используем корутины чтобы не грузить поток метод для поиска песен
+        job = CoroutineScope(Dispatchers.IO).launch {      // Используем корутины чтобы не грузить поток метод для поиска песен
 
             try {
                 val response = iTunesApi.getSong(txtFromInput)
@@ -386,6 +401,93 @@ class SearchActivity : AppCompatActivity(),
 
         }
     }
+*/
+private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
+    // Удаляем предыдущие задания (для предотвращения дублирования)
+    handler.removeCallbacksAndMessages(null)
+
+    // Создаем новый Runnable для выполнения поиска
+    task = Runnable {
+        try {
+            // Вызываем метод getSong, который теперь возвращает Call<TrackResponse>
+            val call = iTunesApi.getSong(txtFromInput)
+
+            // Ставим запрос в очередь и обрабатываем результат асинхронно
+            call.enqueue(object : Callback<TrackResponse> {
+                override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
+                    runOnUiThread {
+                        if (response.isSuccessful) {
+                            val trackResponse = response.body()
+                            val tracks = trackResponse?.results
+
+                            if (tracks.isNullOrEmpty()) {
+                                handleNoResults()
+                            } else {
+                                displayTracks(tracks!!)
+                            }
+                        } else {
+                            handleNoInternetConnection()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                    runOnUiThread {
+                        handleNoInternetConnection()
+                    }
+                }
+            })
+        } catch (e: IOException) {
+            runOnUiThread {
+                handleNoInternetConnection()
+            }
+        }
+    }
+
+    // Запускаем задачу в другом потоке
+    Thread(task).start()
+}
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(task)
+        handler.postDelayed(task, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    // Вспомогательные методы
+    private fun handleNoResults() {
+        val phNts = ContextCompat.getDrawable(this, R.drawable.ph_nothing_to_show_120)
+        phForNothingToShow.setImageDrawable(phNts)
+        phForNothingToShow.makeVisible()
+        msgTopTxt.makeVisible()
+        msgTopTxt.text = getString(R.string.msg_nothing_to_show)
+        tvMsgSearch.makeGone()
+        btCleanHistory.makeGone()
+    }
+
+    private fun displayTracks(tracks: List<Track>) {
+        tvMsgSearch.makeGone()
+        btCleanHistory.makeGone()
+        phForNothingToShow.makeGone()
+        msgBotTxt.makeGone()
+        msgTopTxt.makeGone()
+        buttonNoInternet.makeGone()
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = TrackAdapter(tracks, this)
+        recyclerView.makeVisible()
+    }
+
+    private fun handleNoInternetConnection() {
+        val phNts = ContextCompat.getDrawable(this, R.drawable.ph_no_internet_120)
+        phForNothingToShow.setImageDrawable(phNts)
+        phForNothingToShow.makeVisible()
+        msgTopTxt.makeVisible()
+        msgTopTxt.text = getString(R.string.msg_no_internet_top)
+        msgBotTxt.makeVisible()
+        msgBotTxt.text = getString(R.string.msg_no_internet_bottom)
+        buttonNoInternet.makeVisible()
+        tvMsgSearch.makeGone()
+        btCleanHistory.makeGone()
+    }
 
     private fun View.makeGone() {
         this.visibility = View.GONE // функция для вью гон
@@ -443,5 +545,10 @@ class SearchActivity : AppCompatActivity(),
 
 
     }
+
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L // время до начала автоматического поиска
+    }
+
 
 }
