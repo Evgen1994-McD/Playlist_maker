@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -32,6 +33,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.MainActivity
 import com.example.playlistmaker.adapters.FavoriteTrackAdapter
 import com.example.playlistmaker.adapters.TrackAdapter
+import com.example.playlistmaker.databinding.ActivityMediaBinding
+import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.retrofit.ITunesApi
 import com.example.playlistmaker.retrofit.Track
 import com.example.playlistmaker.retrofit.TrackResponse
@@ -40,6 +43,7 @@ import com.example.playlistmaker.utils.OnTrackClickListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -55,6 +59,7 @@ import retrofit2.Callback
 class SearchActivity : AppCompatActivity(),
     OnTrackClickListener {  // Добавили имлементацию нашего интерфейса OnTrackClickListener для того чтобы определить трек
     private lateinit var clearEditText: AppCompatEditText
+    private lateinit var binding: ActivitySearchBinding // делаю байдинг
 
     private lateinit var txtForSearch: String
     private var textFromInput: String = null.toString()
@@ -71,11 +76,14 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var storage: TrackStorage
     private lateinit var myTracks: List<Track>
     private lateinit var myLikeAdapter: FavoriteTrackAdapter //адаптер будущий
+    private lateinit var pbs: ProgressBar
     private val handler =
         Handler(Looper.getMainLooper()) // Сделал Хандлер для доступа к главному потоку
 private lateinit var task : Runnable // задача для потока для того чтобы сделать onDebounce
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
 
         val sharedPrefs =
@@ -101,6 +109,9 @@ private lateinit var task : Runnable // задача для потока для 
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        pbs = findViewById<ProgressBar>(R.id.pbs)
+
         tvMsgSearch =
             findViewById<TextView>(R.id.tv_msg_search)
 
@@ -115,6 +126,7 @@ private lateinit var task : Runnable // задача для потока для 
 
         phForNothingToShow =
             findViewById<ImageView>(R.id.ph_ntsh_120)
+
 
 
         msgTopTxt =
@@ -184,8 +196,9 @@ private lateinit var task : Runnable // задача для потока для 
             }
         }
 
-        clearEditText.setOnEditorActionListener { _, actionId, _ ->        // слушатель done-enter - ищет треки когда нажимаем энтер на клаве
+      /*  clearEditText.setOnEditorActionListener { _, actionId, _ ->        // слушатель done-enter - ищет треки когда нажимаем энтер на клаве
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                task = Runnable{searchSongs(txtForSearch, iTunesApi)} // инициализировал Таск
                 phForNothingToShow.makeGone()
                 recyclerView.makeGone()
                 msgTopTxt.makeGone()
@@ -197,7 +210,7 @@ private lateinit var task : Runnable // задача для потока для 
 
             }
             false
-        }
+        }  закоментим поиск по done - enter слушателю и сделаем автопоиск !*/
         val backClicker =
             findViewById<Toolbar>(R.id.search_toolbar) // Назад в MainActivity
         backClicker.setNavigationOnClickListener {
@@ -220,6 +233,8 @@ private lateinit var task : Runnable // задача для потока для 
             )  // Появление клавиатуры при нажатии на эдиттекст
         }
 
+        task = Runnable{searchSongs(txtForSearch, iTunesApi)} // инициализ переменную таск в текст ватчере, иначе происходит вылет
+
         clearEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 //  empty
@@ -227,11 +242,22 @@ private lateinit var task : Runnable // задача для потока для 
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 logicClearIc(p0)
-                searchDebounce()
+
+
                 if (!p0.isNullOrEmpty()) {
-                    tvMsgSearch.makeInvisible()
-                    btCleanHistory.makeInvisible()
-                    recyclerView.makeInvisible()
+                    tvMsgSearch.makeGone()
+                    btCleanHistory.makeGone()
+                    recyclerView.makeGone()
+                    pbs.makeVisible()
+
+                    searchDebounce() //  дебаунс автопоиск спустя 2 секунды
+                    txtForSearch = clearEditText.text.toString()
+                    phForNothingToShow.makeGone()
+                    recyclerView.makeGone()
+                    msgTopTxt.makeGone()
+                    msgBotTxt.makeGone()
+                    buttonNoInternet.makeGone()
+
                 }
             }
             // функция логики отображения иконок
@@ -408,6 +434,7 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
 
     // Создаем новый Runnable для выполнения поиска
     task = Runnable {
+
         try {
             // Вызываем метод getSong, который теперь возвращает Call<TrackResponse>
             val call = iTunesApi.getSong(txtFromInput)
@@ -415,17 +442,30 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
             // Ставим запрос в очередь и обрабатываем результат асинхронно
             call.enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
+
                     runOnUiThread {
+
+                            pbs.makeGone()// убираем ПБ после запроса
+
                         if (response.isSuccessful) {
+
                             val trackResponse = response.body()
                             val tracks = trackResponse?.results
 
                             if (tracks.isNullOrEmpty()) {
                                 handleNoResults()
+                                pbs.makeGone()// убираем ПБ после запроса
+
                             } else {
+                                pbs.makeGone()// убираем ПБ после запроса
+
                                 displayTracks(tracks!!)
+
+
                             }
                         } else {
+                            pbs.makeGone()// убираем ПБ после запроса
+
                             handleNoInternetConnection()
                         }
                     }
@@ -433,12 +473,16 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
                     runOnUiThread {
+                        pbs.makeGone()// убираем ПБ после запроса
+
                         handleNoInternetConnection()
                     }
                 }
             })
         } catch (e: IOException) {
             runOnUiThread {
+                pbs.makeGone()// убираем ПБ после запроса
+
                 handleNoInternetConnection()
             }
         }
@@ -449,8 +493,10 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
 }
 
     private fun searchDebounce() {
-        handler.removeCallbacks(task)
-        handler.postDelayed(task, SEARCH_DEBOUNCE_DELAY)
+
+        handler.removeCallbacks(task) //отменить колбек от таск
+        handler.postDelayed(task, SEARCH_DEBOUNCE_DELAY) // поиск
+
     }
 
     // Вспомогательные методы
@@ -549,6 +595,7 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L // время до начала автоматического поиска
     }
+
 
 
 }
