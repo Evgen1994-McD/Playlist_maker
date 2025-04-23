@@ -232,9 +232,6 @@ private lateinit var task : Runnable // задача для потока для 
                 0
             )  // Появление клавиатуры при нажатии на эдиттекст
         }
-        textFromInput = clearEditText.text.toString()
-        txtForSearch = clearEditText.text.toString()
-        task = Runnable{searchSongs(txtForSearch, iTunesApi)} // инициализ переменную таск в текст ватчере, иначе происходит вылет
 
         clearEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -246,10 +243,11 @@ private lateinit var task : Runnable // задача для потока для 
 
 
                 if (!p0.isNullOrEmpty()) {
+                    task = Runnable{searchSongs(txtForSearch, iTunesApi)} // инициализ переменную таск в текст ватчере, иначе происходит вылет
+
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeGone()
-                    textFromInput = clearEditText.text.toString()
                     txtForSearch = clearEditText.text.toString()
 
                     searchDebounce() //  дебаунс автопоиск спустя 2 секунды
