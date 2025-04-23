@@ -549,12 +549,31 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек
-
-        intentAndStartActivity(track)
-        storage.addTrack(track)
+        if (clickDebounce()) { //если нажали более 1 раза за секунду не сработает
+            intentAndStartActivity(track)
+            storage.addTrack(track)
+        }
         // вызову функцию и передам путэкстра
 
     }
+
+
+
+    private var isClickAllowed = true // переменная для дебаунс клика
+
+
+
+
+    private fun clickDebounce() : Boolean {  //Дебаунс защита повторных нажатий на трек
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+
 
     private fun updateTracksFromStorage() { //обновляем треки из хранилища
         val updateTracks = storage.getAllTracks()
@@ -594,8 +613,7 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L // время до начала автоматического поиска
+        private const val CLICK_DEBOUNCE_DELAY = 1000L //время "блока" повторного нажатия на трек
     }
-
-
 
 }
