@@ -232,7 +232,8 @@ private lateinit var task : Runnable // задача для потока для 
                 0
             )  // Появление клавиатуры при нажатии на эдиттекст
         }
-
+        textFromInput = clearEditText.text.toString()
+        txtForSearch = clearEditText.text.toString()
         task = Runnable{searchSongs(txtForSearch, iTunesApi)} // инициализ переменную таск в текст ватчере, иначе происходит вылет
 
         clearEditText.addTextChangedListener(object : TextWatcher {
@@ -248,10 +249,10 @@ private lateinit var task : Runnable // задача для потока для 
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeGone()
-                    pbs.makeVisible()
+                    textFromInput = clearEditText.text.toString()
+                    txtForSearch = clearEditText.text.toString()
 
                     searchDebounce() //  дебаунс автопоиск спустя 2 секунды
-                    txtForSearch = clearEditText.text.toString()
                     phForNothingToShow.makeGone()
                     recyclerView.makeGone()
                     msgTopTxt.makeGone()
@@ -434,6 +435,10 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
 
     // Создаем новый Runnable для выполнения поиска
     task = Runnable {
+        runOnUiThread{
+            pbs.makeVisible()
+        }
+
 
         try {
             // Вызываем метод getSong, который теперь возвращает Call<TrackResponse>
@@ -496,6 +501,8 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
 
         handler.removeCallbacks(task) //отменить колбек от таск
         handler.postDelayed(task, SEARCH_DEBOUNCE_DELAY) // поиск
+
+
 
     }
 
