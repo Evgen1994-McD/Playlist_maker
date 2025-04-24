@@ -610,6 +610,8 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
         intent.putExtra("primaryGenreName", track.primaryGenreName)
         intent.putExtra("country", track.country)
         intent.putExtra("artworkUrl100", track.artworkUrl100)
+        intent.putExtra("previewUrl", track.previewUrl)
+
         intent.putExtra("relieseDate", track.releaseDate)
         startActivity(intent) // запускаем активити
 

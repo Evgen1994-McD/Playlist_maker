@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
@@ -31,7 +32,48 @@ class MediaActivity : AppCompatActivity() {
     private lateinit var artworkUrl100: String
     private lateinit var storage: TrackStorage
     private lateinit var collectionName: String
+    private lateinit var previewUrl : String
+    private var mediaPlayer = MediaPlayer() // делаю медиаплеер
 
+    companion object { // компаньон медиаплеера
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+    }
+
+    private var playerState = STATE_DEFAULT
+
+    private fun preparePlayer() {
+        mediaPlayer.setDataSource(previewUrl)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            binding.play.isEnabled = true
+            playerState = STATE_PREPARED
+        }
+        mediaPlayer.setOnCompletionListener {
+            playerState = STATE_PREPARED
+        }
+    }
+    private fun startPlayer() {
+        mediaPlayer.start()
+        playerState = STATE_PLAYING
+    }
+
+    private fun pausePlayer() {
+        mediaPlayer.pause()
+        playerState = STATE_PAUSED
+    }
+    private fun playbackControl() {
+        when(playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
+            STATE_PREPARED, STATE_PAUSED -> {
+                startPlayer()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,11 +85,21 @@ class MediaActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+previewUrl=""
+
         collectionName = "" // инициализировал
+        preparePlayer() // подготовили плеер
+
 
         binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
             finish()
         }
+
+
+
+
+
+
 
         storage = TrackStorage(this@MediaActivity) // инициализируем экземпляр класса Trackstorage
         val myTracks = storage.getAllTracks() //все треки
@@ -74,6 +126,9 @@ class MediaActivity : AppCompatActivity() {
             loadLastLikedTrack(track)
         }
 
+        binding.play.setOnClickListener {
+            playbackControl()
+        }
 
     }
 
@@ -90,6 +145,8 @@ class MediaActivity : AppCompatActivity() {
     fun intentGetExtraBind() {
         val intent = intent // получаем интент который запустил активность
         val trackName = intent.getStringExtra("trackName")
+        previewUrl = intent.getStringExtra("previewUrl").toString()
+
         val trackTimeMillis = intent.getStringExtra("trackTimeMillis")
         val artistName = intent.getStringExtra("artistName")
         val primaryGenreName = intent.getStringExtra("primaryGenreName")
