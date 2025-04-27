@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.TypedValue
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -21,10 +23,13 @@ import com.example.playlistmaker.SearchActivity
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.retrofit.Track
 import com.example.playlistmaker.utils.Constants
+import kotlinx.coroutines.Runnable
 import okio.IOException
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import kotlin.toString
 
 class MediaActivity : AppCompatActivity() {
@@ -34,6 +39,7 @@ class MediaActivity : AppCompatActivity() {
     private lateinit var collectionName: String
     private lateinit var previewUrl : String
     private var mediaPlayer = MediaPlayer() // делаю медиаплеер
+    private var isPlaying = false // переменная статуса плеера
 
     companion object { // компаньон медиаплеера
         private const val STATE_DEFAULT = 0
@@ -41,6 +47,8 @@ class MediaActivity : AppCompatActivity() {
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
     }
+    private val handler =
+        Handler(Looper.getMainLooper()) // хэндлер для доступа к главному потоку
 
     private var playerState = STATE_DEFAULT
 
@@ -95,6 +103,13 @@ class MediaActivity : AppCompatActivity() {
 
         binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
             finish()
+        }
+
+        while (playerState == STATE_PLAYING){ //бесконечный цикл обновления воспроизведения пока плеер играет
+            progressTimeToTv()
+
+
+            Thread.sleep(300)
         }
 
 
@@ -296,5 +311,14 @@ preparePlayer()
         super.onDestroy()
         mediaPlayer.release()
     }
+
+    fun updateProgress() {
+
+       val formattedTime =  SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+           binding.progressTime.text = formattedTime // обновили время воспроизведения
+       }
+
+    }
+
 
 }
