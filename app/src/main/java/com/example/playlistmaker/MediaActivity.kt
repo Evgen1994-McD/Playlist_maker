@@ -57,12 +57,16 @@ class MediaActivity : AppCompatActivity() {
     }
     private fun startPlayer() {
         mediaPlayer.start()
+        binding.play.makeInvisible()
+        binding.pause.makeVisible()
         playerState = STATE_PLAYING
     }
 
     private fun pausePlayer() {
         mediaPlayer.pause()
         playerState = STATE_PAUSED
+        binding.play.makeVisible()
+        binding.pause.makeInvisible()
     }
     private fun playbackControl() {
         when(playerState) {
@@ -85,10 +89,8 @@ class MediaActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-previewUrl=""
 
         collectionName = "" // инициализировал
-        preparePlayer() // подготовили плеер
 
 
         binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
@@ -121,6 +123,7 @@ previewUrl=""
         {
             intentGetExtraBind() // запустим интент
 
+
         } else if (!myTracks.isNullOrEmpty()) {
             val track = myTracks[0] // если myTracks не пуст, возьмем свежий трек для плеера
             loadLastLikedTrack(track)
@@ -129,6 +132,10 @@ previewUrl=""
         binding.play.setOnClickListener {
             playbackControl()
         }
+        binding.pause.setOnClickListener {
+            playbackControl()
+        }
+
 
     }
 
@@ -188,6 +195,8 @@ previewUrl=""
             .error(R.drawable.ph_media_312)
             .into(binding.imMine)
 
+        preparePlayer() // подготовили плеер
+
     }
 
     fun loadLastLikedTrack(track: Track) {// убираем поле альбом если нет альбома
@@ -211,11 +220,11 @@ previewUrl=""
         binding.tvGenre.text = primaryGenreName
         binding.tvCountry.text = country
         binding.tvTime.text = formatMillisecondsAsMinSec(trackTimeMillis!!.toLong())
-
+previewUrl = track.previewUrl
         binding.tvGroup.text = artistName
         binding.tvTrackName.text = trackName
         binding.tvYear.text = formattedYear(relieseDate.toString())
-
+preparePlayer()
 
         val options = RequestOptions().centerCrop()//опции для Glide
         val radiusInDP = 2f //опции для Glide
@@ -277,4 +286,15 @@ previewUrl=""
     private fun View.makeInvisible() {
         this.visibility = View.INVISIBLE // функция для вью инвизибл
     }
+
+    override fun onPause() { //пауза когда сворачиваем
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() { // закрываем плеер при завершении работы
+        super.onDestroy()
+        mediaPlayer.release()
+    }
+
 }
