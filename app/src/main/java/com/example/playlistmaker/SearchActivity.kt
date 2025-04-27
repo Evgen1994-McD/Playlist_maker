@@ -196,21 +196,7 @@ private lateinit var task : Runnable // задача для потока для 
             }
         }
 
-      /*  clearEditText.setOnEditorActionListener { _, actionId, _ ->        // слушатель done-enter - ищет треки когда нажимаем энтер на клаве
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                task = Runnable{searchSongs(txtForSearch, iTunesApi)} // инициализировал Таск
-                phForNothingToShow.makeGone()
-                recyclerView.makeGone()
-                msgTopTxt.makeGone()
-                msgBotTxt.makeGone()
-                buttonNoInternet.makeGone()
-                txtForSearch = clearEditText.text.toString() // текст для поиска
-                searchSongs(txtForSearch, iTunesApi) // передаю параметры для поиска в метод
-                true
 
-            }
-            false
-        }  закоментим поиск по done - enter слушателю и сделаем автопоиск !*/
         val backClicker =
             findViewById<Toolbar>(R.id.search_toolbar) // Назад в MainActivity
         backClicker.setNavigationOnClickListener {
@@ -346,87 +332,7 @@ private lateinit var task : Runnable // задача для потока для 
             false
         }
     }
-/*
-    private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
-        job = CoroutineScope(Dispatchers.IO).launch {      // Используем корутины чтобы не грузить поток метод для поиска песен
 
-            try {
-                val response = iTunesApi.getSong(txtFromInput)
-                val trackResponse = response.body()
-                val tracks =
-                    trackResponse?.results   // не получалось пока не изменил тип возвращаемого значения в интерфейсе !
-                runOnUiThread {  // главный поток
-                    if (response.isSuccessful) {
-                        if (tracks.isNullOrEmpty()) {
-                            val phNts = ContextCompat.getDrawable(
-                                this@SearchActivity,
-                                R.drawable.ph_nothing_to_show_120
-                            )
-                            phForNothingToShow.setImageDrawable(phNts)
-                            phForNothingToShow.makeVisible()
-                            msgTopTxt.makeVisible()
-                            msgTopTxt.text = getString(R.string.msg_nothing_to_show)
-                            tvMsgSearch.makeGone() // Скрываю сообщение " Вы искали"
-                            btCleanHistory.makeGone() // Скрываю кнопку Очистить историю
-
-                        } else {
-
-
-                            tvMsgSearch.makeGone() // Скрываю сообщение " Вы искали"
-                            btCleanHistory.makeGone() // Скрываю кнопку Очистить историю
-                            phForNothingToShow.makeGone()
-                            msgBotTxt.makeGone()
-                            msgTopTxt.makeGone()
-                            buttonNoInternet.makeGone()
-                            recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
-                            recyclerView.adapter = TrackAdapter(
-                                tracks,
-                                this@SearchActivity
-                            ) // передал this@SearchActivity так как он имплементирует интефейс onTrackClickListener
-                            recyclerView.makeVisible()
-
-                        }
-                    } else {
-                        val phNts = ContextCompat.getDrawable(
-                            this@SearchActivity,
-                            R.drawable.ph_no_internet_120
-                        )
-                        phForNothingToShow.setImageDrawable(phNts) // To do
-                        phForNothingToShow.makeVisible()
-                        msgTopTxt.makeVisible()
-                        msgTopTxt.text = getString(R.string.msg_no_internet_top)
-                        msgBotTxt.makeVisible()
-                        msgBotTxt.text = getString(R.string.msg_no_internet_bottom)
-                        buttonNoInternet.makeVisible()
-                        tvMsgSearch.makeGone() // Скрываю сообщение " Вы искали"
-                        btCleanHistory.makeGone() // Скрываю кнопку Очистить историю
-
-                    }
-                }
-            } catch (e: IOException) {
-                runOnUiThread {
-                    val phNts = ContextCompat.getDrawable(
-                        this@SearchActivity,
-                        R.drawable.ph_no_internet_120
-                    )
-                    phForNothingToShow.setImageDrawable(phNts) // To do
-                    phForNothingToShow.makeVisible()
-                    msgTopTxt.makeVisible()
-                    msgTopTxt.text = getString(R.string.msg_no_internet_top)
-                    msgBotTxt.makeVisible()
-                    msgBotTxt.text = getString(R.string.msg_no_internet_bottom)
-                    buttonNoInternet.makeVisible()
-                    tvMsgSearch.makeGone() // Скрываю сообщение " Вы искали"
-                    btCleanHistory.makeGone() // Скрываю кнопку Очистить историю
-
-                }
-
-
-            }
-
-        }
-    }
-*/
 private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
     // Удаляем предыдущие задания (для предотвращения дублирования)
     handler.removeCallbacksAndMessages(null)

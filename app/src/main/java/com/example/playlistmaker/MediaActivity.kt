@@ -1,11 +1,13 @@
 package com.example.playlistmaker
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -41,11 +43,14 @@ class MediaActivity : AppCompatActivity() {
     private var mediaPlayer = MediaPlayer() // делаю медиаплеер
     private var isPlaying = false // переменная статуса плеера
 
+
+
     companion object { // компаньон медиаплеера
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
+        private const val default_time = "00:00"
     }
     private val handler =
         Handler(Looper.getMainLooper()) // хэндлер для доступа к главному потоку
@@ -55,15 +60,25 @@ class MediaActivity : AppCompatActivity() {
     private fun preparePlayer() {
         mediaPlayer.setDataSource(previewUrl)
         mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
+        mediaPlayer.setOnPreparedListener { // слушатель готовности к воспроизведению
             binding.play.isEnabled = true
             playerState = STATE_PREPARED
+            startUpdateProgress()
         }
-        mediaPlayer.setOnCompletionListener {
+        mediaPlayer.setOnCompletionListener {  //слушатель завершения воспроизведения
             playerState = STATE_PREPARED
+            stopUpdateProgress()
+            binding.pause.makeInvisible()
+            binding.play.makeVisible()
+            binding.progressTime.text = default_time
+            Log.d("MediaPlayer", "Проигрывание завершено")
         }
+
     }
+
+
     private fun startPlayer() {
+        Log.d("MediaPlayer", "стартанули плеер")
         mediaPlayer.start()
         binding.play.makeInvisible()
         binding.pause.makeVisible()
@@ -105,12 +120,10 @@ class MediaActivity : AppCompatActivity() {
             finish()
         }
 
-        while (playerState == STATE_PLAYING){ //бесконечный цикл обновления воспроизведения пока плеер играет
-            progressTimeToTv()
 
 
-            Thread.sleep(300)
-        }
+
+
 
 
 
@@ -146,9 +159,14 @@ class MediaActivity : AppCompatActivity() {
 
         binding.play.setOnClickListener {
             playbackControl()
+            isPlaying = true
+            startUpdateProgress() /*переменную при нажатии на плей перевели в тру и начали обновлять
+            прогресс. Так же и с кнопкой пауза, ниже */
         }
         binding.pause.setOnClickListener {
             playbackControl()
+            isPlaying = false
+            stopUpdateProgress()
         }
 
 
@@ -310,7 +328,22 @@ preparePlayer()
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
         mediaPlayer.release()
+        stopUpdateProgress()
     }
+
+
+    fun stopUpdateProgress() {
+    handler.removeCallbacksAndMessages(null) // функция отмены колбеков от хендлер
+
+    }
+
+    @SuppressLint("SuspiciousIndentation")
+    fun startUpdateProgress() {
+    if(!isPlaying) return
+        updateProgress()
+        handler.postDelayed({startUpdateProgress()}, 300) // вызывается каждые 300 мс
+    }
+
 
     fun updateProgress() {
 
@@ -321,4 +354,3 @@ preparePlayer()
     }
 
 
-}
