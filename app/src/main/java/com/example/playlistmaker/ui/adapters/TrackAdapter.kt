@@ -1,10 +1,10 @@
-package com.example.playlistmaker.adapters
+package com.example.playlistmaker.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.retrofit.Track
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.utils.OnTrackClickListener
 
 class TrackAdapter(private val tracks: List<Track>?,

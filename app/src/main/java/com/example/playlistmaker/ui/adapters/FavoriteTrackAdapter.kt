@@ -1,15 +1,15 @@
-package com.example.playlistmaker.adapters
+package com.example.playlistmaker.ui.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.retrofit.Track
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.utils.OnTrackClickListener
 
 class FavoriteTrackAdapter(private var tracks: MutableList<Track>?,
-    private val listener: OnTrackClickListener
+                           private val listener: OnTrackClickListener
                       // тоже добавили листенер в конструктор класса
                    ) : RecyclerView.Adapter<FavoriteTrackViewHolder>() {
 

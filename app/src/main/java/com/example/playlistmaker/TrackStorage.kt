@@ -1,10 +1,9 @@
 package com.example.playlistmaker
 
 import android.content.Context
-import com.example.playlistmaker.retrofit.Track
+import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import androidx.core.content.edit
 import com.example.playlistmaker.utils.Constants
 
 class TrackStorage(private val context: Context) {

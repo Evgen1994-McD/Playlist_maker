@@ -1,4 +1,4 @@
-package com.example.playlistmaker.adapters
+package com.example.playlistmaker.ui.adapters
 
 import android.annotation.SuppressLint
 import android.util.TypedValue
@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
-import com.example.playlistmaker.retrofit.Track
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.utils.OnTrackClickListener
 import java.time.format.DateTimeFormatter
 import java.time.LocalTime

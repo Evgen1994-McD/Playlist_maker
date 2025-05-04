@@ -1,8 +1,8 @@
-package com.example.playlistmaker.retrofit
+package com.example.playlistmaker.data.network
+import com.example.playlistmaker.domain.models.TrackResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
-import retrofit2.Response
 
 interface ITunesApi {
     @GET("/search?entity=song")
