@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.TrackStorage.Companion.PREFS_NAME
+import com.example.playlistmaker.data.TrackStorage.Companion.PREFS_NAME
 import com.example.playlistmaker.utils.Constants
 
 class App : Application() { // класс АПП для смены темы

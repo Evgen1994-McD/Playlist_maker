@@ -1,7 +1,6 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.activity
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -26,24 +25,26 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.ui.adapters.FavoriteTrackAdapter
-import com.example.playlistmaker.ui.adapters.TrackAdapter
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.App
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.TrackStorage
 import com.example.playlistmaker.data.network.ITunesApi
+import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.models.TrackResponse
+import com.example.playlistmaker.ui.adapters.FavoriteTrackAdapter
+import com.example.playlistmaker.ui.adapters.TrackAdapter
 import com.example.playlistmaker.utils.Constants
 import com.example.playlistmaker.utils.OnTrackClickListener
 import kotlinx.coroutines.Runnable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
-import retrofit2.Callback
-
 
 class SearchActivity : AppCompatActivity(),
     OnTrackClickListener {  // Добавили имлементацию нашего интерфейса OnTrackClickListener для того чтобы определить трек
@@ -76,7 +77,7 @@ private lateinit var task : Runnable // задача для потока для 
 
 
         val sharedPrefs =
-            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
+            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
         val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
         if (theme.hasBooleanValue(this@SearchActivity, Constants.KEY_THEME_MODE)) {
             var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
@@ -86,7 +87,7 @@ private lateinit var task : Runnable // задача для потока для 
         }
 
         val sharedprefs = getSharedPreferences(
-            TrackStorage.PREFS_NAME,
+            TrackStorage.Companion.PREFS_NAME,
             MODE_PRIVATE
         ) //Объявили sharedPreferences для подписки в дальнейшем на обновления
 
@@ -192,7 +193,7 @@ private lateinit var task : Runnable // задача для потока для 
             finish()
         }
         val inputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // Для того чтобы спрятать клаву
+            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager // Для того чтобы спрятать клаву
 
         savedInstanceState?.let {     // Проверяем, есть ли сохранённый текст в эдит тексте
             val savedText = it.getString(keyForWatcher)
@@ -218,7 +219,12 @@ private lateinit var task : Runnable // задача для потока для 
 
 
                 if (!p0.isNullOrEmpty()) {
-                    task = Runnable{searchSongs(txtForSearch, iTunesApi)} // инициализ переменную таск в текст ватчере, иначе происходит вылет
+                    task = kotlinx.coroutines.Runnable {
+                        searchSongs(
+                            txtForSearch,
+                            iTunesApi
+                        )
+                    } // инициализ переменную таск в текст ватчере, иначе происходит вылет
 
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
@@ -254,7 +260,7 @@ private lateinit var task : Runnable // задача для потока для 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         var clearEditText: EditText =  // инициализирую эдиттекст
-            findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.search_stroke)
+            findViewById<AppCompatEditText>(R.id.search_stroke)
         // Извлечение данных из Bundle
         val savedText = savedInstanceState.getString(keyForWatcher)
         if (savedText != null) {
@@ -290,7 +296,7 @@ private lateinit var task : Runnable // задача для потока для 
         clearEditText =
             findViewById<AppCompatEditText>(R.id.search_stroke)
         val inputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         clearEditText.setOnTouchListener { view, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 val drawableEndBounds = clearEditText.compoundDrawables[2]?.bounds
@@ -327,8 +333,8 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
     handler.removeCallbacksAndMessages(null)
 
     // Создаем новый Runnable для выполнения поиска
-    task = Runnable {
-        runOnUiThread{
+    task = kotlinx.coroutines.Runnable {
+        runOnUiThread {
             pbs.makeVisible()
         }
 
@@ -339,11 +345,14 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
 
             // Ставим запрос в очередь и обрабатываем результат асинхронно
             call.enqueue(object : Callback<TrackResponse> {
-                override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
+                override fun onResponse(
+                    call: Call<TrackResponse>,
+                    response: Response<TrackResponse>
+                ) {
 
                     runOnUiThread {
 
-                            pbs.makeGone()// убираем ПБ после запроса
+                        pbs.makeGone()// убираем ПБ после запроса
 
                         if (response.isSuccessful) {
 
@@ -484,7 +493,7 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
     // Слушатель для отслеживания изменений в SharedPreferences
     private val sharedPrefListener =
         SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if (key == TrackStorage.TRACKS_KEY) {
+            if (key == TrackStorage.Companion.TRACKS_KEY) {
                 // Логика обновления треков
                 updateTracksFromStorage()
             }

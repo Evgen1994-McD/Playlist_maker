@@ -1,16 +1,18 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.App
+import com.example.playlistmaker.ui.activity.MediaActivity
+import com.example.playlistmaker.R
+import com.example.playlistmaker.ui.activity.SearchActivity
 import com.example.playlistmaker.SettingsActivity
 import com.example.playlistmaker.utils.Constants
 
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val sharedPrefs =
-            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
+            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
         val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
         if(theme.hasBooleanValue(this@MainActivity, Constants.KEY_THEME_MODE)) {
             var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)

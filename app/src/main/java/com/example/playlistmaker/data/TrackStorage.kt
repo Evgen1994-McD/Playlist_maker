@@ -1,10 +1,10 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data
 
 import android.content.Context
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.utils.Constants
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.example.playlistmaker.utils.Constants
 
 class TrackStorage(private val context: Context) {
     companion object {
@@ -67,5 +67,3 @@ class TrackStorage(private val context: Context) {
         }
 
             }
-
-

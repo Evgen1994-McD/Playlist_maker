@@ -1,7 +1,6 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.activity
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -12,12 +11,15 @@ import android.util.TypedValue
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
-import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.example.playlistmaker.App
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.TrackStorage
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.utils.Constants
@@ -26,7 +28,6 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import kotlin.toString
 
 class MediaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
@@ -130,7 +131,7 @@ class MediaActivity : AppCompatActivity() {
 
 
         val sharedPrefs =
-            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
+            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
         val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
         if (theme.hasBooleanValue(this@MediaActivity, Constants.KEY_THEME_MODE)) {
             var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
@@ -346,5 +347,3 @@ preparePlayer()
        }
 
     }
-
-
