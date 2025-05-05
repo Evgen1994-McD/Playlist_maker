@@ -1,4 +1,4 @@
-package com.example.playlistmaker.utils
+package com.example.playlistmaker.data
 
 object Constants {
     const val TRACK_STORAGE_PREFS_NAME = "TRACK_STORAGE_PREFERENCES" // файл sharedpreferences для любимых треков

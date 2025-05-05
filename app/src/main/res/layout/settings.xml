@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     style="@style/Settings_Day_night_style"
      android:id="@+id/settings"
-    tools:context=".SettingsActivity"
+    tools:context=".ui.activity.SettingsActivity"
 
     >
 

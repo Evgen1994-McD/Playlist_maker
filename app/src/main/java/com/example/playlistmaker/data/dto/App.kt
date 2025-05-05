@@ -1,11 +1,10 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.dto
 
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.data.TrackStorage.Companion.PREFS_NAME
-import com.example.playlistmaker.utils.Constants
+import com.example.playlistmaker.data.Constants
 
 class App : Application() { // класс АПП для смены темы
 
@@ -15,7 +14,10 @@ class App : Application() { // класс АПП для смены темы
     }
 
     fun hasBooleanValue(context: Context, key: String): Boolean {
-        val sharedPref = context.getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
+        val sharedPref = context.getSharedPreferences(
+            Constants.SHARED_PREF_THEME_NAME,
+            MODE_PRIVATE
+        )
         return sharedPref.contains(key)
     }
 

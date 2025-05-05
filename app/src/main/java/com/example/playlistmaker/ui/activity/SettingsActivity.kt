@@ -1,19 +1,21 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.activity
 
-import android.app.UiModeManager
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.playlistmaker.utils.Constants
+import com.example.playlistmaker.data.dto.App
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.Constants
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,22 +30,22 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
         val backClicker =
-            findViewById<androidx.appcompat.widget.Toolbar>(R.id.settings_toolbar_day) // Назад в MainActivity
+            findViewById<Toolbar>(R.id.settings_toolbar_day) // Назад в MainActivity
         backClicker.setNavigationOnClickListener {
             finish()
         }
         val shareTheAppClicker = // Кликер поделиться приложением
-            findViewById<com.google.android.material.textview.MaterialTextView>(R.id.shareApp)
+            findViewById<MaterialTextView>(R.id.shareApp)
         shareTheAppClicker.setOnClickListener {
             shareApp(this@SettingsActivity)
         }
         val mesToSuppClicker = // Пишем в поддержку
-            findViewById<com.google.android.material.textview.MaterialTextView>(R.id.sMesToSuport)
+            findViewById<MaterialTextView>(R.id.sMesToSuport)
         mesToSuppClicker.setOnClickListener {
             sendSuppEmail()  //Здесь будет вызван метод
         }
         val userAssetClicker =
-            findViewById<com.google.android.material.textview.MaterialTextView>(R.id.userAssetUri)
+            findViewById<MaterialTextView>(R.id.userAssetUri)
         userAssetClicker.setOnClickListener {
             // Ссылка, которую нужно открыть
             val url = getString(R.string.Url_userasset)
@@ -54,7 +56,7 @@ class SettingsActivity : AppCompatActivity() {
         val switcherTheme = findViewById<SwitchMaterial>(R.id.switchTheme)
 
         val sharedPrefs =
-            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
+            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
 
         val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
         if(theme.hasBooleanValue(this@SettingsActivity, Constants.KEY_THEME_MODE)) {

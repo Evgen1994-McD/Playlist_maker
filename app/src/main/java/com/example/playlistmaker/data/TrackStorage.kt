@@ -2,7 +2,7 @@ package com.example.playlistmaker.data
 
 import android.content.Context
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.utils.Constants
+import com.example.playlistmaker.data.Constants
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

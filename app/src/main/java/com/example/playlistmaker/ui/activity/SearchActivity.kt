@@ -25,7 +25,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.App
+import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.TrackStorage
 import com.example.playlistmaker.data.network.ITunesApi
@@ -34,8 +34,8 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.models.TrackResponse
 import com.example.playlistmaker.ui.adapters.FavoriteTrackAdapter
 import com.example.playlistmaker.ui.adapters.TrackAdapter
-import com.example.playlistmaker.utils.Constants
-import com.example.playlistmaker.utils.OnTrackClickListener
+import com.example.playlistmaker.data.Constants
+import com.example.playlistmaker.data.OnTrackClickListener
 import kotlinx.coroutines.Runnable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
