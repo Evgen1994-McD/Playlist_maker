@@ -43,7 +43,7 @@ class TrackViewHolder(itemView: View, listener: OnTrackClickListener) : Recycler
     fun bind(track: Track) {
         trackName.text = track.trackName
         artistName.text = track.artistName
-        trackTime.text = formatMillisecondsAsMinSec(track.trackTimeMillis.toLong())
+        trackTime.text = track.trackTimeMillis// formatMillisecondsAsMinSec(track.trackTimeMillis.toLong())
 
 
         Glide.with(itemView.context)

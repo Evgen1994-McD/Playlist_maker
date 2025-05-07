@@ -11,7 +11,7 @@ import com.example.playlistmaker.data.OnTrackClickListener
 class FavoriteTrackAdapter(private var tracks: MutableList<Track>?,
                            private val listener: OnTrackClickListener
                       // тоже добавили листенер в конструктор класса
-                   ) : RecyclerView.Adapter<FavoriteTrackViewHolder>() {
+                   ) : RecyclerView.Adapter<TrackViewHolder>() {
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateData(newTracks: MutableList<Track>) {
@@ -20,12 +20,12 @@ class FavoriteTrackAdapter(private var tracks: MutableList<Track>?,
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteTrackViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
-        return FavoriteTrackViewHolder(view)
+        return TrackViewHolder(view, listener)
     }
 
-    override fun onBindViewHolder(holder: FavoriteTrackViewHolder, position: Int)  {
+    override fun onBindViewHolder(holder: TrackViewHolder, position: Int)  {
         holder.itemView.setOnClickListener {
             listener.onTrackClicked(tracks!![position])
         }

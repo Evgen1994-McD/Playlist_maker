@@ -4,6 +4,8 @@ import com.example.playlistmaker.data.dto.TrackResponse
 import com.example.playlistmaker.data.dto.TrackSearchRequest
 import com.example.playlistmaker.domain.api.TrackRepository
 import com.example.playlistmaker.domain.models.Track
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
 
@@ -14,7 +16,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                 Track(
                     it.trackId,
                     it.artistName,
-                    it.trackTimeMillis,
+                    formatMillisecondsAsMinSec(it.trackTimeMillis.toLong()), // преобразую и пеоедам время сразу
                     it.artworkUrl100,
                     it.trackName,
                     it.previewUrl,
@@ -28,4 +30,10 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
             return emptyList()
         }
     }
+    fun formatMillisecondsAsMinSec(milliseconds: Long): String { // функция перевода времени
+        val localTime = LocalTime.ofNanoOfDay(milliseconds * 1_000_000)
+        val formatter = DateTimeFormatter.ofPattern("mm:ss")
+        return localTime.format(formatter)
+    }
+
 }
