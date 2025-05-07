@@ -1,6 +1,6 @@
 package com.example.playlistmaker.domain.models
 
-data class TrackResponse(
+data class TrackResponse1(
     val resultCount: Int,
     val results: List<Track>
 )

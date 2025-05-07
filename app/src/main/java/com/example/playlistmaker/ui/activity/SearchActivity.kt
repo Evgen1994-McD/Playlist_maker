@@ -25,17 +25,20 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.data.dto.App
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.TrackStorage
-import com.example.playlistmaker.data.network.ITunesApi
-import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.models.TrackResponse
-import com.example.playlistmaker.ui.adapters.FavoriteTrackAdapter
-import com.example.playlistmaker.ui.adapters.TrackAdapter
 import com.example.playlistmaker.data.Constants
 import com.example.playlistmaker.data.OnTrackClickListener
+import com.example.playlistmaker.data.TrackStorage
+import com.example.playlistmaker.data.dto.App
+import com.example.playlistmaker.data.dto.TrackDto
+import com.example.playlistmaker.data.dto.TrackResponse
+import com.example.playlistmaker.data.network.ITunesApi
+import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.domain.api.TrackInteractor
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.adapters.FavoriteTrackAdapter
+import com.example.playlistmaker.ui.adapters.TrackAdapter
 import kotlinx.coroutines.Runnable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -74,6 +77,8 @@ private lateinit var task : Runnable // задача для потока для 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val tracckInteractor = Creator.provideTracksInteractor() // Создал интерактор?
 
 
         val sharedPrefs =
@@ -150,10 +155,10 @@ private lateinit var task : Runnable // задача для потока для 
             msgBotTxt.makeGone()
             buttonNoInternet.makeGone()
             txtForSearch = clearEditText.text.toString() // текст для поиска
-            searchSongs(
+            /* searchSongs(
                 txtForSearch,
                 iTunesApi
-            ) // передаю параметры для поиска в метод. Пробую передать ту же логику, что и в поиске, ведь кнопку будет видно только при определенных условиях
+           )*/  // передаю параметры для поиска в метод. Пробую передать ту же логику, что и в поиске, ведь кнопку будет видно только при определенных условиях
 
         }
 
@@ -219,17 +224,29 @@ private lateinit var task : Runnable // задача для потока для 
 
 
                 if (!p0.isNullOrEmpty()) {
+                    // task = kotlinx.coroutines.Runnable {
+                    //   searchSongs(
+                    //     txtForSearch,
+                    //   iTunesApi
+                    // )
+                    txtForSearch = clearEditText.text.toString()
+
                     task = kotlinx.coroutines.Runnable {
-                        searchSongs(
+                        tracckInteractor.searchTracks(
                             txtForSearch,
-                            iTunesApi
-                        )
-                    } // инициализ переменную таск в текст ватчере, иначе происходит вылет
+                            object : TrackInteractor.TracksConsumer {
+                                override fun consume(foundTracks: List<Track>) {
+                                    runOnUiThread {
+                                        displayTracks(foundTracks!!)
+                                    }
+                                }
+                            })
+                    }
+                }// инициализ переменную таск в текст ватчере, иначе происходит вылет
 
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeGone()
-                    txtForSearch = clearEditText.text.toString()
 
                     searchDebounce() //  дебаунс автопоиск спустя 2 секунды
                     phForNothingToShow.makeGone()
@@ -239,7 +256,7 @@ private lateinit var task : Runnable // задача для потока для 
                     buttonNoInternet.makeGone()
 
                 }
-            }
+           // }
             // функция логики отображения иконок
 
             override fun afterTextChanged(p0: Editable?) {
@@ -328,7 +345,7 @@ private lateinit var task : Runnable // задача для потока для 
         }
     }
 
-private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
+/* private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
     // Удаляем предыдущие задания (для предотвращения дублирования)
     handler.removeCallbacksAndMessages(null)
 
@@ -397,7 +414,7 @@ private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
 
     // Запускаем задачу в другом потоке
     Thread(task).start()
-}
+} */
 
     private fun searchDebounce() {
 
