@@ -205,7 +205,7 @@ class MediaActivity : AppCompatActivity() {
         binding.tvGenre.text = primaryGenreName
         binding.tvCountry.text = country
         binding.tvAlbum.text = collectionName
-        binding.tvTime.text = formatMillisecondsAsMinSec(trackTimeMillis!!.toLong())
+        binding.tvTime.text = trackTimeMillis
         binding.tvYear.text = formattedYear(relieseDate.toString())
 
         binding.tvGroup.text = artistName
@@ -247,7 +247,7 @@ class MediaActivity : AppCompatActivity() {
         artworkUrl100 = track.artworkUrl100
         binding.tvGenre.text = primaryGenreName
         binding.tvCountry.text = country
-        binding.tvTime.text = formatMillisecondsAsMinSec(trackTimeMillis!!.toLong())
+        binding.tvTime.text = trackTimeMillis
 previewUrl = track.previewUrl
         binding.tvGroup.text = artistName
         binding.tvTrackName.text = trackName

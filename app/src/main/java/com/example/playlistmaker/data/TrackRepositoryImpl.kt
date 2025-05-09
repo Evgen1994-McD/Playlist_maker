@@ -14,22 +14,23 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
         if (response.resultCode == 200) {
             return (response as TrackResponse).results.map {
                 Track(
-                    it.trackId,
+                    it.trackName,
                     it.artistName,
                     formatMillisecondsAsMinSec(it.trackTimeMillis.toLong()), // преобразую и пеоедам время сразу
                     it.artworkUrl100,
-                    it.trackName,
-                    it.previewUrl,
+                    it.trackId,
                     it.collectionName,
                     it.releaseDate,
+                    it.primaryGenreName,
                     it.country,
-                    it.primaryGenreName
+                    it.previewUrl,
                 )
             }
         } else {
             return emptyList()
         }
     }
+
     fun formatMillisecondsAsMinSec(milliseconds: Long): String { // функция перевода времени
         val localTime = LocalTime.ofNanoOfDay(milliseconds * 1_000_000)
         val formatter = DateTimeFormatter.ofPattern("mm:ss")
