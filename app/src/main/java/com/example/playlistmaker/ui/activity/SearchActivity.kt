@@ -29,7 +29,7 @@ import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.Constants
 import com.example.playlistmaker.data.OnTrackClickListener
-import com.example.playlistmaker.data.FavoriteTrackRepositoryImpl
+import com.example.playlistmaker.data.repositories.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.data.network.ITunesApi
 import com.example.playlistmaker.databinding.ActivitySearchBinding

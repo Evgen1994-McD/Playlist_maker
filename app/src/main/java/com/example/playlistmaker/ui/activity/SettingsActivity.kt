@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.Constants
@@ -18,6 +19,8 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
+    val settingsInteractor = Creator.provideSettingsInteractor()
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -42,14 +45,14 @@ class SettingsActivity : AppCompatActivity() {
         val mesToSuppClicker = // Пишем в поддержку
             findViewById<MaterialTextView>(R.id.sMesToSuport)
         mesToSuppClicker.setOnClickListener {
-            sendSuppEmail()  //Здесь будет вызван метод
+            sendSuppEmail(this@SettingsActivity)  //Здесь будет вызван метод
         }
         val userAssetClicker =
             findViewById<MaterialTextView>(R.id.userAssetUri)
         userAssetClicker.setOnClickListener {
             // Ссылка, которую нужно открыть
             val url = getString(R.string.Url_userasset)
-            openUrlInDefaultBrowser(url)
+            openUrlInDefaultBrowser(url, this@SettingsActivity)
         }
 
         // Найти SwitchMaterial по id
@@ -84,47 +87,26 @@ class SettingsActivity : AppCompatActivity() {
         }
 
 
+
+
     }
 
     fun shareApp(context: Context) {  // Метод - интент для отправки сообщений
-        val sendIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(
-                Intent.EXTRA_TEXT,
-                context.getString(R.string.Url_androidDeveloper)
-            ) // Ссылка на курс андроид разработки
-            type = "text/plain"
-        }
-        context.startActivity(
-            Intent.createChooser(sendIntent, context.getString(R.string.share_stroke))
-        )
+        settingsInteractor.shareApp(context)
+
     }
 
-    private fun sendSuppEmail() {  // Приватный метод для письма в поддержку
+
+    private fun sendSuppEmail(context: Context) {  // Приватный метод для письма в поддержку
         val myEmail = getString(R.string.address)
         val subject = getString(R.string.subject)
         val body = getString(R.string.body)
 
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            // Указание категории электронной почты
-            type = "message/rfc822"
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(myEmail))
-            putExtra(Intent.EXTRA_SUBJECT, subject)
-            putExtra(Intent.EXTRA_TEXT, body)
-        }
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
-        } else {
-            Toast.makeText(this, getString(R.string.noApp_stroke), Toast.LENGTH_SHORT)
-                .show()
-        }
+        settingsInteractor.sendSuppEmail(context, myEmail, subject, body)
     }
 
-    private fun openUrlInDefaultBrowser(url: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-            addCategory(Intent.CATEGORY_BROWSABLE)
-        }
-        startActivity(intent)
+    private fun openUrlInDefaultBrowser(url: String, context: Context) {
+       settingsInteractor.openUrlInDefaultBrowser(context,url)
     }
 
 }

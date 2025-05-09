@@ -2,14 +2,18 @@ package com.example.playlistmaker
 
 import android.app.Activity
 import android.content.Context
-import com.example.playlistmaker.data.FavoriteTrackRepositoryImpl
-import com.example.playlistmaker.data.TrackRepositoryImpl
+import com.example.playlistmaker.data.repositories.FavoriteTrackRepositoryImpl
+import com.example.playlistmaker.data.repositories.TrackRepositoryImpl
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
+import com.example.playlistmaker.data.repositories.SettingsReposytoryImpl
 import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.api.FavoriteTrackRepository
+import com.example.playlistmaker.domain.api.SettingsInteractor
+import com.example.playlistmaker.domain.api.SettingsRepository
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.api.TrackRepository
 import com.example.playlistmaker.domain.impl.FavoriteTrackInteractorImpl
+import com.example.playlistmaker.domain.impl.SettingsInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksInteractorImpl
 import com.example.playlistmaker.ui.activity.SearchActivity
 
@@ -28,6 +32,14 @@ object Creator {
 
     fun provideFaworiteInteractor(context: Context) : FavoriteTrackInteractor {
         return FavoriteTrackInteractorImpl(getFavoriteTrackRepository(context))
+    }
+
+    private fun getSettingsRepository(): SettingsRepository{
+        return SettingsReposytoryImpl()
+    }
+
+    fun provideSettingsInteractor(): SettingsInteractor {
+        return SettingsInteractorImpl(getSettingsRepository())
     }
 
 

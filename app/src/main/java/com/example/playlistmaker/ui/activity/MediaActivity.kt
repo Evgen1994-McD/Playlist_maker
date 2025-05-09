@@ -19,7 +19,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.FavoriteTrackRepositoryImpl
+import com.example.playlistmaker.data.repositories.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.data.Constants
