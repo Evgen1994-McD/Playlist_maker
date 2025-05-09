@@ -36,7 +36,6 @@ import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.adapters.FavoriteTrackAdapter
 import com.example.playlistmaker.ui.adapters.TrackAdapter
 import kotlinx.coroutines.Runnable
 import okhttp3.OkHttpClient
