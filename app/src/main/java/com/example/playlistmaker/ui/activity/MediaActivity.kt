@@ -19,7 +19,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.TrackStorage
+import com.example.playlistmaker.data.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.data.Constants
@@ -32,7 +32,7 @@ import java.util.Locale
 class MediaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
     private lateinit var artworkUrl100: String
-    private lateinit var storage: TrackStorage
+    private lateinit var storage: FavoriteTrackRepositoryImpl
     private lateinit var collectionName: String
     private lateinit var previewUrl : String
     private var mediaPlayer = MediaPlayer() // делаю медиаплеер
@@ -126,7 +126,7 @@ class MediaActivity : AppCompatActivity() {
 
 
 
-        storage = TrackStorage(this@MediaActivity) // инициализируем экземпляр класса Trackstorage
+        storage = FavoriteTrackRepositoryImpl(this@MediaActivity) // инициализируем экземпляр класса Trackstorage
         val myTracks = storage.getAllTracks() //все треки
 
 

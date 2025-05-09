@@ -29,10 +29,8 @@ import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.Constants
 import com.example.playlistmaker.data.OnTrackClickListener
-import com.example.playlistmaker.data.TrackStorage
+import com.example.playlistmaker.data.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.data.dto.App
-import com.example.playlistmaker.data.dto.TrackDto
-import com.example.playlistmaker.data.dto.TrackResponse
 import com.example.playlistmaker.data.network.ITunesApi
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.api.TrackInteractor
@@ -42,12 +40,8 @@ import com.example.playlistmaker.ui.adapters.TrackAdapter
 import kotlinx.coroutines.Runnable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.IOException
 
 class SearchActivity : AppCompatActivity(),
     OnTrackClickListener {  // Добавили имлементацию нашего интерфейса OnTrackClickListener для того чтобы определить трек
@@ -66,7 +60,7 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var recyclerView: RecyclerView
     private lateinit var tvMsgSearch: TextView
     private lateinit var btCleanHistory: TextView
-    private lateinit var storage: TrackStorage
+    private lateinit var storage: FavoriteTrackRepositoryImpl
     private lateinit var myTracks: List<Track>
     private lateinit var myLikeAdapter: FavoriteTrackAdapter //адаптер будущий
     private lateinit var pbs: ProgressBar
@@ -92,7 +86,7 @@ private lateinit var task : Runnable // задача для потока для 
         }
 
         val sharedprefs = getSharedPreferences(
-            TrackStorage.Companion.PREFS_NAME,
+            FavoriteTrackRepositoryImpl.Companion.PREFS_NAME,
             MODE_PRIVATE
         ) //Объявили sharedPreferences для подписки в дальнейшем на обновления
 
@@ -162,7 +156,7 @@ private lateinit var task : Runnable // задача для потока для 
 
         }
 
-        storage = TrackStorage(this@SearchActivity) // инициализируем экземпляр класса Trackstorage
+        storage = FavoriteTrackRepositoryImpl(this@SearchActivity) // инициализируем экземпляр класса Trackstorage
         myTracks = storage.getAllTracks() //все треки
         sharedprefs.registerOnSharedPreferenceChangeListener(sharedPrefListener) //регистрируем слушатель изменений на наш sharedprefs чтобы сразу подгрузить изменения в список адаптера
         myLikeAdapter =
@@ -510,7 +504,7 @@ private lateinit var task : Runnable // задача для потока для 
     // Слушатель для отслеживания изменений в SharedPreferences
     private val sharedPrefListener =
         SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if (key == TrackStorage.Companion.TRACKS_KEY) {
+            if (key == FavoriteTrackRepositoryImpl.Companion.TRACKS_KEY) {
                 // Логика обновления треков
                 updateTracksFromStorage()
             }
