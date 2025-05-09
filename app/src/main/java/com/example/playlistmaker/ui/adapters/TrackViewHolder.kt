@@ -11,7 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.data.OnTrackClickListener
+import com.example.playlistmaker.domain.api.OnTrackClickListener
 import java.time.format.DateTimeFormatter
 import java.time.LocalTime
 

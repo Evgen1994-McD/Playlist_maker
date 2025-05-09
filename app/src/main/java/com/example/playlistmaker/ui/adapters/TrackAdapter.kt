@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.data.OnTrackClickListener
+import com.example.playlistmaker.domain.api.OnTrackClickListener
 
 class TrackAdapter(private var tracks: List<Track>?,
                    private val listener: OnTrackClickListener  // тоже добавили листенер в конструктор класса
