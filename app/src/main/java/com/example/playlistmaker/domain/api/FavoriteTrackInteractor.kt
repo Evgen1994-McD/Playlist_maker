@@ -8,5 +8,7 @@ interface FavoriteTrackInteractor {
 
     interface FavoriteTrackConsumer{
         fun consume(myTracks : List<Track>)
+        fun onFailure(error: Throwable)
+
     }
 }

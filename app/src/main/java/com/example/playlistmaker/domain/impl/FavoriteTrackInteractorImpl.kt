@@ -8,7 +8,12 @@ class FavoriteTrackInteractorImpl ( private val repository: FavoriteTrackReposit
     private val executor = Executors.newCachedThreadPool()
     override fun getAllTracks(consumer: FavoriteTrackInteractor.FavoriteTrackConsumer) {
        executor.execute {
-           consumer.consume(repository.getAllTracks())
+           try {
+
+               consumer.consume(repository.getAllTracks())
+           }catch (ex : Exception) {
+               consumer.onFailure(ex)
+           }
        }
     }
 }

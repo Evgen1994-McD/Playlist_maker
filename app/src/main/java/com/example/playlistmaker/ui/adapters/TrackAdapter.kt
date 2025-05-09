@@ -7,11 +7,15 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.data.OnTrackClickListener
 
-class TrackAdapter(private val tracks: List<Track>?,
+class TrackAdapter(private var tracks: List<Track>?,
                    private val listener: OnTrackClickListener  // тоже добавили листенер в конструктор класса
                    ) : RecyclerView.Adapter<TrackViewHolder>() {
 
 
+    fun updateData(newTracks: MutableList<Track>) {
+        tracks = newTracks
+        notifyDataSetChanged()
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {

@@ -63,7 +63,7 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var btCleanHistory: TextView
     private lateinit var storage: FavoriteTrackRepositoryImpl
     private lateinit var myTracks: List<Track>
-    private lateinit var myLikeAdapter: FavoriteTrackAdapter //адаптер будущий
+    private lateinit var favoriteAdapter: TrackAdapter //адаптер будущий
     private lateinit var pbs: ProgressBar
     private val handler =
         Handler(Looper.getMainLooper()) // Сделал Хандлер для доступа к главному потоку
@@ -76,7 +76,6 @@ private lateinit var task : Runnable // задача для потока для 
         val tracckInteractor = Creator.provideTracksInteractor() // Создал интерактор
 
         val favoriteTrackInteractor = Creator.provideFaworiteInteractor(this@SearchActivity) // Создал Фаворитинтерактор
-
 
 
         val sharedPrefs =
@@ -153,6 +152,7 @@ private lateinit var task : Runnable // задача для потока для 
             msgBotTxt.makeGone()
             buttonNoInternet.makeGone()
             txtForSearch = clearEditText.text.toString() // текст для поиска
+            searchTracks(txtForSearch)
             /* searchSongs(
                 txtForSearch,
                 iTunesApi
@@ -162,6 +162,8 @@ private lateinit var task : Runnable // задача для потока для 
 
         storage = FavoriteTrackRepositoryImpl(this@SearchActivity) // инициализируем экземпляр класса Trackstorage
         //myTracks = storage.getAllTracks() //все треки
+        favoriteAdapter = TrackAdapter(storage.getAllTracks(), this@SearchActivity) // инициирую мой адаптер
+
         sharedprefs.registerOnSharedPreferenceChangeListener(sharedPrefListener) //регистрируем слушатель изменений на наш sharedprefs чтобы сразу подгрузить изменения в список адаптера
      //   myLikeAdapter =
            // FavoriteTrackAdapter(
@@ -169,15 +171,7 @@ private lateinit var task : Runnable // задача для потока для 
               //  this@SearchActivity
            // ) // инициализировали фаворит адаптер
 
-        favoriteTrackInteractor.getAllTracks(
-            object : FavoriteTrackInteractor.FavoriteTrackConsumer {
-                override fun consume(myTracks: List<Track>) {
-                    runOnUiThread {
-                        displayTracks(myTracks!!)
-                    }
-                }
-            }
-        )
+
 // передаю this@searchactivity потому что активити имплементирует интерфейс
 
         btCleanHistory.setOnClickListener {  // кнопка очистки истории
@@ -191,11 +185,29 @@ private lateinit var task : Runnable // задача для потока для 
             if (hasFocus && clearEditText.text?.isNullOrEmpty() == true && !storage.getAllTracks()
                     .isNullOrEmpty()
             ) {    // таким образом, вызываю подсказку "вы искали" только когда соблюдаем : (фокус + текст пуст + сторейждж не пуст)
-                tvMsgSearch.makeVisible()
-                recyclerView.makeVisible()
-                btCleanHistory.makeVisible()
-                recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
-                recyclerView.adapter = myLikeAdapter
+               // tvMsgSearch.makeVisible()
+              //  recyclerView.makeVisible()
+               // btCleanHistory.makeVisible()
+               // recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+                    // recyclerView.adapter = myLikeAdapter
+
+                favoriteTrackInteractor.getAllTracks(
+                    object : FavoriteTrackInteractor.FavoriteTrackConsumer {
+                        override fun consume(tracks: List<Track>) {
+                            runOnUiThread {
+                                pbs.makeGone()
+                                    displayFavoriteTracks(tracks!!)
+                            }
+                        }
+                        override fun onFailure(error: Throwable) {
+                            runOnUiThread {
+                                pbs.makeGone()
+                                handleNoInternetConnection()
+                            }
+                        }
+
+                    }
+                )
             }
         }
 
@@ -240,15 +252,12 @@ private lateinit var task : Runnable // задача для потока для 
                     txtForSearch = clearEditText.text.toString()
 
                     task = kotlinx.coroutines.Runnable {
-                        tracckInteractor.searchTracks(
-                            txtForSearch,
-                            object : TrackInteractor.TracksConsumer {
-                                override fun consume(foundTracks: List<Track>) {
-                                    runOnUiThread {
-                                        displayTracks(foundTracks!!)
-                                    }
-                                }
-                            })
+                        handler.removeCallbacksAndMessages(null)
+
+                        runOnUiThread {
+                            pbs.makeVisible()
+                        }
+                        searchTracks(txtForSearch)
                     }
                 }// инициализ переменную таск в текст ватчере, иначе происходит вылет
 
@@ -355,7 +364,6 @@ private lateinit var task : Runnable // задача для потока для 
 
 /* private fun searchSongs(txtFromInput: String, iTunesApi: ITunesApi) {
     // Удаляем предыдущие задания (для предотвращения дублирования)
-    handler.removeCallbacksAndMessages(null)
 
     // Создаем новый Runnable для выполнения поиска
     task = kotlinx.coroutines.Runnable {
@@ -444,6 +452,19 @@ private lateinit var task : Runnable // задача для потока для 
         btCleanHistory.makeGone()
     }
 
+    private fun displayFavoriteTracks(tracks: List<Track>) {
+        tvMsgSearch.makeVisible()
+        btCleanHistory.makeVisible()
+        phForNothingToShow.makeGone()
+        msgBotTxt.makeGone()
+        msgTopTxt.makeGone()
+        buttonNoInternet.makeGone()
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = favoriteAdapter
+        recyclerView.makeVisible()
+    }
+
+
     private fun displayTracks(tracks: List<Track>) {
         tvMsgSearch.makeGone()
         btCleanHistory.makeGone()
@@ -511,7 +532,7 @@ private lateinit var task : Runnable // задача для потока для 
 
     private fun updateTracksFromStorage() { //обновляем треки из хранилища
         val updateTracks = storage.getAllTracks()
-        myLikeAdapter.updateData(updateTracks as MutableList<Track>) //для этого мы прописали метот updateData в адаптере
+        favoriteAdapter.updateData(updateTracks as MutableList<Track>) //для этого мы прописали метот updateData в адаптере
     }
 
 
@@ -545,6 +566,40 @@ private lateinit var task : Runnable // задача для потока для 
         startActivity(intent) // запускаем активити
 
 
+    }
+
+    private fun searchTracks(txtForSearch : String ) {
+        val tracckInteractor = Creator.provideTracksInteractor()
+        tracckInteractor.searchTracks(
+            txtForSearch,
+            object : TrackInteractor.TracksConsumer {
+                override fun consume(tracks: List<Track>) {
+                    runOnUiThread {
+                        pbs.makeGone()
+
+                        if (tracks.isNullOrEmpty()) {
+                            handleNoResults()
+                        }
+                        else {
+                            displayTracks(tracks!!)
+                        }
+
+
+
+
+
+                    }
+
+                }
+
+                override fun onFailure(error: Throwable) {
+                    runOnUiThread {
+                        pbs.makeGone()
+                        handleNoInternetConnection()
+                    }
+                }
+
+            })
     }
 
     companion object {
