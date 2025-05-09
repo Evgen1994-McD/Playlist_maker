@@ -33,6 +33,7 @@ import com.example.playlistmaker.data.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.data.network.ITunesApi
 import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.adapters.FavoriteTrackAdapter
@@ -72,7 +73,10 @@ private lateinit var task : Runnable // задача для потока для 
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val tracckInteractor = Creator.provideTracksInteractor() // Создал интерактор?
+        val tracckInteractor = Creator.provideTracksInteractor() // Создал интерактор
+
+        val favoriteTrackInteractor = Creator.provideFaworiteInteractor(this@SearchActivity) // Создал Фаворитинтерактор
+
 
 
         val sharedPrefs =
@@ -157,13 +161,23 @@ private lateinit var task : Runnable // задача для потока для 
         }
 
         storage = FavoriteTrackRepositoryImpl(this@SearchActivity) // инициализируем экземпляр класса Trackstorage
-        myTracks = storage.getAllTracks() //все треки
+        //myTracks = storage.getAllTracks() //все треки
         sharedprefs.registerOnSharedPreferenceChangeListener(sharedPrefListener) //регистрируем слушатель изменений на наш sharedprefs чтобы сразу подгрузить изменения в список адаптера
-        myLikeAdapter =
-            FavoriteTrackAdapter(
-                storage.getAllTracks() as MutableList<Track>?,
-                this@SearchActivity
-            ) // инициализировали фаворит адаптер
+     //   myLikeAdapter =
+           // FavoriteTrackAdapter(
+              //  storage.getAllTracks() as MutableList<Track>?,
+              //  this@SearchActivity
+           // ) // инициализировали фаворит адаптер
+
+        favoriteTrackInteractor.getAllTracks(
+            object : FavoriteTrackInteractor.FavoriteTrackConsumer {
+                override fun consume(myTracks: List<Track>) {
+                    runOnUiThread {
+                        displayTracks(myTracks!!)
+                    }
+                }
+            }
+        )
 // передаю this@searchactivity потому что активити имплементирует интерфейс
 
         btCleanHistory.setOnClickListener {  // кнопка очистки истории
