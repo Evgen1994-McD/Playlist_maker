@@ -21,6 +21,10 @@ import com.google.android.material.textview.MaterialTextView
 class SettingsActivity : AppCompatActivity() {
     val settingsInteractor = Creator.provideSettingsInteractor()
 
+    val shareAppInteractor = Creator.provideShareAppInteractor() // интерактор Поделиться приложением
+val sendSuppEmailInteractor = Creator.provideSendSuppEmailInteracto()
+    val opernUrlInteractor = Creator.provideOpenUrlInteractor()
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -92,7 +96,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     fun shareApp(context: Context) {  // Метод - интент для отправки сообщений
-        settingsInteractor.shareApp(context)
+        shareAppInteractor.shareApp(context)
 
     }
 
@@ -102,11 +106,11 @@ class SettingsActivity : AppCompatActivity() {
         val subject = getString(R.string.subject)
         val body = getString(R.string.body)
 
-        settingsInteractor.sendSuppEmail(context, myEmail, subject, body)
+        sendSuppEmailInteractor.sendSuppEmail(context, myEmail, subject, body)
     }
 
     private fun openUrlInDefaultBrowser(url: String, context: Context) {
-       settingsInteractor.openUrlInDefaultBrowser(context,url)
+       opernUrlInteractor.openUrlInDefaultBrowser(context,url)
     }
 
 }
