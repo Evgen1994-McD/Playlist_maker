@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import com.example.playlistmaker.data.dto.App
 
 interface SettingsRepository {
-    fun shareApp(context: Context)
+    fun shareApp(context: Context) : Intent
 
      fun sendSuppEmail( myEmail: String, subject : String, body : String) : Intent
     fun openUrlInDefaultBrowser(url: String) : Intent

@@ -14,7 +14,7 @@ import com.example.playlistmaker.ui.activity.SettingsActivity
 import com.google.android.material.materialswitch.MaterialSwitch
 
 class SettingsReposytoryImpl() : SettingsRepository {
-    override fun shareApp(context: Context) {
+    override fun shareApp(context: Context) : Intent {
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(
@@ -23,9 +23,11 @@ class SettingsReposytoryImpl() : SettingsRepository {
             ) // Ссылка на курс андроид разработки
             type = "text/plain"
         }
-        context.startActivity(
-            Intent.createChooser(sendIntent, context.getString(R.string.share_stroke))
-        )
+
+        return sendIntent
+//        context.startActivity(
+//            Intent.createChooser(sendIntent, context.getString(R.string.share_stroke))
+      //  )
     }
 
     override fun sendSuppEmail(myEmail: String, subject : String, body : String) : Intent {
