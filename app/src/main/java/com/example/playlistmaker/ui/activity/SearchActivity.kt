@@ -36,6 +36,7 @@ import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.activity.SettingsActivity
 import com.example.playlistmaker.ui.adapters.TrackAdapter
 import kotlinx.coroutines.Runnable
 import okhttp3.OkHttpClient
@@ -71,21 +72,23 @@ private lateinit var task : Runnable // задача для потока для 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val switchThemeInteractor = Creator.provideSwitchThemeInteractor()
 
-        val tracckInteractor = Creator.provideTracksInteractor() // Создал интерактор
 
         val favoriteTrackInteractor = Creator.provideFaworiteInteractor(this@SearchActivity) // Создал Фаворитинтерактор
 
 
+
         val sharedPrefs =
             getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
-        val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
-        if (theme.hasBooleanValue(this@SearchActivity, Constants.KEY_THEME_MODE)) {
-            var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
-            theme.switchTheme(savedTheme)
-        } else {
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        }
+
+        switchThemeInteractor.controlThemeInOtherWindows(
+            applicationContext as App,
+            this@SearchActivity,
+            sharedPrefs,
+            this@SearchActivity)
+
+
 
         val sharedprefs = getSharedPreferences(
             FavoriteTrackRepositoryImpl.Companion.PREFS_NAME,

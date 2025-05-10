@@ -17,12 +17,14 @@ import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.repositories.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.data.Constants
+import com.example.playlistmaker.ui.activity.SearchActivity
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -98,6 +100,11 @@ class MediaActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
+
+
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMediaBinding.inflate(layoutInflater)
@@ -117,7 +124,13 @@ class MediaActivity : AppCompatActivity() {
 
 
 
+        val switchThemeInteractor = Creator.provideSwitchThemeInteractor()
+        switchThemeInteractor.controlThemeInOtherWindows(
+            applicationContext as App,
+            this@MediaActivity,
 
+            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE),
+            this@MediaActivity)
 
 
 
@@ -130,15 +143,7 @@ class MediaActivity : AppCompatActivity() {
         val myTracks = storage.getAllTracks() //все треки
 
 
-        val sharedPrefs =
-            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
-        val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
-        if (theme.hasBooleanValue(this@MediaActivity, Constants.KEY_THEME_MODE)) {
-            var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
-            theme.switchTheme(savedTheme)
-        } else {
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM // Выше идёт определение темы приложения
-        }
+
 
         if (!intent.getStringExtra("trackName")
                 .isNullOrEmpty()

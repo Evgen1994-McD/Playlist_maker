@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat.recreate
 import com.example.playlistmaker.data.Constants
+import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.domain.api.SettingsRepository
 import com.example.playlistmaker.domain.api.SwitchThemeInteractor
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -18,10 +19,11 @@ class SwitchThemeInteractorImpl(private val repository: SettingsRepository) :
         context: Context,
         sharedPrefs: SharedPreferences,
         activity: Activity
+
     ) {
         val theme = repository.controlAppThemeMode(applicationContext, context, sharedPrefs)
-        switch!!.isChecked = theme
 
+        switch!!.isChecked = theme
         switch.setOnCheckedChangeListener { _, isChecked ->
             // Сохранить новое значение темы in Sharedpreferences
             sharedPrefs.edit().putBoolean(Constants.KEY_THEME_MODE, isChecked).apply()
@@ -36,5 +38,29 @@ class SwitchThemeInteractorImpl(private val repository: SettingsRepository) :
             // Перезапустить активность для применения новой темы
             recreate(activity)
         }
+
     }
-}
+
+
+    override fun controlThemeInOtherWindows(
+
+        applicationContext: App,
+        context: Context,
+        sharedPrefs: SharedPreferences,
+        activity: Activity
+    ) {
+        val theme = repository.controlAppThemeMode(applicationContext, context, sharedPrefs)
+        applicationContext.switchTheme(theme)
+            // Перезапустить активность для применения новой темы
+        }
+    }
+/* val sharedPrefs =
+          getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
+      val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
+      if (theme.hasBooleanValue(this@MediaActivity, Constants.KEY_THEME_MODE)) {
+          var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
+          theme.switchTheme(savedTheme)
+      } else {
+          AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM // Выше идёт определение темы приложения
+      }
+      */
