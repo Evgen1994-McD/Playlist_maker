@@ -1,10 +1,17 @@
 package com.example.playlistmaker.data.repositories
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.R
+import com.example.playlistmaker.data.Constants
+import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.domain.api.SettingsRepository
+import com.example.playlistmaker.ui.activity.SettingsActivity
+import com.google.android.material.materialswitch.MaterialSwitch
 
 class SettingsReposytoryImpl() : SettingsRepository {
     override fun shareApp(context: Context) {
@@ -40,4 +47,20 @@ class SettingsReposytoryImpl() : SettingsRepository {
         }
         return intent
     }
+
+    override fun controlAppThemeMode(applicationContext: Context, context: Context, sharedPrefs : SharedPreferences) : Boolean {
+        val currentTheme = applicationContext as App
+
+        if(currentTheme.hasBooleanValue(context, Constants.KEY_THEME_MODE)) {
+            var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
+            currentTheme.switchTheme(savedTheme)
+            return savedTheme
+        }else {
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+              return currentTheme.isSystemInDarkTheme(context)
+
+        }
+
+    }
+
 }

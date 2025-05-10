@@ -9,16 +9,16 @@ import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.api.FavoriteTrackRepository
 import com.example.playlistmaker.domain.api.OpenUrlInDefaultBrowserInteractor
 import com.example.playlistmaker.domain.api.SendSuppEmailInteractor
-import com.example.playlistmaker.domain.api.SettingsInteractor
 import com.example.playlistmaker.domain.api.SettingsRepository
 import com.example.playlistmaker.domain.api.ShareAppInteractor
+import com.example.playlistmaker.domain.api.SwitchThemeInteractor
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.api.TrackRepository
 import com.example.playlistmaker.domain.impl.FavoriteTrackInteractorImpl
 import com.example.playlistmaker.domain.impl.OpenUrlInDefaultBrowserImpl
 import com.example.playlistmaker.domain.impl.SendSuppEmailInteractorImpl
-import com.example.playlistmaker.domain.impl.SettingsInteractorImpl
 import com.example.playlistmaker.domain.impl.ShareAppInteractorImpl
+import com.example.playlistmaker.domain.impl.SwitchThemeInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksInteractorImpl
 
 object Creator {
@@ -42,9 +42,6 @@ object Creator {
         return SettingsReposytoryImpl()
     }
 
-    fun provideSettingsInteractor(): SettingsInteractor {
-        return SettingsInteractorImpl(getSettingsRepository())
-    }
 
     fun provideShareAppInteractor() : ShareAppInteractor {
         return ShareAppInteractorImpl(getSettingsRepository())
@@ -56,6 +53,10 @@ object Creator {
 
     fun provideOpenUrlInteractor() : OpenUrlInDefaultBrowserInteractor {
         return OpenUrlInDefaultBrowserImpl(getSettingsRepository())
+    }
+
+    fun provideSwitchThemeInteractor() : SwitchThemeInteractor {
+        return SwitchThemeInteractorImpl(getSettingsRepository())
     }
 
 }

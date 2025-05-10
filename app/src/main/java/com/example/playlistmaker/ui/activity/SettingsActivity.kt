@@ -1,10 +1,7 @@
 package com.example.playlistmaker.ui.activity
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -19,12 +16,11 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
-    val settingsInteractor = Creator.provideSettingsInteractor()
 
     val shareAppInteractor = Creator.provideShareAppInteractor() // интерактор Поделиться приложением
 val sendSuppEmailInteractor = Creator.provideSendSuppEmailInteracto()
     val opernUrlInteractor = Creator.provideOpenUrlInteractor()
-
+val switchThemeInteractor = Creator.provideSwitchThemeInteractor()
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -65,31 +61,12 @@ val sendSuppEmailInteractor = Creator.provideSendSuppEmailInteracto()
         val sharedPrefs =
             getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
 
-        val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
-        if(theme.hasBooleanValue(this@SettingsActivity, Constants.KEY_THEME_MODE)) {
-            var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
-            theme.switchTheme(savedTheme)
-            switcherTheme.isChecked = savedTheme
-        }else {
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            switcherTheme.isChecked = theme.isSystemInDarkTheme(this)
-        }
 
-        switcherTheme.setOnCheckedChangeListener { _, isChecked ->
-            // Сохранить новое значение темы in Sharedpreferences
-            sharedPrefs.edit().putBoolean(Constants.KEY_THEME_MODE, isChecked).apply()
-
-            // Переключить тему
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-
-            // Перезапустить активность для применения новой темы
-            recreate()
-        }
-
+        switchThemeInteractor.switchThemeModeBySettings(switcherTheme,
+            applicationContext as App,
+            this@SettingsActivity,
+            sharedPrefs,
+            this@SettingsActivity)
 
 
 
