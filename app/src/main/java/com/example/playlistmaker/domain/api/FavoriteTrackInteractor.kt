@@ -5,6 +5,8 @@ import com.example.playlistmaker.domain.models.Track
 interface FavoriteTrackInteractor {
 
     fun getAllTracks(consumer: FavoriteTrackConsumer)
+    fun clearHistory()
+    fun addTrack(track: Track)
 
     interface FavoriteTrackConsumer{
         fun consume(myTracks : List<Track>)
