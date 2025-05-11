@@ -153,18 +153,17 @@ private lateinit var task : Runnable // задача для потока для 
 
 
         btCleanHistory.setOnClickListener {  // кнопка очистки истории
-            storage.clearHistory()  //очищаю историю, метод прописан в классе TrackStorage
+          favoriteTrackInteractor.clearHistory()
+           // storage.clearHistory()  //очищаю историю, метод прописан в классе TrackStorage
             recyclerView.makeInvisible() // делаю ресайклер вью невидимым
             tvMsgSearch.makeInvisible() //делаем сообщение "Вы искали" невидимым
             btCleanHistory.makeInvisible() // делаем саму кнопку невидимой при выполнении логики
             clearEditText.clearFocus()  // убираю фокус
         }
         clearEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && clearEditText.text?.isNullOrEmpty() == true && !storage.getAllTracks()
-                    .isNullOrEmpty()
+            if (hasFocus && clearEditText.text?.isNullOrEmpty() == true && !favoriteTrackInteractor.getter().isNullOrEmpty()
             ) { updateTracksFromStorage()
                 displayFavoriteTracks()
-
 
             }
         }
