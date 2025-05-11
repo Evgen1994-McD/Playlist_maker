@@ -101,7 +101,7 @@ private lateinit var task : Runnable // задача для потока для 
             insets
         }
 
-        pbs = binding.pbs
+        pbs = findViewById<ProgressBar>(R.id.pbs)
 
         tvMsgSearch =
             findViewById<TextView>(R.id.tv_msg_search)
@@ -206,13 +206,11 @@ private lateinit var task : Runnable // задача для потока для 
 
                     // инициализ переменную таск в текст ватчере, иначе происходит вылет
                     txtForSearch = clearEditText.text.toString()
-                    searchTracks(txtForSearch)
 
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeGone()
-
-                    //searchDebounce() //  дебаунс автопоиск спустя 2 секунды
+searchTracks(txtForSearch) // в интеракторе поиск настроен на поиск через 2 секунды
                     phForNothingToShow.makeGone()
                     recyclerView.makeGone()
                     msgTopTxt.makeGone()
@@ -312,27 +310,7 @@ private lateinit var task : Runnable // задача для потока для 
 
 
 
-    private fun searchDebounce() {
-/* handler.removeCallbacksAndMessages(null)
 
-        txtForSearch = clearEditText.text.toString()
-
-        task = kotlinx.coroutines.Runnable {
-            handler.removeCallbacksAndMessages(null)
-
-            runOnUiThread {
-                pbs.makeVisible()
-            }
-            searchTracks(txtForSearch)
-        }
-        handler.removeCallbacks(task) //отменить колбек от таск
-        handler.postDelayed(task, SEARCH_DEBOUNCE_DELAY) // поиск
-*/
-        txtForSearch = clearEditText.text.toString()
-      searchTracks(txtForSearch)
-
-
-    }
 
     // Вспомогательные методы
     private fun handleNoResults() {
@@ -465,24 +443,34 @@ private lateinit var task : Runnable // задача для потока для 
     }
 
     private fun searchTracks(txtForSearch : String ) {
+val delayedShowPbs = Runnable {
+        runOnUiThread {
+            pbs.makeVisible()
+        }
+    }
+        handler.postDelayed(delayedShowPbs, 2000L)
 
         trackInteractor.searchTracks(
             txtForSearch,
             object : TrackInteractor.TracksConsumer {
                 override fun consume(tracks: List<Track>) {
                     runOnUiThread {
-                        pbs.makeGone()
+                        handler.removeCallbacks (delayedShowPbs)
+                         pbs.makeGone()
 
                         if (tracks.isNullOrEmpty()) {
                             handleNoResults()
                         }
                         else {
+
                             displayTracks(tracks!!)
                         }
                     }
                 }
                 override fun onFailure(error: Throwable) {
                     runOnUiThread {
+                        handler.removeCallbacks (delayedShowPbs)
+
                         pbs.makeGone()
                         handleNoInternetConnection()
                     }
