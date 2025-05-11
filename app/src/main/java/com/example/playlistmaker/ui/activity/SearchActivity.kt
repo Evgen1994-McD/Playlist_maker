@@ -68,14 +68,15 @@ private lateinit var task : Runnable // задача для потока для 
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val switchThemeInteractor = Creator.provideSwitchThemeInteractor()
-
         trackInteractor = Creator.provideTracksInteractor()
         favoriteTrackInteractor = Creator.provideFaworiteInteractor(this@SearchActivity) // Создал Фаворитинтерактор
 
         sharedrprefs = getSharedPreferences(FavoriteTrackRepositoryImpl.Companion.TRACKS_KEY, MODE_PRIVATE) // это для фав треков
 
 
-       val sharedPrefs = // это для темы
+        favoriteAdapter = TrackAdapter(favoriteTrackInteractor.getAllTracksFromStorage(), this@SearchActivity)
+
+        val sharedPrefs = // это для темы
             getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
 
         switchThemeInteractor.controlThemeInOtherWindows(
@@ -100,7 +101,7 @@ private lateinit var task : Runnable // задача для потока для 
             insets
         }
 
-        pbs = findViewById<ProgressBar>(R.id.pbs)
+        pbs = binding.pbs
 
         tvMsgSearch =
             findViewById<TextView>(R.id.tv_msg_search)
@@ -161,7 +162,7 @@ private lateinit var task : Runnable // задача для потока для 
             clearEditText.clearFocus()  // убираю фокус
         }
         clearEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && clearEditText.text?.isNullOrEmpty() == true && !favoriteTrackInteractor.getter().isNullOrEmpty()
+            if (hasFocus && clearEditText.text?.isNullOrEmpty() == true && !favoriteTrackInteractor.getAllTracksFromStorage().isNullOrEmpty()
             ) { updateTracksFromStorage()
                 displayFavoriteTracks()
 
@@ -204,12 +205,14 @@ private lateinit var task : Runnable // задача для потока для 
 
 
                     // инициализ переменную таск в текст ватчере, иначе происходит вылет
+                    txtForSearch = clearEditText.text.toString()
+                    searchTracks(txtForSearch)
 
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeGone()
 
-                    searchDebounce() //  дебаунс автопоиск спустя 2 секунды
+                    //searchDebounce() //  дебаунс автопоиск спустя 2 секунды
                     phForNothingToShow.makeGone()
                     recyclerView.makeGone()
                     msgTopTxt.makeGone()
@@ -310,7 +313,7 @@ private lateinit var task : Runnable // задача для потока для 
 
 
     private fun searchDebounce() {
-handler.removeCallbacksAndMessages(null)
+/* handler.removeCallbacksAndMessages(null)
 
         txtForSearch = clearEditText.text.toString()
 
@@ -324,7 +327,9 @@ handler.removeCallbacksAndMessages(null)
         }
         handler.removeCallbacks(task) //отменить колбек от таск
         handler.postDelayed(task, SEARCH_DEBOUNCE_DELAY) // поиск
-
+*/
+        txtForSearch = clearEditText.text.toString()
+      searchTracks(txtForSearch)
 
 
     }
@@ -486,24 +491,12 @@ handler.removeCallbacksAndMessages(null)
             })
     }
     private fun updateTracksFromStorage() {
-    favoriteTrackInteractor.getAllTracks(object : FavoriteTrackInteractor.FavoriteTrackConsumer{
-        override fun consume(myTracks: List<Track>){
-           runOnUiThread {
-
-               favoriteAdapter = TrackAdapter(myTracks, this@SearchActivity)
+   myTracks = favoriteTrackInteractor.getAllTracksFromStorage()
                favoriteAdapter.updateData(myTracks as MutableList<Track>)
            }
-        }
 
-        override fun onFailure(error: Throwable) {
-            runOnUiThread {
-                pbs.makeGone()
-                handleNoResults()
-            }
-        }
-    })
 
-    }
+
 
 
     companion object {

@@ -26,7 +26,7 @@ class FavoriteTrackInteractorImpl ( private val repository: FavoriteTrackReposit
        repository.clearHistory()
     }
 
-    override fun getter() : List<Track> {
+    override fun getAllTracksFromStorage() : List<Track> {
        return repository.getAllTracks()
     }
 
