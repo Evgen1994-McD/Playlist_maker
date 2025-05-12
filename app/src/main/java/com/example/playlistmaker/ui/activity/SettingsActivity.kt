@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -17,10 +16,10 @@ import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
 
-    val shareAppInteractor = Creator.provideShareAppInteractor() // интерактор Поделиться приложением
-val sendSuppEmailInteractor = Creator.provideSendSuppEmailInteracto()
-    val opernUrlInteractor = Creator.provideOpenUrlInteractor()
-val switchThemeInteractor = Creator.provideSwitchThemeInteractor()
+    val shareAppInteractor = Creator.provideShareAppUseCase() // интерактор Поделиться приложением
+val sendSuppEmailInteractor = Creator.provideSendSuppEmailUseCase()
+    val opernUrlInteractor = Creator.provideOpenUrlUseCase()
+val switchThemeInteractor = Creator.provideSwitchThemeUseCase()
     override fun onCreate(savedInstanceState: Bundle?) {
 
 

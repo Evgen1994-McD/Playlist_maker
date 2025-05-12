@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import com.example.playlistmaker.data.dto.App
 import com.google.android.material.switchmaterial.SwitchMaterial
 
-interface SwitchThemeInteractor {
+interface SwitchThemeUseCase {
     fun switchThemeModeBySettings(
         switch: SwitchMaterial?,
         applicationContext: Context,

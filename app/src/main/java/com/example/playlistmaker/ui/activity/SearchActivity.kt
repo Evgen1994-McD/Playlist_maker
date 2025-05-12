@@ -67,7 +67,7 @@ private lateinit var task : Runnable // задача для потока для 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val switchThemeInteractor = Creator.provideSwitchThemeInteractor()
+        val switchThemeInteractor = Creator.provideSwitchThemeUseCase()
         trackInteractor = Creator.provideTracksInteractor()
         favoriteTrackInteractor = Creator.provideFaworiteInteractor(this@SearchActivity) // Создал Фаворитинтерактор
 

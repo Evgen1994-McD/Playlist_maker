@@ -7,18 +7,18 @@ import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.repositories.SettingsReposytoryImpl
 import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.api.FavoriteTrackRepository
-import com.example.playlistmaker.domain.api.OpenUrlInDefaultBrowserInteractor
-import com.example.playlistmaker.domain.api.SendSuppEmailInteractor
+import com.example.playlistmaker.domain.api.OpenUrlUseCase
+import com.example.playlistmaker.domain.api.SendSuppEmailUseCase
 import com.example.playlistmaker.domain.api.SettingsRepository
-import com.example.playlistmaker.domain.api.ShareAppInteractor
-import com.example.playlistmaker.domain.api.SwitchThemeInteractor
+import com.example.playlistmaker.domain.api.ShareAppUseCase
+import com.example.playlistmaker.domain.api.SwitchThemeUseCase
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.api.TrackRepository
 import com.example.playlistmaker.domain.impl.FavoriteTrackInteractorImpl
-import com.example.playlistmaker.domain.impl.OpenUrlInDefaultBrowserImpl
-import com.example.playlistmaker.domain.impl.SendSuppEmailInteractorImpl
-import com.example.playlistmaker.domain.impl.ShareAppInteractorImpl
-import com.example.playlistmaker.domain.impl.SwitchThemeInteractorImpl
+import com.example.playlistmaker.domain.impl.OpenUrlUseCaseImpl
+import com.example.playlistmaker.domain.impl.SendSuppEmailUseCaseImpl
+import com.example.playlistmaker.domain.impl.ShareAppUseCaseImpl
+import com.example.playlistmaker.domain.impl.SwitchThemeUseCaseImpl
 import com.example.playlistmaker.domain.impl.TracksInteractorImpl
 
 object Creator {
@@ -43,20 +43,20 @@ object Creator {
     }
 
 
-    fun provideShareAppInteractor() : ShareAppInteractor {
-        return ShareAppInteractorImpl(getSettingsRepository())
+    fun provideShareAppUseCase() : ShareAppUseCase {
+        return ShareAppUseCaseImpl(getSettingsRepository())
     }
 
-    fun provideSendSuppEmailInteracto(): SendSuppEmailInteractor {
-        return SendSuppEmailInteractorImpl(getSettingsRepository())
+    fun provideSendSuppEmailUseCase(): SendSuppEmailUseCase {
+        return SendSuppEmailUseCaseImpl(getSettingsRepository())
     }
 
-    fun provideOpenUrlInteractor() : OpenUrlInDefaultBrowserInteractor {
-        return OpenUrlInDefaultBrowserImpl(getSettingsRepository())
+    fun provideOpenUrlUseCase() : OpenUrlUseCase {
+        return OpenUrlUseCaseImpl(getSettingsRepository())
     }
 
-    fun provideSwitchThemeInteractor() : SwitchThemeInteractor {
-        return SwitchThemeInteractorImpl(getSettingsRepository())
+    fun provideSwitchThemeUseCase() : SwitchThemeUseCase {
+        return SwitchThemeUseCaseImpl(getSettingsRepository())
     }
 
 }

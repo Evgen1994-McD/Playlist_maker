@@ -2,6 +2,6 @@ package com.example.playlistmaker.domain.api
 
 import android.content.Context
 
-interface ShareAppInteractor {
+interface ShareAppUseCase {
     fun shareApp(context: Context)
 }

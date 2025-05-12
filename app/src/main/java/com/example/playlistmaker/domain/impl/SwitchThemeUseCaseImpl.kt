@@ -8,11 +8,11 @@ import androidx.core.app.ActivityCompat.recreate
 import com.example.playlistmaker.data.Constants
 import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.domain.api.SettingsRepository
-import com.example.playlistmaker.domain.api.SwitchThemeInteractor
+import com.example.playlistmaker.domain.api.SwitchThemeUseCase
 import com.google.android.material.switchmaterial.SwitchMaterial
 
-class SwitchThemeInteractorImpl(private val repository: SettingsRepository) :
-    SwitchThemeInteractor {
+class SwitchThemeUseCaseImpl(private val repository: SettingsRepository) :
+    SwitchThemeUseCase {
     override fun switchThemeModeBySettings(
         switch: SwitchMaterial?,
         applicationContext: Context,

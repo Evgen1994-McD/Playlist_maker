@@ -11,7 +11,6 @@ import android.util.TypedValue
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
@@ -24,7 +23,6 @@ import com.example.playlistmaker.data.repositories.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.data.Constants
-import com.example.playlistmaker.ui.activity.SearchActivity
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -124,7 +122,7 @@ class MediaActivity : AppCompatActivity() {
 
 
 
-        val switchThemeInteractor = Creator.provideSwitchThemeInteractor()
+        val switchThemeInteractor = Creator.provideSwitchThemeUseCase()
         switchThemeInteractor.controlThemeInOtherWindows(
             applicationContext as App,
             this@MediaActivity,
