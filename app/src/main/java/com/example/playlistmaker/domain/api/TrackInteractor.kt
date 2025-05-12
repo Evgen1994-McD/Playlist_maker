@@ -1,5 +1,6 @@
 package com.example.playlistmaker.domain.api
 
+import android.content.Context
 import com.example.playlistmaker.domain.models.Track
 
 interface TrackInteractor {
@@ -10,4 +11,7 @@ interface TrackInteractor {
             fun consume(foundTracks: List<Track>)
             fun onFailure(error: Throwable)
         }
+
+    fun getTrackIntentAndStart(track: Track, context: Context) // получим интент при нажатии на трек
+    // ну и запустим( далее)
     }

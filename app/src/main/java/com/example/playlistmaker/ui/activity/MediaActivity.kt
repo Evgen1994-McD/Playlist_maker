@@ -171,11 +171,6 @@ class MediaActivity : AppCompatActivity() {
     }
 
 
-    fun formatMillisecondsAsMinSec(milliseconds: Long): String { // функция перевода времени
-        val localTime = LocalTime.ofNanoOfDay(milliseconds * 1_000_000)
-        val formatter = DateTimeFormatter.ofPattern("mm:ss")
-        return localTime.format(formatter)
-    }
 
     fun getCoverArtwork(artworkUrl100: String) =
         artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")

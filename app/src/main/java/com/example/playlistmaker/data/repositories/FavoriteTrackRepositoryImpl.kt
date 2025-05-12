@@ -7,6 +7,8 @@ import com.example.playlistmaker.domain.api.FavoriteTrackRepository
 import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackRepository {
     companion object {
@@ -90,7 +92,7 @@ class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackR
             return Track(
                 trackName = trackDto.trackName,
                 artistName = trackDto.artistName,
-                trackTimeMillis = trackDto.trackTimeMillis,
+                trackTimeMillis = trackDto.trackTimeMillis, // преобразую и пеоедам время сразу
                 artworkUrl100 = trackDto.artworkUrl100,
                 trackId = trackDto.trackId,
                 collectionName = trackDto.collectionName,
@@ -101,6 +103,12 @@ class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackR
 
             )
         }
+
+    fun formatMillisecondsAsMinSec(milliseconds: Long): String { // функция перевода времени
+        val localTime = LocalTime.ofNanoOfDay(milliseconds * 1_000_000)
+        val formatter = DateTimeFormatter.ofPattern("mm:ss")
+        return localTime.format(formatter)
+    }
 
 
 

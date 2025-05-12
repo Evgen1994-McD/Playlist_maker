@@ -1,9 +1,14 @@
 package com.example.playlistmaker.domain.impl
 
+import android.content.Context
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import androidx.core.content.ContextCompat.startActivity
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.api.TrackRepository
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.activity.MediaActivity
 import kotlinx.coroutines.Runnable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -39,7 +44,26 @@ currentTask?.cancel(true)
     }
 
 
+    override fun getTrackIntentAndStart(track: Track, context: Context) {
+        val intent =
+            Intent(context, MediaActivity::class.java) // создали интент для перехода на активити
+        intent.putExtra("trackName", track.trackName)
+        if (!track.collectionName.isNullOrEmpty()) {
+            intent.putExtra(
+                "collectionName",
+                track.collectionName
+            )  // отправим альбом только если он есть
+        }
+        intent.putExtra("trackTimeMillis", track.trackTimeMillis)
+        intent.putExtra("artistName", track.artistName)
+        intent.putExtra("primaryGenreName", track.primaryGenreName)
+        intent.putExtra("country", track.country)
+        intent.putExtra("artworkUrl100", track.artworkUrl100)
+        intent.putExtra("previewUrl", track.previewUrl)
 
+        intent.putExtra("relieseDate", track.releaseDate)
+context.startActivity(intent)
+    }
 
 
 

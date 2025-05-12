@@ -376,9 +376,8 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек
         if (clickDebounce()) { //если нажали более 1 раза за секунду не сработает
-            intentAndStartActivity(track)
+           trackInteractor.getTrackIntentAndStart(track, this)
             favoriteTrackInteractor.addTrack(track)
-            //storage.addTrack(track)
         }
         // вызову функцию и передам путэкстра
 
@@ -402,13 +401,6 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
 
 
 
-  //  private fun updateTracksFromStorage() { //обновляем треки из хранилища
-
-
-   //     val updateTracks = storage.getAllTracks()
-       // favoriteAdapter.updateData(updateTracks as MutableList<Track>) //для этого мы прописали метот updateData в адаптере
-    //}
-
 
     // Слушатель для отслеживания изменений в SharedPreferences
     private val sharedPrefListener =
@@ -419,28 +411,7 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
             }
         }
 
-    private fun intentAndStartActivity(track: Track) {
-        val intent =
-            Intent(this, MediaActivity::class.java) // создали интент для перехода на активити
-        intent.putExtra("trackName", track.trackName)
-        if (!track.collectionName.isNullOrEmpty()) {
-            intent.putExtra(
-                "collectionName",
-                track.collectionName
-            )  // отправим альбом только если он есть
-        }
-        intent.putExtra("trackTimeMillis", track.trackTimeMillis)
-        intent.putExtra("artistName", track.artistName)
-        intent.putExtra("primaryGenreName", track.primaryGenreName)
-        intent.putExtra("country", track.country)
-        intent.putExtra("artworkUrl100", track.artworkUrl100)
-        intent.putExtra("previewUrl", track.previewUrl)
 
-        intent.putExtra("relieseDate", track.releaseDate)
-        startActivity(intent) // запускаем активити
-
-
-    }
 
     private fun searchTracks(txtForSearch : String ) {
 val delayedShowPbs = Runnable {
@@ -478,6 +449,7 @@ val delayedShowPbs = Runnable {
 
             })
     }
+    @SuppressLint("SuspiciousIndentation")
     private fun updateTracksFromStorage() {
    myTracks = favoriteTrackInteractor.getAllTracksFromStorage()
                favoriteAdapter.updateData(myTracks as MutableList<Track>)
