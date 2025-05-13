@@ -23,9 +23,9 @@ import com.example.playlistmaker.data.repositories.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.data.Constants
+import com.example.playlistmaker.domain.api.MediaInteractor
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -38,8 +38,7 @@ class MediaActivity : AppCompatActivity() {
     private var mediaPlayer = MediaPlayer() // делаю медиаплеер
     private var isPlaying = false // переменная статуса плеера
 
-
-
+    private lateinit var mediaPlayerInteractor : MediaInteractor
     companion object { // компаньон медиаплеера
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1
@@ -99,10 +98,6 @@ class MediaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-
-
-
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMediaBinding.inflate(layoutInflater)
@@ -112,6 +107,7 @@ class MediaActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        mediaPlayerInteractor = Creator.provideMediaInteractor()
 
         collectionName = "" // инициализировал
 
@@ -119,6 +115,10 @@ class MediaActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
             finish()
         }
+
+        val favoriteTrackInteractorImpl = Creator.provideFaworiteInteractor(this)
+
+
 
 
 
@@ -136,9 +136,8 @@ class MediaActivity : AppCompatActivity() {
 
 
 
-
-        storage = FavoriteTrackRepositoryImpl(this@MediaActivity) // инициализируем экземпляр класса Trackstorage
-        val myTracks = storage.getAllTracks() //все треки
+        //storage = FavoriteTrackRepositoryImpl(this@MediaActivity) // инициализируем экземпляр класса Trackstorage
+        val myTracks = favoriteTrackInteractorImpl.getAllTracksFromStorage()//storage.getAllTracks() //все треки
 
 
 
@@ -147,6 +146,7 @@ class MediaActivity : AppCompatActivity() {
                 .isNullOrEmpty()
         ) // запускаем интент только если интент есть
         {
+
             intentGetExtraBind() // запустим интент
 
 
@@ -156,13 +156,20 @@ class MediaActivity : AppCompatActivity() {
         }
 
         binding.play.setOnClickListener {
-            playbackControl()
+            binding.play.isEnabled = true
+
+
+            Log.d("Play", "Должно начаться")
+            mediaPlayerInteractor.startPlayback()
+
+           // playbackControl()
             isPlaying = true
             startUpdateProgress() /*переменную при нажатии на плей перевели в тру и начали обновлять
             прогресс. Так же и с кнопкой пауза, ниже */
         }
         binding.pause.setOnClickListener {
-            playbackControl()
+           mediaPlayerInteractor.pausePlayback()
+            // playbackControl()
             isPlaying = false
             stopUpdateProgress()
         }
@@ -220,10 +227,15 @@ class MediaActivity : AppCompatActivity() {
             .placeholder(R.drawable.ph_media_312)
             .error(R.drawable.ph_media_312)
             .into(binding.imMine)
-
-        preparePlayer() // подготовили плеер
+        Log.d("MediaActivity", "Preview URL: $previewUrl")
+mediaPlayerInteractor.preparePlayer(previewUrl)
+       // preparePlayer() // подготовили плеер
 
     }
+
+
+
+
 
     fun loadLastLikedTrack(track: Track) {// убираем поле альбом если нет альбома
         val trackName = track.trackName// убираем поле альбом если нет альбома
@@ -250,8 +262,8 @@ previewUrl = track.previewUrl
         binding.tvGroup.text = artistName
         binding.tvTrackName.text = trackName
         binding.tvYear.text = formattedYear(relieseDate.toString())
-preparePlayer()
-
+//preparePlayer()
+mediaPlayerInteractor.preparePlayer(previewUrl)
         val options = RequestOptions().centerCrop()//опции для Glide
         val radiusInDP = 2f //опции для Glide
         val densityMultiplier = TypedValue.applyDimension( //опции для Glide

@@ -1,12 +1,16 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.media.MediaPlayer
 import com.example.playlistmaker.data.repositories.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.data.repositories.TrackRepositoryImpl
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
+import com.example.playlistmaker.data.repositories.MediaPlayerManagerImpl
 import com.example.playlistmaker.data.repositories.SettingsReposytoryImpl
 import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.api.FavoriteTrackRepository
+import com.example.playlistmaker.domain.api.MediaInteractor
+import com.example.playlistmaker.domain.api.MediaPlayerManager
 import com.example.playlistmaker.domain.api.OpenUrlUseCase
 import com.example.playlistmaker.domain.api.SendSuppEmailUseCase
 import com.example.playlistmaker.domain.api.SettingsRepository
@@ -15,6 +19,7 @@ import com.example.playlistmaker.domain.api.SwitchThemeUseCase
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.api.TrackRepository
 import com.example.playlistmaker.domain.impl.FavoriteTrackInteractorImpl
+import com.example.playlistmaker.domain.impl.MediaInteractorImpl
 import com.example.playlistmaker.domain.impl.OpenUrlUseCaseImpl
 import com.example.playlistmaker.domain.impl.SendSuppEmailUseCaseImpl
 import com.example.playlistmaker.domain.impl.ShareAppUseCaseImpl
@@ -57,6 +62,22 @@ object Creator {
 
     fun provideSwitchThemeUseCase() : SwitchThemeUseCase {
         return SwitchThemeUseCaseImpl(getSettingsRepository())
+    }
+
+
+
+
+    fun getMediaPlayer() : MediaPlayer {
+        return MediaPlayer()
+    }
+
+
+    fun getMediaPlayerManager() : MediaPlayerManager {
+        return MediaPlayerManagerImpl(getMediaPlayer())
+    }
+
+    fun provideMediaInteractor() : MediaInteractor {
+        return MediaInteractorImpl(getMediaPlayerManager())
     }
 
 }

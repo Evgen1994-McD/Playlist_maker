@@ -1,0 +1,53 @@
+package com.example.playlistmaker.data.repositories
+
+import android.media.MediaPlayer
+import com.example.playlistmaker.domain.api.MediaPlayerManager
+import java.io.IOException
+
+class MediaPlayerManagerImpl(val mediaPlayer: MediaPlayer) : MediaPlayerManager {
+    companion object {
+        const val STATE_IDLE = 0
+        const val STATE_PREPARED = 1
+        const val STATE_PLAYING = 2
+        const val STATE_PAUSED = 3
+    }
+
+    private var playerState = STATE_IDLE
+
+    override fun preparePlayer(previewUrl: String) {
+        try {
+            mediaPlayer.reset()
+            mediaPlayer.setDataSource(previewUrl)
+            mediaPlayer.prepareAsync()
+            playerState = STATE_PREPARED
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun startPlayback() {
+        if (playerState != STATE_PREPARED && playerState != STATE_PAUSED) return
+        mediaPlayer.start()
+        playerState = STATE_PLAYING
+    }
+
+    override fun pausePlayback() {
+        if (playerState != STATE_PLAYING) return
+        mediaPlayer.pause()
+        playerState = STATE_PAUSED
+    }
+
+    override fun releasePlayer() {
+        mediaPlayer.release()
+        playerState = STATE_IDLE
+    }
+
+    override fun addListeners(onPreparedListener: () -> Unit, onCompletionListener: () -> Unit) {
+        mediaPlayer.setOnPreparedListener(MediaPlayer.OnPreparedListener {
+            onPreparedListener()
+        })
+        mediaPlayer.setOnCompletionListener(MediaPlayer.OnCompletionListener {
+            onCompletionListener()
+        })
+    }
+}

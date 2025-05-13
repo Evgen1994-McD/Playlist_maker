@@ -1,10 +1,6 @@
 package com.example.playlistmaker.domain.api
 
-import android.content.Context
-import android.content.Intent
-import com.example.playlistmaker.domain.models.Track
-
-interface MediaInteractor {
+interface MediaPlayerManager {
 
     fun preparePlayer(previewUrl: String)
     fun startPlayback()
