@@ -1,20 +1,16 @@
 package com.example.playlistmaker.data.repositories
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.Constants
-import com.example.playlistmaker.data.dto.App
+import com.example.playlistmaker.App
 import com.example.playlistmaker.domain.api.SettingsRepository
-import com.example.playlistmaker.ui.activity.SettingsActivity
-import com.google.android.material.materialswitch.MaterialSwitch
 
 class SettingsReposytoryImpl() : SettingsRepository {
-    override fun shareApp(context: Context) : Intent {
+    override fun shareApp(context: Context): Intent {
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(
@@ -27,10 +23,10 @@ class SettingsReposytoryImpl() : SettingsRepository {
         return sendIntent
 //        context.startActivity(
 //            Intent.createChooser(sendIntent, context.getString(R.string.share_stroke))
-      //  )
+        //  )
     }
 
-    override fun sendSuppEmail(myEmail: String, subject : String, body : String) : Intent {
+    override fun sendSuppEmail(myEmail: String, subject: String, body: String): Intent {
         val intent = Intent(Intent.ACTION_SEND).apply {
             // Указание категории электронной почты
             type = "message/rfc822"
@@ -43,31 +39,34 @@ class SettingsReposytoryImpl() : SettingsRepository {
 
     }
 
-    override fun openUrlInDefaultBrowser(url: String) : Intent {
+    override fun openUrlInDefaultBrowser(url: String): Intent {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
             addCategory(Intent.CATEGORY_BROWSABLE)
         }
         return intent
     }
-    override fun controlAppThemeMode(applicationContext: Context, context: Context) : Boolean {
+
+    override fun controlAppThemeMode(applicationContext: Context, context: Context): Boolean {
         val currentTheme = applicationContext as App
-        val themeSharedPrefs = context.getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
+        val themeSharedPrefs =
+            context.getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
 
 
-        if(currentTheme.hasBooleanValue(context, Constants.KEY_THEME_MODE)) {
+        if (currentTheme.hasBooleanValue(context, Constants.KEY_THEME_MODE)) {
             var savedTheme = themeSharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
             currentTheme.switchTheme(savedTheme)
             return savedTheme
-        }else {
+        } else {
             AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-              return currentTheme.isSystemInDarkTheme(context)
+            return currentTheme.isSystemInDarkTheme(context)
 
         }
 
     }
 
-    override fun saveCurrentThemeToShared(context: Context, isChecked: Boolean){
-        val themeSharedPrefs = context.getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
+    override fun saveCurrentThemeToShared(context: Context, isChecked: Boolean) {
+        val themeSharedPrefs =
+            context.getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
         themeSharedPrefs.run {
             edit().putBoolean(Constants.KEY_THEME_MODE, isChecked).apply()
         }

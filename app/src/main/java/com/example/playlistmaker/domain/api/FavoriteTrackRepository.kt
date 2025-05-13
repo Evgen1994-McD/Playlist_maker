@@ -5,7 +5,7 @@ import com.example.playlistmaker.data.dto.TrackDto
 import com.example.playlistmaker.domain.models.Track
 
 interface FavoriteTrackRepository {
-    fun addTrack(track: Track){}
+    fun addTrack(track: Track) {}
 
     fun getAllTracks(): List<Track>
 
@@ -15,9 +15,9 @@ interface FavoriteTrackRepository {
 
     fun clearHistory()
 
-    fun createTrackDtoFromTrack(track: Track) : TrackDto
+    fun createTrackDtoFromTrack(track: Track): TrackDto
 
 
-    fun createTrackFromTrackDto(trackDto: TrackDto) : Track
+    fun createTrackFromTrackDto(trackDto: TrackDto): Track
     fun favoriteSharedListener(listener: SharedPreferences.OnSharedPreferenceChangeListener)
 }

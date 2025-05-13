@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.dto
+package com.example.playlistmaker
 
 import android.app.Application
 import android.content.Context
@@ -23,24 +23,24 @@ class App : Application() { // класс АПП для смены темы
 
 
     fun isSystemInDarkTheme(context: Context): Boolean {
-        val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val currentNightMode =
+            context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         return currentNightMode == Configuration.UI_MODE_NIGHT_YES
     }
 
     fun switchTheme(savedTheme: Boolean) {
 
-        if (savedTheme!=null){
-        AppCompatDelegate.setDefaultNightMode(
-            if (savedTheme) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
-        )
+        if (savedTheme != null) {
+            AppCompatDelegate.setDefaultNightMode(
+                if (savedTheme) {
+                    AppCompatDelegate.MODE_NIGHT_YES
+                } else {
+                    AppCompatDelegate.MODE_NIGHT_NO
+                }
+            )
         }
 
     }
-
 
 
 }

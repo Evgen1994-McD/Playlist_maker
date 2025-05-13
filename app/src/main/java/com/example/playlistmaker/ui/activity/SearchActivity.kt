@@ -27,7 +27,7 @@ import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.OnTrackClickListener
 import com.example.playlistmaker.data.repositories.FavoriteTrackRepositoryImpl
-import com.example.playlistmaker.data.dto.App
+import com.example.playlistmaker.App
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.api.TrackInteractor
@@ -54,39 +54,41 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var storage: FavoriteTrackRepositoryImpl
     private lateinit var myTracks: List<Track>
     private lateinit var favoriteAdapter: TrackAdapter //адаптер будущий
-    private lateinit var favoriteTrackInteractor : FavoriteTrackInteractor
-    private lateinit var trackInteractor : TrackInteractor
+    private lateinit var favoriteTrackInteractor: FavoriteTrackInteractor
+    private lateinit var trackInteractor: TrackInteractor
     private lateinit var pbs: ProgressBar
-    private lateinit var sharedrprefs : SharedPreferences
+    private lateinit var sharedrprefs: SharedPreferences
     private val handler =
         Handler(Looper.getMainLooper()) // Сделал Хандлер для доступа к главному потоку
-private lateinit var task : Runnable // задача для потока для того чтобы сделать onDebounce
+
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val switchThemeInteractor = Creator.provideSwitchThemeUseCase()
         trackInteractor = Creator.provideTracksInteractor()
-        favoriteTrackInteractor = Creator.provideFaworiteInteractor(this@SearchActivity) // Создал Фаворитинтерактор
+        favoriteTrackInteractor =
+            Creator.provideFaworiteInteractor(this@SearchActivity) // Создал Фаворитинтерактор
 
-        sharedrprefs = getSharedPreferences(FavoriteTrackRepositoryImpl.Companion.TRACKS_KEY, MODE_PRIVATE) // это для фав треков
+        sharedrprefs = getSharedPreferences(
+            FavoriteTrackRepositoryImpl.Companion.TRACKS_KEY,
+            MODE_PRIVATE
+        ) // это для фав треков
 
 
-        favoriteAdapter = TrackAdapter(favoriteTrackInteractor.getAllTracksFromStorage(), this@SearchActivity)
+        favoriteAdapter =
+            TrackAdapter(favoriteTrackInteractor.getAllTracksFromStorage(), this@SearchActivity)
 
 
 
         switchThemeInteractor.controlThemeInOtherWindows(
             applicationContext as App,
             this@SearchActivity,
-            this@SearchActivity)
+            this@SearchActivity
+        )
 
 
 
-        val sharedprefs = getSharedPreferences(
-            FavoriteTrackRepositoryImpl.Companion.PREFS_NAME,
-            MODE_PRIVATE
-        ) //Объявили sharedPreferences для подписки в дальнейшем на обновления
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -141,21 +143,22 @@ private lateinit var task : Runnable // задача для потока для 
             searchTracks(txtForSearch)
 
         }
-favoriteTrackInteractor.registerOnSharedPrefsChanger(sharedPrefListener)
-        //sharedprefs.registerOnSharedPreferenceChangeListener(sharedPrefListener) //регистрируем слушатель изменений на наш sharedprefs чтобы сразу подгрузить изменения в список адаптера
+        favoriteTrackInteractor.registerOnSharedPrefsChanger(sharedPrefListener)
         updateTracksFromStorage()
 
 
         btCleanHistory.setOnClickListener {  // кнопка очистки истории
-          favoriteTrackInteractor.clearHistory()
+            favoriteTrackInteractor.clearHistory()
             recyclerView.makeInvisible() // делаю ресайклер вью невидимым
             tvMsgSearch.makeInvisible() //делаем сообщение "Вы искали" невидимым
             btCleanHistory.makeInvisible() // делаем саму кнопку невидимой при выполнении логики
             searchEditText.clearFocus()  // убираю фокус
         }
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && searchEditText.text?.isNullOrEmpty() == true && !favoriteTrackInteractor.getAllTracksFromStorage().isNullOrEmpty()
-            ) { updateTracksFromStorage()
+            if (hasFocus && searchEditText.text?.isNullOrEmpty() == true && !favoriteTrackInteractor.getAllTracksFromStorage()
+                    .isNullOrEmpty()
+            ) {
+                updateTracksFromStorage()
                 displayFavoriteTracks()
 
             }
@@ -201,7 +204,7 @@ favoriteTrackInteractor.registerOnSharedPrefsChanger(sharedPrefListener)
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeGone()
-searchTracks(txtForSearch) // в интеракторе поиск настроен на поиск через 2 секунды
+                    searchTracks(txtForSearch) // в интеракторе поиск настроен на поиск через 2 секунды
                     phForNothingToShow.makeGone()
                     recyclerView.makeGone()
                     msgTopTxt.makeGone()
@@ -210,7 +213,7 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
 
                 }
             }
-           // }
+
             // функция логики отображения иконок
 
             override fun afterTextChanged(p0: Editable?) {
@@ -300,9 +303,6 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
     }
 
 
-
-
-
     // Вспомогательные методы
     private fun handleNoResults() {
         val phNts = ContextCompat.getDrawable(this, R.drawable.ph_nothing_to_show_120)
@@ -314,7 +314,7 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
         btCleanHistory.makeGone()
     }
 
-   private fun displayFavoriteTracks() {
+    private fun displayFavoriteTracks() {
         tvMsgSearch.makeVisible()
         btCleanHistory.makeVisible()
         phForNothingToShow.makeGone()
@@ -366,17 +366,13 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек
-       if(trackInteractor.clickDebounce()) { //если нажали более 1 раза за секунду не сработает
-           trackInteractor.getTrackIntentAndStart(track, this)
+        if (trackInteractor.clickDebounce()) { //если нажали более 1 раза за секунду не сработает
+            trackInteractor.getTrackIntentAndStart(track, this)
             favoriteTrackInteractor.addTrack(track)
         }
         // вызову функцию и передам путэкстра
 
     }
-
-
-
-
 
 
     // Слушатель для отслеживания изменений в SharedPreferences
@@ -389,13 +385,12 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
         }
 
 
-
-    private fun searchTracks(txtForSearch : String ) {
-val delayedShowPbs = Runnable {
-        runOnUiThread {
-            pbs.makeVisible()
+    private fun searchTracks(txtForSearch: String) {
+        val delayedShowPbs = Runnable {
+            runOnUiThread {
+                pbs.makeVisible()
+            }
         }
-    }
         handler.postDelayed(delayedShowPbs, 2000L)
 
         trackInteractor.searchTracks(
@@ -403,21 +398,21 @@ val delayedShowPbs = Runnable {
             object : TrackInteractor.TracksConsumer {
                 override fun consume(tracks: List<Track>) {
                     runOnUiThread {
-                        handler.removeCallbacks (delayedShowPbs)
-                         pbs.makeGone()
+                        handler.removeCallbacks(delayedShowPbs)
+                        pbs.makeGone()
 
                         if (tracks.isNullOrEmpty()) {
                             handleNoResults()
-                        }
-                        else {
+                        } else {
 
                             displayTracks(tracks!!)
                         }
                     }
                 }
+
                 override fun onFailure(error: Throwable) {
                     runOnUiThread {
-                        handler.removeCallbacks (delayedShowPbs)
+                        handler.removeCallbacks(delayedShowPbs)
 
                         pbs.makeGone()
                         handleNoInternetConnection()
@@ -426,14 +421,12 @@ val delayedShowPbs = Runnable {
 
             })
     }
+
     @SuppressLint("SuspiciousIndentation")
     private fun updateTracksFromStorage() {
-   myTracks = favoriteTrackInteractor.getAllTracksFromStorage()
-               favoriteAdapter.updateData(myTracks as MutableList<Track>)
-           }
-
-
-
+        myTracks = favoriteTrackInteractor.getAllTracksFromStorage()
+        favoriteAdapter.updateData(myTracks as MutableList<Track>)
+    }
 
 
     companion object {

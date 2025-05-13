@@ -2,7 +2,6 @@ package com.example.playlistmaker.ui.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,38 +16,35 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.Creator
-import com.example.playlistmaker.data.dto.App
+import com.example.playlistmaker.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.repositories.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.data.Constants
 import com.example.playlistmaker.domain.api.MediaInteractor
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class MediaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
     private lateinit var artworkUrl100: String
     private lateinit var collectionName: String
-    private lateinit var previewUrl : String
+    private lateinit var previewUrl: String
     private var isPlaying = false // переменная статуса плеера
 
-    private lateinit var mediaPlayerInteractor : MediaInteractor
+    private lateinit var mediaPlayerInteractor: MediaInteractor
+
     companion object { // компаньон медиаплеера
 
         private const val default_time = "00:00"
     }
-    private val handler =
-        Handler(Looper.getMainLooper()) // хэндлер для доступа к главному потоку
+
+    private val handler = Handler(Looper.getMainLooper()) // хэндлер для доступа к главному потоку
 
 
-    private fun onPlayerReady(){ // это функция для листенера
+    private fun onPlayerReady() { // это функция для листенера
         binding.play.isEnabled = true
         startUpdateProgress()
     }
 
-    private fun onPlayComplete(){ // это тоже
+    private fun onPlayComplete() { // это тоже
         stopUpdateProgress()
         binding.pause.makeInvisible()
         binding.play.makeVisible()
@@ -59,81 +55,72 @@ class MediaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-       super.onCreate(savedInstanceState)
-       enableEdgeToEdge()
-       binding = ActivityMediaBinding.inflate(layoutInflater)
-       setContentView(binding.root)
-       ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_media)) { v, insets ->
-           val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-           v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-           insets
-       }
-       mediaPlayerInteractor = Creator.provideMediaInteractor() //создали интерактор
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        binding = ActivityMediaBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_media)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+        mediaPlayerInteractor = Creator.provideMediaInteractor() //создали интерактор
 
-       collectionName = "" // инициализировал
-
-
-       binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
-           finish()
-       }
-
-       val favoriteTrackInteractorImpl =
-           Creator.provideFaworiteInteractor(this) // создал экземлпр фаворитинтерактора для доступа к коллекции
+        collectionName = "" // инициализировал
 
 
-       mediaPlayerInteractor.addListeners(
-           ::onPlayerReady,
-           ::onPlayComplete
-       )  // листенер для определения начала и окончания воспроизведения
+        binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
+            finish()
+        }
+
+        val favoriteTrackInteractorImpl =
+            Creator.provideFaworiteInteractor(this) // создал экземлпр фаворитинтерактора для доступа к коллекции
 
 
-       val switchThemeUseCase = Creator.provideSwitchThemeUseCase()
-       switchThemeUseCase.controlThemeInOtherWindows(
-           applicationContext as App,
-           this@MediaActivity,
-           this@MediaActivity
-       )
-       val myTracks =
-           favoriteTrackInteractorImpl.getAllTracksFromStorage()//storage.getAllTracks() //все треки
-
-       if (!intent.getStringExtra("trackName")
-               .isNullOrEmpty()
-       ) // запускаем интент только если интент есть
-       {
-           intentGetExtraBind() // запустим интент
-       } else if (!myTracks.isNullOrEmpty()) {
-           val track = myTracks[0] // если myTracks не пуст, возьмем свежий трек для плеера
-           loadLastLikedTrack(track)
-       }
-
-       binding.play.setOnClickListener {
-           if (mediaPlayerInteractor.clickDebounce()) {
-               binding.play.isEnabled = true
-               binding.play.makeInvisible()
-               binding.pause.makeVisible()
-               mediaPlayerInteractor.startPlayback()
-               isPlaying = true
-               startUpdateProgress()
-           }
-       }
-       binding.pause.setOnClickListener {
-           if (mediaPlayerInteractor.clickDebounce()) {
-               binding.pause.makeInvisible()
+        mediaPlayerInteractor.addListeners(
+            ::onPlayerReady, ::onPlayComplete
+        )  // листенер для определения начала и окончания воспроизведения
 
 
-               binding.play.makeVisible()
-               mediaPlayerInteractor.pausePlayback()
-               isPlaying = false
-               stopUpdateProgress()
-           }
-       }
-   }
+        val switchThemeUseCase = Creator.provideSwitchThemeUseCase()
+        switchThemeUseCase.controlThemeInOtherWindows(
+            applicationContext as App, this@MediaActivity, this@MediaActivity
+        )
+        val myTracks =
+            favoriteTrackInteractorImpl.getAllTracksFromStorage()//storage.getAllTracks() //все треки
+
+        if (!intent.getStringExtra("trackName")
+                .isNullOrEmpty()
+        ) // запускаем интент только если интент есть
+        {
+            intentGetExtraBind() // запустим интент
+        } else if (!myTracks.isNullOrEmpty()) {
+            val track = myTracks[0] // если myTracks не пуст, возьмем свежий трек для плеера
+            loadLastLikedTrack(track)
+        }
+
+        binding.play.setOnClickListener {
+            if (mediaPlayerInteractor.clickDebounce()) {
+                binding.play.isEnabled = true
+                binding.play.makeInvisible()
+                binding.pause.makeVisible()
+                mediaPlayerInteractor.startPlayback()
+                isPlaying = true
+                startUpdateProgress()
+            }
+        }
+        binding.pause.setOnClickListener {
+            if (mediaPlayerInteractor.clickDebounce()) {
+                binding.pause.makeInvisible()
 
 
-
-
-
-
+                binding.play.makeVisible()
+                mediaPlayerInteractor.pausePlayback()
+                isPlaying = false
+                stopUpdateProgress()
+            }
+        }
+    }
 
 
     fun intentGetExtraBind() {
@@ -173,19 +160,13 @@ class MediaActivity : AppCompatActivity() {
 
         val options = RequestOptions().centerCrop()//опции для Glide
 
-        Glide.with(binding.imMine.context)
-            .load(artworkUrl100)
-            .apply(options)
-            .placeholder(R.drawable.ph_media_312)
-            .error(R.drawable.ph_media_312)
+        Glide.with(binding.imMine.context).load(artworkUrl100).apply(options)
+            .placeholder(R.drawable.ph_media_312).error(R.drawable.ph_media_312)
             .into(binding.imMine)
         Log.d("MediaActivity", "Preview URL: $previewUrl")
-mediaPlayerInteractor.preparePlayer(previewUrl)
+        mediaPlayerInteractor.preparePlayer(previewUrl)
 
     }
-
-
-
 
 
     fun loadLastLikedTrack(track: Track) {// убираем поле альбом если нет альбома
@@ -209,27 +190,23 @@ mediaPlayerInteractor.preparePlayer(previewUrl)
         binding.tvGenre.text = primaryGenreName
         binding.tvCountry.text = country
         binding.tvTime.text = trackTimeMillis
-previewUrl = track.previewUrl
+        previewUrl = track.previewUrl
         binding.tvGroup.text = artistName
         binding.tvTrackName.text = trackName
         binding.tvYear.text = relieseDate
-mediaPlayerInteractor.preparePlayer(previewUrl)
+        mediaPlayerInteractor.preparePlayer(previewUrl)
         val options = RequestOptions().centerCrop()//опции для Glide
         val radiusInDP = 2f //опции для Glide
         val densityMultiplier = TypedValue.applyDimension( //опции для Glide
             TypedValue.COMPLEX_UNIT_DIP, //опции для Glide
-            1f,
-            binding.imMine.context.resources.displayMetrics  //опции для Glide
+            1f, binding.imMine.context.resources.displayMetrics  //опции для Glide
         )
         val radiusInPX = radiusInDP * densityMultiplier //опции для Glide
 
 
-        Glide.with(binding.imMine.context)
-            .load(artworkUrl100)
-            .transform(RoundedCorners(radiusInPX.toInt()))
-            .apply(options)
-            .placeholder(R.drawable.ph_media_312)
-            .error(R.drawable.ph_media_312)
+        Glide.with(binding.imMine.context).load(artworkUrl100)
+            .transform(RoundedCorners(radiusInPX.toInt())).apply(options)
+            .placeholder(R.drawable.ph_media_312).error(R.drawable.ph_media_312)
             .into(binding.imMine)
 
 
@@ -257,7 +234,6 @@ mediaPlayerInteractor.preparePlayer(previewUrl)
     }
 
 
-
     private fun View.makeGone() {
         this.visibility = View.GONE // функция для вью гон
     }
@@ -272,7 +248,7 @@ mediaPlayerInteractor.preparePlayer(previewUrl)
 
     override fun onPause() { //пауза когда сворачиваем
         super.onPause()
-    mediaPlayerInteractor.pausePlayback()
+        mediaPlayerInteractor.pausePlayback()
     }
 
     override fun onDestroy() { // закрываем плеер при завершении работы
@@ -284,19 +260,17 @@ mediaPlayerInteractor.preparePlayer(previewUrl)
 
 
     fun stopUpdateProgress() {
-    handler.removeCallbacksAndMessages(null) // функция отмены колбеков от хендлер
+        handler.removeCallbacksAndMessages(null) // функция отмены колбеков от хендлер
 
     }
 
     @SuppressLint("SuspiciousIndentation")
     fun startUpdateProgress() {
-    if(!isPlaying) return
-val progress = mediaPlayerInteractor.updateProgress()
+        if (!isPlaying) return
+        val progress = mediaPlayerInteractor.updateProgress()
         binding.progressTime.text = progress
-        handler.postDelayed({startUpdateProgress()}, 300) // вызывается каждые 300 мс
+        handler.postDelayed({ startUpdateProgress() }, 300) // вызывается каждые 300 мс
     }
 
 
-
-
-    }
+}

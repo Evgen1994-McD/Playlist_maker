@@ -8,7 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.playlistmaker.Creator
-import com.example.playlistmaker.data.dto.App
+import com.example.playlistmaker.App
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.Constants
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -17,7 +17,7 @@ import com.google.android.material.textview.MaterialTextView
 class SettingsActivity : AppCompatActivity() {
 
     val shareAppInteractor = Creator.provideShareAppUseCase() // интерактор Поделиться приложением
-val sendSuppEmailInteractor = Creator.provideSendSuppEmailUseCase()
+    val sendSuppEmailInteractor = Creator.provideSendSuppEmailUseCase()
     val opernUrlInteractor = Creator.provideOpenUrlUseCase()
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -62,11 +62,12 @@ val sendSuppEmailInteractor = Creator.provideSendSuppEmailUseCase()
             getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
 
 
-        switchThemeInteractor.switchThemeModeBySettings(switcherTheme,
+        switchThemeInteractor.switchThemeModeBySettings(
+            switcherTheme,
             applicationContext as App,
             this@SettingsActivity,
-            this@SettingsActivity)
-
+            this@SettingsActivity
+        )
 
 
     }
@@ -86,7 +87,7 @@ val sendSuppEmailInteractor = Creator.provideSendSuppEmailUseCase()
     }
 
     private fun openUrlInDefaultBrowser(url: String, context: Context) {
-       opernUrlInteractor.openUrlInDefaultBrowser(context,url)
+        opernUrlInteractor.openUrlInDefaultBrowser(context, url)
     }
 
 }

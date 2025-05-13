@@ -12,6 +12,7 @@ class ShareAppUseCaseImpl(private val repository: SettingsRepository) : ShareApp
             Intent.createChooser(
                 repository.shareApp(context),
                 context.getString(R.string.share_stroke)
-            ))
+            )
+        )
     }
 }

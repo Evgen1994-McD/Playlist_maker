@@ -7,9 +7,10 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.api.OnTrackClickListener
 
-class TrackAdapter(private var tracks: List<Track>?,
-                   private val listener: OnTrackClickListener  // тоже добавили листенер в конструктор класса
-                   ) : RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(
+    private var tracks: List<Track>?,
+    private val listener: OnTrackClickListener  // тоже добавили листенер в конструктор класса
+) : RecyclerView.Adapter<TrackViewHolder>() {
 
 
     fun updateData(newTracks: MutableList<Track>) {
@@ -23,11 +24,11 @@ class TrackAdapter(private var tracks: List<Track>?,
         return TrackViewHolder(view, listener)
     }
 
-    override fun onBindViewHolder(holder: TrackViewHolder, position: Int)  {
+    override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.itemView.setOnClickListener {
             listener.onTrackClicked(tracks!![position])
         }
-holder.bind(tracks!![position])
+        holder.bind(tracks!![position])
     }
 
     override fun getItemCount(): Int {

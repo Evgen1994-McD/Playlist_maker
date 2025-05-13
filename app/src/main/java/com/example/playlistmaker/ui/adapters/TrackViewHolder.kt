@@ -16,7 +16,8 @@ import java.time.format.DateTimeFormatter
 import java.time.LocalTime
 
 
-class TrackViewHolder(itemView: View, listener: OnTrackClickListener) : RecyclerView.ViewHolder(itemView) { // Добавили листенер в конструктор класса
+class TrackViewHolder(itemView: View, listener: OnTrackClickListener) :
+    RecyclerView.ViewHolder(itemView) { // Добавили листенер в конструктор класса
 
     private val trackName: TextView = itemView.findViewById(R.id.track_name)
     private val artistName: TextView = itemView.findViewById(R.id.track_info)
@@ -43,7 +44,8 @@ class TrackViewHolder(itemView: View, listener: OnTrackClickListener) : Recycler
     fun bind(track: Track) {
         trackName.text = track.trackName
         artistName.text = track.artistName
-        trackTime.text = track.trackTimeMillis// formatMillisecondsAsMinSec(track.trackTimeMillis.toLong())
+        trackTime.text =
+            track.trackTimeMillis// formatMillisecondsAsMinSec(track.trackTimeMillis.toLong())
 
 
         Glide.with(itemView.context)

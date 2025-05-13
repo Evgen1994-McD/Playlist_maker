@@ -6,32 +6,23 @@ import com.example.playlistmaker.domain.api.FavoriteTrackRepository
 import com.example.playlistmaker.domain.models.Track
 import java.util.concurrent.Executors
 
-class FavoriteTrackInteractorImpl ( private val repository: FavoriteTrackRepository) : FavoriteTrackInteractor {
-    private val executor = Executors.newCachedThreadPool()
-    override fun getAllTracks(consumer: FavoriteTrackInteractor.FavoriteTrackConsumer) {
-       executor.execute {
-           try {
+class FavoriteTrackInteractorImpl(private val repository: FavoriteTrackRepository) :
+    FavoriteTrackInteractor {
 
-               consumer.consume(repository.getAllTracks())
-           }catch (ex : Exception) {
-               consumer.onFailure(ex)
-           }
-       }
-    }
 
     override fun addTrack(track: Track) {
-     repository.addTrack(track)
+        repository.addTrack(track)
     }
 
     override fun clearHistory() {
-       repository.clearHistory()
+        repository.clearHistory()
     }
 
-    override fun getAllTracksFromStorage() : List<Track> {
-       return repository.getAllTracks()
+    override fun getAllTracksFromStorage(): List<Track> {
+        return repository.getAllTracks()
     }
 
-    override fun registerOnSharedPrefsChanger(listenre: OnSharedPreferenceChangeListener){
+    override fun registerOnSharedPrefsChanger(listenre: OnSharedPreferenceChangeListener) {
         repository.favoriteSharedListener(listenre)
     }
 

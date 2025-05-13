@@ -18,7 +18,7 @@ class RetrofitNetworkClient : NetworkClient {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-   private val iTunesApi = retrofit.create(ITunesApi::class.java)
+    private val iTunesApi = retrofit.create(ITunesApi::class.java)
 
 
     override fun doRequest(dto: Any): Response {

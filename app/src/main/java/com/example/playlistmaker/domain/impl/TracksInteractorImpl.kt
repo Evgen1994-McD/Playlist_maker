@@ -14,32 +14,35 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
-class TracksInteractorImpl (private val repository: TrackRepository,
+class TracksInteractorImpl(
+    private val repository: TrackRepository,
     private val handler: Handler = Handler(
-        Looper.getMainLooper()),
-                            private val executor: ExecutorService = Executors.newSingleThreadExecutor()) : TrackInteractor, Runnable {
+        Looper.getMainLooper()
+    ),
+    private val executor: ExecutorService = Executors.newSingleThreadExecutor()
+) : TrackInteractor, Runnable {
     private var currentTask: Future<*>? = null
 
-        override fun searchTracks(expression: String, consumer: TrackInteractor.TracksConsumer) {
-            handler.removeCallbacksAndMessages(null)
-currentTask?.cancel(true)
- currentTask = executor.submit(Runnable{
+    override fun searchTracks(expression: String, consumer: TrackInteractor.TracksConsumer) {
+        handler.removeCallbacksAndMessages(null)
+        currentTask?.cancel(true)
+        currentTask = executor.submit(Runnable {
             Thread.sleep(2000L)
 
-                try {
-                    val tracks = repository.searchTracks(expression)
-                    handler.post {
+            try {
+                val tracks = repository.searchTracks(expression)
+                handler.post {
 
-                       consumer.consume(tracks)
-                    }
+                    consumer.consume(tracks)
+                }
 
-                } catch (ex: Exception) {
-                    handler.post {
-                        consumer.onFailure(ex)
-                    }
+            } catch (ex: Exception) {
+                handler.post {
+                    consumer.onFailure(ex)
                 }
             }
- )
+        }
+        )
 
     }
 
@@ -62,10 +65,10 @@ currentTask?.cancel(true)
         intent.putExtra("previewUrl", track.previewUrl)
 
         intent.putExtra("relieseDate", track.releaseDate)
-context.startActivity(intent)
+        context.startActivity(intent)
     }
 
-   override fun clickDebounce(): Boolean {
+    override fun clickDebounce(): Boolean {
 
         val now = System.currentTimeMillis()
 
@@ -81,7 +84,7 @@ context.startActivity(intent)
 
     }
 
-    companion object{
+    companion object {
 
         private val debounceIntervalMillis = 10L // метод тут вроде Не нужен, наверное лучше убрать
         private var lastClickTime = System.currentTimeMillis() // Хранение последнего времени клика

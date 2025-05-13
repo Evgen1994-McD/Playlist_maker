@@ -2,11 +2,9 @@ package com.example.playlistmaker.domain.impl
 
 import android.app.Activity
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat.recreate
-import com.example.playlistmaker.data.Constants
-import com.example.playlistmaker.data.dto.App
+import com.example.playlistmaker.App
 import com.example.playlistmaker.domain.api.SettingsRepository
 import com.example.playlistmaker.domain.api.SwitchThemeUseCase
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -49,6 +47,6 @@ class SwitchThemeUseCaseImpl(private val repository: SettingsRepository) :
     ) {
         val theme = repository.controlAppThemeMode(applicationContext, context)
         applicationContext.switchTheme(theme)
-            // Перезапустить активность для применения новой темы
-        }
+        // Перезапустить активность для применения новой темы
     }
+}

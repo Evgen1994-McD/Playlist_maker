@@ -6,16 +6,11 @@ import android.view.View
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.playlistmaker.Creator
-import com.example.playlistmaker.data.dto.App
-import com.example.playlistmaker.ui.activity.MediaActivity
+import com.example.playlistmaker.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.ui.activity.SearchActivity
-import com.example.playlistmaker.ui.activity.SettingsActivity
-import com.example.playlistmaker.data.Constants
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +33,8 @@ class MainActivity : AppCompatActivity() {
         switchThemeUseCase.controlThemeInOtherWindows(
             applicationContext as App,
             this@MainActivity,
-            this@MainActivity)
+            this@MainActivity
+        )
 
         val searchClicker = findViewById<Button>(R.id.search_day)
         searchClicker.setOnClickListener(object : View.OnClickListener {

@@ -25,19 +25,17 @@ class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackR
         loadTracksFromPrefs() // Загрузим треки при создании объекта
     }
 
-   override fun addTrack(track: Track) {
-           if( tracks.removeIf{ it.trackId == track.trackId }) {
+    override fun addTrack(track: Track) {
+        if (tracks.removeIf { it.trackId == track.trackId }) {
 
             // Добавляем новый трек в начало списка
             tracks.add(0, createTrackDtoFromTrack(track))
-        }
-
-         else {
+        } else {
             // Добавляем новый трек
-               if (tracks.size >= 10) {
-                   tracks.removeAt(tracks.lastIndex) // Удаляем последний трек
-               }
-               tracks.add(0, createTrackDtoFromTrack(track)) // Добавляем новый трек в начало
+            if (tracks.size >= 10) {
+                tracks.removeAt(tracks.lastIndex) // Удаляем последний трек
+            }
+            tracks.add(0, createTrackDtoFromTrack(track)) // Добавляем новый трек в начало
         }
         // Ограничиваем количество треков до 10
         if (tracks.size >= 10) {
@@ -45,13 +43,15 @@ class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackR
         }
         saveTracksToPrefs() // Сохраняем изменения в SharedPreferences
     }
+
     override fun getAllTracks(): List<Track> {
         return tracks.map {
             createTrackFromTrackDto(it)
         }
     }
+
     // Метод для загрузки треков из SharedPreferences
-    override fun loadTracksFromPrefs() : List<TrackDto> {
+    override fun loadTracksFromPrefs(): List<TrackDto> {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val tracksJson = prefs.getString(TRACKS_KEY, null)
         if (!tracksJson.isNullOrBlank()) {
@@ -71,12 +71,12 @@ class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackR
         editor.apply()
     }
 
-    override fun clearHistory(){
-       tracks.clear() // Метод теперь очищает список треков
+    override fun clearHistory() {
+        tracks.clear() // Метод теперь очищает список треков
         saveTracksToPrefs() // сохраняет очищенный список треков
-        }
+    }
 
-    override fun createTrackDtoFromTrack(track: Track) : TrackDto {
+    override fun createTrackDtoFromTrack(track: Track): TrackDto {
         return TrackDto(
             trackName = track.trackName,
             artistName = track.artistName,
@@ -90,29 +90,30 @@ class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackR
             previewUrl = track.previewUrl
         )
     }
-        override fun createTrackFromTrackDto(trackDto: TrackDto) : Track {
-            return Track(
-                trackName = trackDto.trackName,
-                artistName = trackDto.artistName,
-                trackTimeMillis = trackDto.trackTimeMillis, // преобразую и пеоедам время сразу
-                artworkUrl100 = trackDto.artworkUrl100,
-                trackId = trackDto.trackId,
-                collectionName = trackDto.collectionName,
-                releaseDate = trackDto.releaseDate,
-                primaryGenreName = trackDto.primaryGenreName,
-                country = trackDto.country,
-                previewUrl = trackDto.previewUrl
 
-            )
-        }
+    override fun createTrackFromTrackDto(trackDto: TrackDto): Track {
+        return Track(
+            trackName = trackDto.trackName,
+            artistName = trackDto.artistName,
+            trackTimeMillis = trackDto.trackTimeMillis, // преобразую и пеоедам время сразу
+            artworkUrl100 = trackDto.artworkUrl100,
+            trackId = trackDto.trackId,
+            collectionName = trackDto.collectionName,
+            releaseDate = trackDto.releaseDate,
+            primaryGenreName = trackDto.primaryGenreName,
+            country = trackDto.country,
+            previewUrl = trackDto.previewUrl
+
+        )
+    }
 
     val sharedPrefsForListener = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    override fun favoriteSharedListener(listener:  SharedPreferences.OnSharedPreferenceChangeListener) {
+    override fun favoriteSharedListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
         sharedPrefsForListener.registerOnSharedPreferenceChangeListener(listener)
-            // Логика обновления треков
-        }
+        // Логика обновления треков
     }
+}
 
 
 

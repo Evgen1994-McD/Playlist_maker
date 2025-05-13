@@ -55,10 +55,11 @@ class MediaPlayerManagerImpl(val mediaPlayer: MediaPlayer) : MediaPlayerManager 
         })
     }
 
-     override fun updateProgress() :String {
+    override fun updateProgress(): String {
 
-        val formattedTime =  SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
-       return formattedTime
+        val formattedTime =
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+        return formattedTime
     }
 
 

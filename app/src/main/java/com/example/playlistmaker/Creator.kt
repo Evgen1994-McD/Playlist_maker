@@ -35,20 +35,20 @@ object Creator {
         return TracksInteractorImpl(getTracksRepository())
     }
 
-    private fun getFavoriteTrackRepository(context : Context) : FavoriteTrackRepository {
+    private fun getFavoriteTrackRepository(context: Context): FavoriteTrackRepository {
         return FavoriteTrackRepositoryImpl(context)
     }
 
-    fun provideFaworiteInteractor(context: Context) : FavoriteTrackInteractor {
+    fun provideFaworiteInteractor(context: Context): FavoriteTrackInteractor {
         return FavoriteTrackInteractorImpl(getFavoriteTrackRepository(context))
     }
 
-    private fun getSettingsRepository(): SettingsRepository{
+    private fun getSettingsRepository(): SettingsRepository {
         return SettingsReposytoryImpl()
     }
 
 
-    fun provideShareAppUseCase() : ShareAppUseCase {
+    fun provideShareAppUseCase(): ShareAppUseCase {
         return ShareAppUseCaseImpl(getSettingsRepository())
     }
 
@@ -56,27 +56,25 @@ object Creator {
         return SendSuppEmailUseCaseImpl(getSettingsRepository())
     }
 
-    fun provideOpenUrlUseCase() : OpenUrlUseCase {
+    fun provideOpenUrlUseCase(): OpenUrlUseCase {
         return OpenUrlUseCaseImpl(getSettingsRepository())
     }
 
-    fun provideSwitchThemeUseCase() : SwitchThemeUseCase {
+    fun provideSwitchThemeUseCase(): SwitchThemeUseCase {
         return SwitchThemeUseCaseImpl(getSettingsRepository())
     }
 
 
-
-
-    fun getMediaPlayer() : MediaPlayer {
+    fun getMediaPlayer(): MediaPlayer {
         return MediaPlayer()
     }
 
 
-    fun getMediaPlayerManager() : MediaPlayerManager {
+    fun getMediaPlayerManager(): MediaPlayerManager {
         return MediaPlayerManagerImpl(getMediaPlayer())
     }
 
-    fun provideMediaInteractor() : MediaInteractor {
+    fun provideMediaInteractor(): MediaInteractor {
         return MediaInteractorImpl(getMediaPlayerManager())
     }
 

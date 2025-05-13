@@ -45,6 +45,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
         val year = localDateTime.year
         return year.toString()
     }
+
     fun getCoverArtwork(artworkUrl100: String) =
         artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
 
