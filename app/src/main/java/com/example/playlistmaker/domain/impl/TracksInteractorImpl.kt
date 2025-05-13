@@ -65,10 +65,26 @@ currentTask?.cancel(true)
 context.startActivity(intent)
     }
 
+   override fun clickDebounce(): Boolean {
 
+        val now = System.currentTimeMillis()
 
+        // Проверяем прошло ли достаточно времени с момента последнего клика
+        if (now - lastClickTime >= debounceIntervalMillis) {
+            lastClickTime = now // Обновляем время последнего клика
+            return true // Клик разрешен
+        }
+        return false // Клик запрещен
+    }
 
     override fun run() {
+
+    }
+
+    companion object{
+
+        private val debounceIntervalMillis = 1000L // Интервал блокировки в миллисекундах
+        private var lastClickTime = System.currentTimeMillis() // Хранение последнего времени клика
 
     }
 }

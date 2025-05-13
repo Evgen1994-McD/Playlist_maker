@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.activity
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
@@ -39,7 +38,7 @@ import kotlinx.coroutines.Runnable
 
 class SearchActivity : AppCompatActivity(),
     OnTrackClickListener {  // Добавили имлементацию нашего интерфейса OnTrackClickListener для того чтобы определить трек
-    private lateinit var clearEditText: AppCompatEditText
+    private lateinit var searchEditText: AppCompatEditText
     private lateinit var binding: ActivitySearchBinding // делаю байдинг
 
     private lateinit var txtForSearch: String
@@ -112,7 +111,7 @@ private lateinit var task : Runnable // задача для потока для 
 
 
 
-        clearEditText =  // инициализирую эдиттекст
+        searchEditText =  // инициализирую эдиттекст
             findViewById<AppCompatEditText>(R.id.search_stroke)
 
         phForNothingToShow =
@@ -141,28 +140,24 @@ private lateinit var task : Runnable // задача для потока для 
             msgTopTxt.makeGone()
             msgBotTxt.makeGone()
             buttonNoInternet.makeGone()
-            txtForSearch = clearEditText.text.toString() // текст для поиска
+            txtForSearch = searchEditText.text.toString() // текст для поиска
             searchTracks(txtForSearch)
 
         }
 
-        storage = FavoriteTrackRepositoryImpl(this@SearchActivity) // инициализируем экземпляр класса Trackstorage
-        //myTracks = storage.getAllTracks() //все треки
-     //   favoriteAdapter = TrackAdapter(storage.getAllTracks(), this@SearchActivity) // инициирую мой адаптер
         sharedprefs.registerOnSharedPreferenceChangeListener(sharedPrefListener) //регистрируем слушатель изменений на наш sharedprefs чтобы сразу подгрузить изменения в список адаптера
         updateTracksFromStorage()
 
 
         btCleanHistory.setOnClickListener {  // кнопка очистки истории
           favoriteTrackInteractor.clearHistory()
-           // storage.clearHistory()  //очищаю историю, метод прописан в классе TrackStorage
             recyclerView.makeInvisible() // делаю ресайклер вью невидимым
             tvMsgSearch.makeInvisible() //делаем сообщение "Вы искали" невидимым
             btCleanHistory.makeInvisible() // делаем саму кнопку невидимой при выполнении логики
-            clearEditText.clearFocus()  // убираю фокус
+            searchEditText.clearFocus()  // убираю фокус
         }
-        clearEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && clearEditText.text?.isNullOrEmpty() == true && !favoriteTrackInteractor.getAllTracksFromStorage().isNullOrEmpty()
+        searchEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && searchEditText.text?.isNullOrEmpty() == true && !favoriteTrackInteractor.getAllTracksFromStorage().isNullOrEmpty()
             ) { updateTracksFromStorage()
                 displayFavoriteTracks()
 
@@ -181,18 +176,18 @@ private lateinit var task : Runnable // задача для потока для 
         savedInstanceState?.let {     // Проверяем, есть ли сохранённый текст в эдит тексте
             val savedText = it.getString(keyForWatcher)
             if (savedText != null) {
-                clearEditText.setText(savedText)
+                searchEditText.setText(savedText)
             }
         }
-        clearEditText.setOnClickListener {
-            clearEditText.requestFocus() // установка фокуса на эдиттекст
+        searchEditText.setOnClickListener {
+            searchEditText.requestFocus() // установка фокуса на эдиттекст
             inputMethodManager.showSoftInput(
-                clearEditText,
+                searchEditText,
                 0
             )  // Появление клавиатуры при нажатии на эдиттекст
         }
 
-        clearEditText.addTextChangedListener(object : TextWatcher {
+        searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 //  empty
             }
@@ -205,8 +200,7 @@ private lateinit var task : Runnable // задача для потока для 
 
 
                     // инициализ переменную таск в текст ватчере, иначе происходит вылет
-                    txtForSearch = clearEditText.text.toString()
-
+                    txtForSearch = searchEditText.text.toString()
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeGone()
@@ -249,10 +243,10 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
     }
 
     private fun logicClearIc(s: CharSequence?) {
-        clearEditText =  // инициализирую эдиттекст
+        searchEditText =  // инициализирую эдиттекст
             findViewById<AppCompatEditText>(R.id.search_stroke)
         if (!s.isNullOrBlank()) {  // Перенести в функцию
-            clearEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 ContextCompat.getDrawable(this@SearchActivity, R.drawable.ic_hintsearch_16),
                 null,
                 ContextCompat.getDrawable(this@SearchActivity, R.drawable.ic_clear_16),
@@ -261,7 +255,7 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
             textFromInput = s.toString()
 
         } else {
-            clearEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 ContextCompat.getDrawable(this@SearchActivity, R.drawable.ic_hintsearch_16),
                 null,
                 null,
@@ -273,20 +267,20 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
 
     @SuppressLint("ClickableViewAccessibility")
     private fun clearTextFromEditText() { // метод очистки текста в эдиттексте
-        clearEditText =
+        searchEditText =
             findViewById<AppCompatEditText>(R.id.search_stroke)
         val inputMethodManager =
             getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        clearEditText.setOnTouchListener { view, event ->
+        searchEditText.setOnTouchListener { view, event ->
             if (event.action == MotionEvent.ACTION_UP) {
-                val drawableEndBounds = clearEditText.compoundDrawables[2]?.bounds
+                val drawableEndBounds = searchEditText.compoundDrawables[2]?.bounds
                 if (drawableEndBounds != null) {
                     val x = event.x.toInt()
                     val y = event.y.toInt()
                     if (x >= (view.width - (drawableEndBounds.width() + view.paddingRight)) &&
                         x <= view.width - view.paddingRight && y >= 0 && y <= view.height
                     ) {
-                        clearEditText.text?.clear()
+                        searchEditText.text?.clear()
                         inputMethodManager.hideSoftInputFromWindow(
                             currentFocus?.windowToken,
                             0
@@ -299,7 +293,7 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
                         buttonNoInternet.makeGone() // убрали кнопку
                         btCleanHistory.makeInvisible()
                         tvMsgSearch.makeInvisible()
-                        clearEditText.clearFocus() // убираем фокус с эдиттекста чтобы при нажатии снова появился фокус + история поиска
+                        searchEditText.clearFocus() // убираем фокус с эдиттекста чтобы при нажатии снова появился фокус + история поиска
                         return@setOnTouchListener true
                     }
                 }
@@ -375,7 +369,7 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек
-        if (clickDebounce()) { //если нажали более 1 раза за секунду не сработает
+       if(trackInteractor.clickDebounce()) { //если нажали более 1 раза за секунду не сработает
            trackInteractor.getTrackIntentAndStart(track, this)
             favoriteTrackInteractor.addTrack(track)
         }
