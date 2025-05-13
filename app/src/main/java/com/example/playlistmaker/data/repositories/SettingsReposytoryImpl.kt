@@ -49,12 +49,13 @@ class SettingsReposytoryImpl() : SettingsRepository {
         }
         return intent
     }
-
-    override fun controlAppThemeMode(applicationContext: Context, context: Context, sharedPrefs : SharedPreferences) : Boolean {
+    override fun controlAppThemeMode(applicationContext: Context, context: Context) : Boolean {
         val currentTheme = applicationContext as App
+        val themeSharedPrefs = context.getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
+
 
         if(currentTheme.hasBooleanValue(context, Constants.KEY_THEME_MODE)) {
-            var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
+            var savedTheme = themeSharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
             currentTheme.switchTheme(savedTheme)
             return savedTheme
         }else {
@@ -64,5 +65,14 @@ class SettingsReposytoryImpl() : SettingsRepository {
         }
 
     }
+
+    override fun saveCurrentThemeToShared(context: Context, isChecked: Boolean){
+        val themeSharedPrefs = context.getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
+        themeSharedPrefs.run {
+            edit().putBoolean(Constants.KEY_THEME_MODE, isChecked).apply()
+        }
+
+    }
+
 
 }

@@ -5,6 +5,7 @@ import com.example.playlistmaker.data.dto.TrackResponse
 import com.example.playlistmaker.data.dto.TrackSearchRequest
 import com.example.playlistmaker.domain.api.TrackRepository
 import com.example.playlistmaker.domain.models.Track
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -18,10 +19,10 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                     it.trackName,
                     it.artistName,
                     formatMillisecondsAsMinSec(it.trackTimeMillis.toLong()), // преобразую и пеоедам время сразу
-                    it.artworkUrl100,
+                    getCoverArtwork(it.artworkUrl100).toString(),
                     it.trackId,
                     it.collectionName,
-                    it.releaseDate,
+                    formattedYear(it.releaseDate),
                     it.primaryGenreName,
                     it.country,
                     it.previewUrl,
@@ -37,5 +38,15 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
         val formatter = DateTimeFormatter.ofPattern("mm:ss")
         return localTime.format(formatter)
     }
+
+    fun formattedYear(date: String): String {
+        val formatter = DateTimeFormatter.ISO_DATE_TIME
+        val localDateTime = LocalDateTime.parse(date, formatter)
+        val year = localDateTime.year
+        return year.toString()
+    }
+    fun getCoverArtwork(artworkUrl100: String) =
+        artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
+
 
 }

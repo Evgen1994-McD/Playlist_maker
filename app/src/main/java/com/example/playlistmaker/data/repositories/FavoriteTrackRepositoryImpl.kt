@@ -1,9 +1,11 @@
 package com.example.playlistmaker.data.repositories
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.example.playlistmaker.data.Constants
 import com.example.playlistmaker.data.dto.TrackDto
 import com.example.playlistmaker.domain.api.FavoriteTrackRepository
+import com.example.playlistmaker.domain.api.OnTrackClickListener
 import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -104,12 +106,13 @@ class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackR
             )
         }
 
-    fun formatMillisecondsAsMinSec(milliseconds: Long): String { // функция перевода времени
-        val localTime = LocalTime.ofNanoOfDay(milliseconds * 1_000_000)
-        val formatter = DateTimeFormatter.ofPattern("mm:ss")
-        return localTime.format(formatter)
+    val sharedPrefsForListener = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    override fun favoriteSharedListener(listener:  SharedPreferences.OnSharedPreferenceChangeListener) {
+        sharedPrefsForListener.registerOnSharedPreferenceChangeListener(listener)
+            // Логика обновления треков
+        }
     }
 
 
 
-            }

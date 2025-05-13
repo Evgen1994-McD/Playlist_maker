@@ -11,12 +11,10 @@ interface SwitchThemeUseCase {
         switch: SwitchMaterial?,
         applicationContext: Context,
         context: Context,
-        sharedPrefs: SharedPreferences,
         activity: Activity
     )
     fun controlThemeInOtherWindows(applicationContext: App,
                                    context: Context,
-                                   sharedPrefs: SharedPreferences,
                                    activity: Activity)
 
 }

@@ -3,9 +3,13 @@ package com.example.playlistmaker.data.repositories
 import android.media.MediaPlayer
 import com.example.playlistmaker.domain.api.MediaPlayerManager
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class MediaPlayerManagerImpl(val mediaPlayer: MediaPlayer) : MediaPlayerManager {
     companion object {
+
+
         const val STATE_IDLE = 0
         const val STATE_PREPARED = 1
         const val STATE_PLAYING = 2
@@ -50,4 +54,12 @@ class MediaPlayerManagerImpl(val mediaPlayer: MediaPlayer) : MediaPlayerManager 
             onCompletionListener()
         })
     }
+
+     override fun updateProgress() :String {
+
+        val formattedTime =  SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+       return formattedTime
+    }
+
+
 }

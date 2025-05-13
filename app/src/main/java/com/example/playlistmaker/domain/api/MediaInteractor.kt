@@ -11,4 +11,6 @@ interface MediaInteractor {
     fun pausePlayback()
     fun releasePlayer()
     fun addListeners(onPreparedListener: () -> Unit, onCompletionListener: () -> Unit)
+    fun updateProgress(): String
+    fun clickDebounce(): Boolean
 }

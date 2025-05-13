@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.ui.activity.MediaActivity
 import com.example.playlistmaker.R
@@ -29,7 +30,16 @@ class MainActivity : AppCompatActivity() {
             insets
 // Пуш сдача работы
 
+
         }
+
+
+        val switchThemeUseCase = Creator.provideSwitchThemeUseCase()
+        switchThemeUseCase.controlThemeInOtherWindows(
+            applicationContext as App,
+            this@MainActivity,
+            this@MainActivity)
+
         val searchClicker = findViewById<Button>(R.id.search_day)
         searchClicker.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
@@ -49,15 +59,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(displayIntent)
         }
 
-        val sharedPrefs =
-            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
-        val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
-        if(theme.hasBooleanValue(this@MainActivity, Constants.KEY_THEME_MODE)) {
-            var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
-            theme.switchTheme(savedTheme)
-        }else {
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        }
 
     }
 }

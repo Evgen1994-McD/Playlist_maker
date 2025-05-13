@@ -1,5 +1,6 @@
 package com.example.playlistmaker.domain.api
 
+import android.content.SharedPreferences
 import com.example.playlistmaker.domain.models.Track
 
 interface FavoriteTrackInteractor {
@@ -13,4 +14,6 @@ interface FavoriteTrackInteractor {
         fun onFailure(error: Throwable)
 
     }
+
+    fun registerOnSharedPrefsChanger(listenre: SharedPreferences.OnSharedPreferenceChangeListener)
 }

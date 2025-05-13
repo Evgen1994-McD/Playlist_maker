@@ -17,16 +17,15 @@ class SwitchThemeUseCaseImpl(private val repository: SettingsRepository) :
         switch: SwitchMaterial?,
         applicationContext: Context,
         context: Context,
-        sharedPrefs: SharedPreferences,
         activity: Activity
 
     ) {
-        val theme = repository.controlAppThemeMode(applicationContext, context, sharedPrefs)
+        val theme = repository.controlAppThemeMode(applicationContext, context)
 
         switch!!.isChecked = theme
         switch.setOnCheckedChangeListener { _, isChecked ->
             // Сохранить новое значение темы in Sharedpreferences
-            sharedPrefs.edit().putBoolean(Constants.KEY_THEME_MODE, isChecked).apply()
+            repository.saveCurrentThemeToShared(context, isChecked)
 
             // Переключить тему
             if (isChecked) {
@@ -46,21 +45,10 @@ class SwitchThemeUseCaseImpl(private val repository: SettingsRepository) :
 
         applicationContext: App,
         context: Context,
-        sharedPrefs: SharedPreferences,
         activity: Activity
     ) {
-        val theme = repository.controlAppThemeMode(applicationContext, context, sharedPrefs)
+        val theme = repository.controlAppThemeMode(applicationContext, context)
         applicationContext.switchTheme(theme)
             // Перезапустить активность для применения новой темы
         }
     }
-/* val sharedPrefs =
-          getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
-      val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
-      if (theme.hasBooleanValue(this@MediaActivity, Constants.KEY_THEME_MODE)) {
-          var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
-          theme.switchTheme(savedTheme)
-      } else {
-          AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM // Выше идёт определение темы приложения
-      }
-      */

@@ -19,7 +19,6 @@ class SettingsActivity : AppCompatActivity() {
     val shareAppInteractor = Creator.provideShareAppUseCase() // интерактор Поделиться приложением
 val sendSuppEmailInteractor = Creator.provideSendSuppEmailUseCase()
     val opernUrlInteractor = Creator.provideOpenUrlUseCase()
-val switchThemeInteractor = Creator.provideSwitchThemeUseCase()
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -31,6 +30,8 @@ val switchThemeInteractor = Creator.provideSwitchThemeUseCase()
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val switchThemeInteractor = Creator.provideSwitchThemeUseCase()
+
         val backClicker =
             findViewById<Toolbar>(R.id.settings_toolbar_day) // Назад в MainActivity
         backClicker.setNavigationOnClickListener {
@@ -64,7 +65,6 @@ val switchThemeInteractor = Creator.provideSwitchThemeUseCase()
         switchThemeInteractor.switchThemeModeBySettings(switcherTheme,
             applicationContext as App,
             this@SettingsActivity,
-            sharedPrefs,
             this@SettingsActivity)
 
 

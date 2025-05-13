@@ -1,5 +1,6 @@
 package com.example.playlistmaker.domain.impl
 
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.api.FavoriteTrackRepository
 import com.example.playlistmaker.domain.models.Track
@@ -28,6 +29,10 @@ class FavoriteTrackInteractorImpl ( private val repository: FavoriteTrackReposit
 
     override fun getAllTracksFromStorage() : List<Track> {
        return repository.getAllTracks()
+    }
+
+    override fun registerOnSharedPrefsChanger(listenre: OnSharedPreferenceChangeListener){
+        repository.favoriteSharedListener(listenre)
     }
 
 

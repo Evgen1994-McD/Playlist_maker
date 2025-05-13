@@ -83,7 +83,7 @@ context.startActivity(intent)
 
     companion object{
 
-        private val debounceIntervalMillis = 1000L // Интервал блокировки в миллисекундах
+        private val debounceIntervalMillis = 10L // метод тут вроде Не нужен, наверное лучше убрать
         private var lastClickTime = System.currentTimeMillis() // Хранение последнего времени клика
 
     }

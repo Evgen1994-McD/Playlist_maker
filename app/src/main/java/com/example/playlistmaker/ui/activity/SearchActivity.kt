@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.Constants
 import com.example.playlistmaker.domain.api.OnTrackClickListener
 import com.example.playlistmaker.data.repositories.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.data.dto.App
@@ -75,13 +74,11 @@ private lateinit var task : Runnable // задача для потока для 
 
         favoriteAdapter = TrackAdapter(favoriteTrackInteractor.getAllTracksFromStorage(), this@SearchActivity)
 
-        val sharedPrefs = // это для темы
-            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
+
 
         switchThemeInteractor.controlThemeInOtherWindows(
             applicationContext as App,
             this@SearchActivity,
-            sharedPrefs,
             this@SearchActivity)
 
 
@@ -144,8 +141,8 @@ private lateinit var task : Runnable // задача для потока для 
             searchTracks(txtForSearch)
 
         }
-
-        sharedprefs.registerOnSharedPreferenceChangeListener(sharedPrefListener) //регистрируем слушатель изменений на наш sharedprefs чтобы сразу подгрузить изменения в список адаптера
+favoriteTrackInteractor.registerOnSharedPrefsChanger(sharedPrefListener)
+        //sharedprefs.registerOnSharedPreferenceChangeListener(sharedPrefListener) //регистрируем слушатель изменений на наш sharedprefs чтобы сразу подгрузить изменения в список адаптера
         updateTracksFromStorage()
 
 
@@ -378,20 +375,6 @@ searchTracks(txtForSearch) // в интеракторе поиск настро�
     }
 
 
-
-    private var isClickAllowed = true // переменная для дебаунс клика
-
-
-
-
-    private fun clickDebounce() : Boolean {  //Дебаунс защита повторных нажатий на трек
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
 
 
 
