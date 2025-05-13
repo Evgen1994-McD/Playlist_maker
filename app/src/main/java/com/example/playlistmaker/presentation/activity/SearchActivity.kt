@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.activity
+package com.example.playlistmaker.presentation.activity
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
@@ -32,14 +32,13 @@ import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.adapters.TrackAdapter
+import com.example.playlistmaker.presentation.adapters.TrackAdapter
 import kotlinx.coroutines.Runnable
 
 class SearchActivity : AppCompatActivity(),
     OnTrackClickListener {  // Добавили имлементацию нашего интерфейса OnTrackClickListener для того чтобы определить трек
     private lateinit var searchEditText: AppCompatEditText
     private lateinit var binding: ActivitySearchBinding // делаю байдинг
-
     private lateinit var txtForSearch: String
     private var textFromInput: String = null.toString()
     private val keyForWatcher: String =
@@ -51,13 +50,11 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var recyclerView: RecyclerView
     private lateinit var tvMsgSearch: TextView
     private lateinit var btCleanHistory: TextView
-    private lateinit var storage: FavoriteTrackRepositoryImpl
     private lateinit var myTracks: List<Track>
     private lateinit var favoriteAdapter: TrackAdapter //адаптер будущий
     private lateinit var favoriteTrackInteractor: FavoriteTrackInteractor
     private lateinit var trackInteractor: TrackInteractor
     private lateinit var pbs: ProgressBar
-    private lateinit var sharedrprefs: SharedPreferences
     private val handler =
         Handler(Looper.getMainLooper()) // Сделал Хандлер для доступа к главному потоку
 
@@ -70,10 +67,7 @@ class SearchActivity : AppCompatActivity(),
         favoriteTrackInteractor =
             Creator.provideFaworiteInteractor(this@SearchActivity) // Создал Фаворитинтерактор
 
-        sharedrprefs = getSharedPreferences(
-            FavoriteTrackRepositoryImpl.Companion.TRACKS_KEY,
-            MODE_PRIVATE
-        ) // это для фав треков
+
 
 
         favoriteAdapter =
@@ -429,9 +423,5 @@ class SearchActivity : AppCompatActivity(),
     }
 
 
-    companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L // время до начала автоматического поиска
-        private const val CLICK_DEBOUNCE_DELAY = 1000L //время "блока" повторного нажатия на трек
-    }
 
 }

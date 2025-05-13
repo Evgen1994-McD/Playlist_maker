@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.adapters
+package com.example.playlistmaker.presentation.adapters
 
 import android.annotation.SuppressLint
 import android.util.TypedValue

@@ -12,5 +12,5 @@ interface MediaInteractor {
     fun releasePlayer()
     fun addListeners(onPreparedListener: () -> Unit, onCompletionListener: () -> Unit)
     fun updateProgress(): String
-    fun clickDebounce(): Boolean
+    //fun clickDebounce(): Boolean метод убираю, потом решу нужен или нет
 }

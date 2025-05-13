@@ -10,7 +10,7 @@ import com.example.playlistmaker.data.repositories.SettingsReposytoryImpl
 import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.api.FavoriteTrackRepository
 import com.example.playlistmaker.domain.api.MediaInteractor
-import com.example.playlistmaker.domain.api.MediaPlayerManager
+import com.example.playlistmaker.domain.api.MediaPlayerRepository
 import com.example.playlistmaker.domain.api.OpenUrlUseCase
 import com.example.playlistmaker.domain.api.SendSuppEmailUseCase
 import com.example.playlistmaker.domain.api.SettingsRepository
@@ -70,7 +70,7 @@ object Creator {
     }
 
 
-    fun getMediaPlayerManager(): MediaPlayerManager {
+    fun getMediaPlayerManager(): MediaPlayerRepository {
         return MediaPlayerManagerImpl(getMediaPlayer())
     }
 

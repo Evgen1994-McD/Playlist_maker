@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.activity
+package com.example.playlistmaker.presentation.activity
 
 import android.content.Context
 import android.os.Bundle
@@ -10,15 +10,18 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.Constants
+import com.example.playlistmaker.domain.api.OpenUrlUseCase
+import com.example.playlistmaker.domain.api.SendSuppEmailUseCase
+import com.example.playlistmaker.domain.api.ShareAppUseCase
+import com.example.playlistmaker.domain.api.SwitchThemeUseCase
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
-
-    val shareAppInteractor = Creator.provideShareAppUseCase() // интерактор Поделиться приложением
-    val sendSuppEmailInteractor = Creator.provideSendSuppEmailUseCase()
-    val opernUrlInteractor = Creator.provideOpenUrlUseCase()
+private lateinit var shareAppUseCase : ShareAppUseCase
+private lateinit var sendSuppEmailUseCase : SendSuppEmailUseCase
+private lateinit var opernUrlUseCase : OpenUrlUseCase
+private lateinit var switchThemeUseCase : SwitchThemeUseCase
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -30,8 +33,10 @@ class SettingsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val switchThemeInteractor = Creator.provideSwitchThemeUseCase()
-
+        switchThemeUseCase = Creator.provideSwitchThemeUseCase()
+        shareAppUseCase = Creator.provideShareAppUseCase() // интерактор Поделиться приложением
+         sendSuppEmailUseCase = Creator.provideSendSuppEmailUseCase()
+         opernUrlUseCase = Creator.provideOpenUrlUseCase()
         val backClicker =
             findViewById<Toolbar>(R.id.settings_toolbar_day) // Назад в MainActivity
         backClicker.setNavigationOnClickListener {
@@ -58,11 +63,9 @@ class SettingsActivity : AppCompatActivity() {
         // Найти SwitchMaterial по id
         val switcherTheme = findViewById<SwitchMaterial>(R.id.switchTheme)
 
-        val sharedPrefs =
-            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, MODE_PRIVATE)
 
 
-        switchThemeInteractor.switchThemeModeBySettings(
+        switchThemeUseCase.switchThemeModeBySettings(
             switcherTheme,
             applicationContext as App,
             this@SettingsActivity,
@@ -73,7 +76,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     fun shareApp(context: Context) {  // Метод - интент для отправки сообщений
-        shareAppInteractor.shareApp(context)
+        shareAppUseCase.shareApp(context)
 
     }
 
@@ -83,11 +86,11 @@ class SettingsActivity : AppCompatActivity() {
         val subject = getString(R.string.subject)
         val body = getString(R.string.body)
 
-        sendSuppEmailInteractor.sendSuppEmail(context, myEmail, subject, body)
+        sendSuppEmailUseCase.sendSuppEmail(context, myEmail, subject, body)
     }
 
     private fun openUrlInDefaultBrowser(url: String, context: Context) {
-        opernUrlInteractor.openUrlInDefaultBrowser(context, url)
+        opernUrlUseCase.openUrlInDefaultBrowser(context, url)
     }
 
 }

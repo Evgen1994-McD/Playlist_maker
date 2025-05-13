@@ -15,22 +15,22 @@
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
         tools:targetApi="35">
         <activity
-            android:name=".ui.activity.MediaActivity"
+            android:name=".presentation.activity.MediaActivity"
             android:exported="false"
             android:configChanges="orientation|keyboardHidden|screenSize"
             />
         <activity
-            android:name=".ui.activity.SearchActivity"
+            android:name=".presentation.activity.SearchActivity"
             android:exported="false"
             android:configChanges="orientation|screenSize"
            />
         <activity
-            android:name=".ui.activity.SettingsActivity"
+            android:name=".presentation.activity.SettingsActivity"
             android:exported="false"
             android:configChanges="orientation|screenSize"
             />
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name=".presentation.activity.MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize"
 

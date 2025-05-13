@@ -1,6 +1,6 @@
 package com.example.playlistmaker.domain.api
 
-interface MediaPlayerManager {
+interface MediaPlayerRepository {
 
     fun preparePlayer(previewUrl: String)
     fun startPlayback()

@@ -1,12 +1,12 @@
 package com.example.playlistmaker.data.repositories
 
 import android.media.MediaPlayer
-import com.example.playlistmaker.domain.api.MediaPlayerManager
+import com.example.playlistmaker.domain.api.MediaPlayerRepository
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class MediaPlayerManagerImpl(val mediaPlayer: MediaPlayer) : MediaPlayerManager {
+class MediaPlayerManagerImpl(val mediaPlayer: MediaPlayer) : MediaPlayerRepository {
     companion object {
 
 

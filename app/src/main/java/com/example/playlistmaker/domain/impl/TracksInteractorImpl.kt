@@ -4,11 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import androidx.core.content.ContextCompat.startActivity
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.api.TrackRepository
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.activity.MediaActivity
+import com.example.playlistmaker.presentation.activity.MediaActivity
 import kotlinx.coroutines.Runnable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors

@@ -1,45 +1,45 @@
 package com.example.playlistmaker.domain.impl
 
 import com.example.playlistmaker.domain.api.MediaInteractor
-import com.example.playlistmaker.domain.api.MediaPlayerManager
+import com.example.playlistmaker.domain.api.MediaPlayerRepository
 
 class MediaInteractorImpl(
-    private var mediaPlayerManager: MediaPlayerManager,
+    private var mediaPlayerRepository: MediaPlayerRepository,
 ) : MediaInteractor {
     private val debounceIntervalMillis = 1000L // Интервал блокировки в миллисекундах
     private var lastClickTime = System.currentTimeMillis() // Хранение последнего времени клика
 
     override fun preparePlayer(previewUrl: String) {
-        mediaPlayerManager.preparePlayer(previewUrl)
+        mediaPlayerRepository.preparePlayer(previewUrl)
     }
 
     override fun startPlayback() {
 
-        mediaPlayerManager.startPlayback()
+        mediaPlayerRepository.startPlayback()
 
     }
 
     override fun pausePlayback() {
 
-        mediaPlayerManager.pausePlayback()
+        mediaPlayerRepository.pausePlayback()
 
     }
 
     override fun releasePlayer() {
-        mediaPlayerManager.releasePlayer()
+        mediaPlayerRepository.releasePlayer()
     }
 
     override fun addListeners(onPreparedListener: () -> Unit, onCompletionListener: () -> Unit) {
-        mediaPlayerManager.addListeners(onPreparedListener, onCompletionListener)
+        mediaPlayerRepository.addListeners(onPreparedListener, onCompletionListener)
     }
 
     override fun updateProgress(): String {
-        val progress = mediaPlayerManager.updateProgress()
+        val progress = mediaPlayerRepository.updateProgress()
         return progress
     }
 
 
-    override fun clickDebounce(): Boolean {
+    /*override fun clickDebounce(): Boolean { // метод убираю потом решу нужен или нет
 
         val now = System.currentTimeMillis()
 
@@ -51,4 +51,6 @@ class MediaInteractorImpl(
         return false // Клик запрещен
     }
 
+
+     */
 }

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.activity
+package com.example.playlistmaker.presentation.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -19,6 +19,7 @@ import com.example.playlistmaker.Creator
 import com.example.playlistmaker.App
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaBinding
+import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.api.MediaInteractor
 
@@ -28,7 +29,7 @@ class MediaActivity : AppCompatActivity() {
     private lateinit var collectionName: String
     private lateinit var previewUrl: String
     private var isPlaying = false // переменная статуса плеера
-
+private lateinit var favoriteTrackInteractorImpl : FavoriteTrackInteractor
     private lateinit var mediaPlayerInteractor: MediaInteractor
 
     companion object { // компаньон медиаплеера
@@ -73,9 +74,11 @@ class MediaActivity : AppCompatActivity() {
             finish()
         }
 
-        val favoriteTrackInteractorImpl =
+        favoriteTrackInteractorImpl =
             Creator.provideFaworiteInteractor(this) // создал экземлпр фаворитинтерактора для доступа к коллекции
 
+        val myTracks =
+            favoriteTrackInteractorImpl.getAllTracksFromStorage()//storage.getAllTracks() //все треки
 
         mediaPlayerInteractor.addListeners(
             ::onPlayerReady, ::onPlayComplete
@@ -86,8 +89,6 @@ class MediaActivity : AppCompatActivity() {
         switchThemeUseCase.controlThemeInOtherWindows(
             applicationContext as App, this@MediaActivity, this@MediaActivity
         )
-        val myTracks =
-            favoriteTrackInteractorImpl.getAllTracksFromStorage()//storage.getAllTracks() //все треки
 
         if (!intent.getStringExtra("trackName")
                 .isNullOrEmpty()
@@ -100,17 +101,17 @@ class MediaActivity : AppCompatActivity() {
         }
 
         binding.play.setOnClickListener {
-            if (mediaPlayerInteractor.clickDebounce()) {
+
                 binding.play.isEnabled = true
                 binding.play.makeInvisible()
                 binding.pause.makeVisible()
                 mediaPlayerInteractor.startPlayback()
                 isPlaying = true
                 startUpdateProgress()
-            }
+
         }
         binding.pause.setOnClickListener {
-            if (mediaPlayerInteractor.clickDebounce()) {
+
                 binding.pause.makeInvisible()
 
 
@@ -118,7 +119,7 @@ class MediaActivity : AppCompatActivity() {
                 mediaPlayerInteractor.pausePlayback()
                 isPlaying = false
                 stopUpdateProgress()
-            }
+
         }
     }
 
