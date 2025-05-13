@@ -39,7 +39,7 @@ object Creator {
         return FavoriteTrackRepositoryImpl(context)
     }
 
-    fun provideFaworiteInteractor(context: Context): FavoriteTrackInteractor {
+    fun provideFavoriteInteractor(context: Context): FavoriteTrackInteractor {
         return FavoriteTrackInteractorImpl(getFavoriteTrackRepository(context))
     }
 

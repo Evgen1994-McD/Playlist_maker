@@ -75,7 +75,7 @@ private lateinit var favoriteTrackInteractorImpl : FavoriteTrackInteractor
         }
 
         favoriteTrackInteractorImpl =
-            Creator.provideFaworiteInteractor(this) // создал экземлпр фаворитинтерактора для доступа к коллекции
+            Creator.provideFavoriteInteractor(this) // создал экземлпр фаворитинтерактора для доступа к коллекции
 
         val myTracks =
             favoriteTrackInteractorImpl.getAllTracksFromStorage()//storage.getAllTracks() //все треки

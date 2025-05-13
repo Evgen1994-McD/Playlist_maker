@@ -65,7 +65,7 @@ class SearchActivity : AppCompatActivity(),
         val switchThemeInteractor = Creator.provideSwitchThemeUseCase()
         trackInteractor = Creator.provideTracksInteractor()
         favoriteTrackInteractor =
-            Creator.provideFaworiteInteractor(this@SearchActivity) // Создал Фаворитинтерактор
+            Creator.provideFavoriteInteractor(this@SearchActivity) // Создал Фаворитинтерактор
 
 
 
