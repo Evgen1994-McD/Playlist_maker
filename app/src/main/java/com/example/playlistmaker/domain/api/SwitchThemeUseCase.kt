@@ -9,14 +9,11 @@ interface SwitchThemeUseCase {
     fun switchThemeModeBySettings(
         switch: SwitchMaterial?,
         applicationContext: Context,
-        context: Context,
-        activity: Activity
     )
 
     fun controlThemeInOtherWindows(
         applicationContext: App,
         context: Context,
-        activity: Activity
     )
 
 }

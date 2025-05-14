@@ -21,7 +21,7 @@ class SettingsReposytoryImpl(private val context: Context) : SettingsRepository 
         }
 
         return sendIntent
-//        context.startActivity(
+
 //            Intent.createChooser(sendIntent, context.getString(R.string.share_stroke))
         //  )
     }

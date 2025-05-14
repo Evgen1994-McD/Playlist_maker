@@ -87,7 +87,7 @@ private lateinit var favoriteTrackInteractorImpl : FavoriteTrackInteractor
 
         val switchThemeUseCase = Creator.provideSwitchThemeUseCase()
         switchThemeUseCase.controlThemeInOtherWindows(
-            applicationContext as App, this@MediaActivity, this@MediaActivity
+            applicationContext as App, this@MediaActivity
         )
 
         if (!intent.getStringExtra("trackName")

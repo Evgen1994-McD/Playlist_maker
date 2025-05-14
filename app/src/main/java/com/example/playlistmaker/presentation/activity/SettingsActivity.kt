@@ -68,8 +68,6 @@ private lateinit var switchThemeUseCase : SwitchThemeUseCase
         switchThemeUseCase.switchThemeModeBySettings(
             switcherTheme,
             applicationContext as App,
-            this@SettingsActivity,
-            this@SettingsActivity
         )
 
 

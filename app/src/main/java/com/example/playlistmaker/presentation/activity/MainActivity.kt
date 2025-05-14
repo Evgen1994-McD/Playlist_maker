@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         switchThemeUseCase.controlThemeInOtherWindows(
             applicationContext as App,
             this@MainActivity,
-            this@MainActivity
+
         )
 
         val searchClicker = findViewById<Button>(R.id.search_day)

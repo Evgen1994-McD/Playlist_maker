@@ -77,8 +77,8 @@ class SearchActivity : AppCompatActivity(),
 
         switchThemeInteractor.controlThemeInOtherWindows(
             applicationContext as App,
-            this@SearchActivity,
             this@SearchActivity
+
         )
 
 
