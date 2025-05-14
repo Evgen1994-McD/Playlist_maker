@@ -18,12 +18,12 @@ class SwitchThemeUseCaseImpl(private val repository: SettingsRepository) :
         activity: Activity
 
     ) {
-        val theme = repository.controlAppThemeMode(applicationContext, context)
+        val theme = repository.controlAppThemeMode(applicationContext)
 
         switch!!.isChecked = theme
         switch.setOnCheckedChangeListener { _, isChecked ->
             // Сохранить новое значение темы in Sharedpreferences
-            repository.saveCurrentThemeToShared(context, isChecked)
+            repository.saveCurrentThemeToShared(isChecked)
 
             // Переключить тему
             if (isChecked) {
@@ -45,7 +45,7 @@ class SwitchThemeUseCaseImpl(private val repository: SettingsRepository) :
         context: Context,
         activity: Activity
     ) {
-        val theme = repository.controlAppThemeMode(applicationContext, context)
+        val theme = repository.controlAppThemeMode(applicationContext)
         applicationContext.switchTheme(theme)
         // Перезапустить активность для применения новой темы
     }

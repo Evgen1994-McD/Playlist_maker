@@ -27,6 +27,10 @@ import com.example.playlistmaker.domain.impl.SwitchThemeUseCaseImpl
 import com.example.playlistmaker.domain.impl.TracksInteractorImpl
 
 object Creator {
+
+    private val context by lazy { App.instance.applicationContext }
+
+
     private fun getTracksRepository(): TrackRepository {
         return TrackRepositoryImpl(RetrofitNetworkClient())
     }
@@ -44,7 +48,7 @@ object Creator {
     }
 
     private fun getSettingsRepository(): SettingsRepository {
-        return SettingsReposytoryImpl()
+        return SettingsReposytoryImpl(context)
     }
 
 

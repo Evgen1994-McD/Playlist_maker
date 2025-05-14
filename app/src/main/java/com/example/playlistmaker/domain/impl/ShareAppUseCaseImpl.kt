@@ -10,7 +10,7 @@ class ShareAppUseCaseImpl(private val repository: SettingsRepository) : ShareApp
     override fun shareApp(context: Context) {
         context.startActivity(
             Intent.createChooser(
-                repository.shareApp(context),
+                repository.shareApp(),
                 context.getString(R.string.share_stroke)
             )
         )

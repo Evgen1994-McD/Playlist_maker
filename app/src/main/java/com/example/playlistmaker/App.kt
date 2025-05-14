@@ -8,9 +8,15 @@ import com.example.playlistmaker.data.Constants
 
 class App : Application() { // класс АПП для смены темы
 
+    companion object{
+        lateinit var instance : App
+            private set
+    }
+
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
     }
 
     fun hasBooleanValue(context: Context, key: String): Boolean {

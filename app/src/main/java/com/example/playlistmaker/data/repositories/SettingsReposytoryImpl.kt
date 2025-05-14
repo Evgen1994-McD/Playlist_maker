@@ -9,8 +9,8 @@ import com.example.playlistmaker.data.Constants
 import com.example.playlistmaker.App
 import com.example.playlistmaker.domain.api.SettingsRepository
 
-class SettingsReposytoryImpl() : SettingsRepository {
-    override fun shareApp(context: Context): Intent {
+class SettingsReposytoryImpl(private val context: Context) : SettingsRepository {
+    override fun shareApp(): Intent {
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(
@@ -46,7 +46,7 @@ class SettingsReposytoryImpl() : SettingsRepository {
         return intent
     }
 
-    override fun controlAppThemeMode(applicationContext: Context, context: Context): Boolean {
+    override fun controlAppThemeMode(applicationContext: Context): Boolean {
         val currentTheme = applicationContext as App
         val themeSharedPrefs =
             context.getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
@@ -64,7 +64,7 @@ class SettingsReposytoryImpl() : SettingsRepository {
 
     }
 
-    override fun saveCurrentThemeToShared(context: Context, isChecked: Boolean) {
+    override fun saveCurrentThemeToShared(isChecked: Boolean) {
         val themeSharedPrefs =
             context.getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
         themeSharedPrefs.run {
