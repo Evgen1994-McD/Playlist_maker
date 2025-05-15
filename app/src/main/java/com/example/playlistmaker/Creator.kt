@@ -65,7 +65,7 @@ object Creator {
     }
 
     fun provideSwitchThemeUseCase(): SwitchThemeUseCase {
-        return SwitchThemeUseCaseImpl(getSettingsRepository(), context)
+        return SwitchThemeUseCaseImpl(getSettingsRepository())
     }
 
 

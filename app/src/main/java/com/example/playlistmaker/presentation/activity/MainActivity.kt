@@ -13,6 +13,7 @@ import com.example.playlistmaker.App
 import com.example.playlistmaker.R
 
 class MainActivity : AppCompatActivity() {
+    private val switchThemeUseCase by lazy {Creator.provideSwitchThemeUseCase() }
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -23,18 +24,11 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
-// Пуш сдача работы
-
 
         }
 
-
-        val switchThemeUseCase = Creator.provideSwitchThemeUseCase()
         switchThemeUseCase.controlThemeInOtherWindows(
-            applicationContext as App,
-            this@MainActivity,
-
-        )
+            applicationContext as App)
 
         val searchClicker = findViewById<Button>(R.id.search_day)
         searchClicker.setOnClickListener(object : View.OnClickListener {

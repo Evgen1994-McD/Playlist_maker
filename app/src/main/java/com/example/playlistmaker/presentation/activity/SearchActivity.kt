@@ -52,33 +52,24 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var btCleanHistory: TextView
     private lateinit var myTracks: List<Track>
     private lateinit var favoriteAdapter: TrackAdapter //адаптер будущий
-    private lateinit var favoriteTrackInteractor: FavoriteTrackInteractor
-    private lateinit var trackInteractor: TrackInteractor
     private lateinit var pbs: ProgressBar
     private val handler =
         Handler(Looper.getMainLooper()) // Сделал Хандлер для доступа к главному потоку
+   private val trackInteractor by lazy {  Creator.provideTracksInteractor()}
+    private val favoriteTrackInteractor by lazy {
+    Creator.provideFavoriteInteractor(this@SearchActivity) }// Создал Фаворитинтерактор
+   private val switchThemeInteractor by lazy{Creator.provideSwitchThemeUseCase()}
 
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val switchThemeInteractor = Creator.provideSwitchThemeUseCase()
-        trackInteractor = Creator.provideTracksInteractor()
-        favoriteTrackInteractor =
-            Creator.provideFavoriteInteractor(this@SearchActivity) // Создал Фаворитинтерактор
-
-
 
 
         favoriteAdapter =
             TrackAdapter(favoriteTrackInteractor.getAllTracksFromStorage(), this@SearchActivity)
-
-
-
         switchThemeInteractor.controlThemeInOtherWindows(
-            applicationContext as App,
-            this@SearchActivity
-
+            applicationContext as App
         )
 
 

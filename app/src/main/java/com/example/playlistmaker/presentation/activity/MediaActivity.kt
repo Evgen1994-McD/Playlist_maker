@@ -24,13 +24,16 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.api.MediaInteractor
 
 class MediaActivity : AppCompatActivity() {
+
+    private val favoriteTrackInteractorImpl by lazy {
+    Creator.provideFavoriteInteractor(this) }// создал экземлпр фаворитинтерактора для доступа к коллекции
+   private val mediaPlayerInteractor by lazy {  Creator.provideMediaInteractor()}
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
     private lateinit var artworkUrl100: String
     private lateinit var collectionName: String
     private lateinit var previewUrl: String
     private var isPlaying = false // переменная статуса плеера
-private lateinit var favoriteTrackInteractorImpl : FavoriteTrackInteractor
-    private lateinit var mediaPlayerInteractor: MediaInteractor
+
 
     companion object { // компаньон медиаплеера
 
@@ -65,7 +68,7 @@ private lateinit var favoriteTrackInteractorImpl : FavoriteTrackInteractor
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        mediaPlayerInteractor = Creator.provideMediaInteractor() //создали интерактор
+        //создали интерактор
 
         collectionName = "" // инициализировал
 
@@ -74,8 +77,6 @@ private lateinit var favoriteTrackInteractorImpl : FavoriteTrackInteractor
             finish()
         }
 
-        favoriteTrackInteractorImpl =
-            Creator.provideFavoriteInteractor(this) // создал экземлпр фаворитинтерактора для доступа к коллекции
 
         val myTracks =
             favoriteTrackInteractorImpl.getAllTracksFromStorage()//storage.getAllTracks() //все треки
@@ -87,7 +88,7 @@ private lateinit var favoriteTrackInteractorImpl : FavoriteTrackInteractor
 
         val switchThemeUseCase = Creator.provideSwitchThemeUseCase()
         switchThemeUseCase.controlThemeInOtherWindows(
-            applicationContext as App, this@MediaActivity
+            applicationContext as App
         )
 
         if (!intent.getStringExtra("trackName")

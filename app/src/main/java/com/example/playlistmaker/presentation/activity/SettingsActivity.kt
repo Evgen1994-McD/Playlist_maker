@@ -18,10 +18,12 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
-private lateinit var shareAppUseCase : ShareAppUseCase
-private lateinit var sendSuppEmailUseCase : SendSuppEmailUseCase
-private lateinit var opernUrlUseCase : OpenUrlUseCase
-private lateinit var switchThemeUseCase : SwitchThemeUseCase
+private val shareAppUseCase by lazy { Creator.provideShareAppUseCase()  }
+private val sendSuppEmailUseCase by lazy {  Creator.provideSendSuppEmailUseCase() }
+private  val opernUrlUseCase by lazy {  Creator.provideOpenUrlUseCase()}
+private  val switchThemeUseCase by lazy { Creator.provideSwitchThemeUseCase() }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -33,10 +35,8 @@ private lateinit var switchThemeUseCase : SwitchThemeUseCase
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        switchThemeUseCase = Creator.provideSwitchThemeUseCase()
-        shareAppUseCase = Creator.provideShareAppUseCase() // интерактор Поделиться приложением
-         sendSuppEmailUseCase = Creator.provideSendSuppEmailUseCase()
-         opernUrlUseCase = Creator.provideOpenUrlUseCase()
+
+        
         val backClicker =
             findViewById<Toolbar>(R.id.settings_toolbar_day) // Назад в MainActivity
         backClicker.setNavigationOnClickListener {

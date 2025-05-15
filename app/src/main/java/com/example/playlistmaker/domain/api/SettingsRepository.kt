@@ -10,4 +10,5 @@ interface SettingsRepository {
     fun openUrlInDefaultBrowser(url: String): Intent
     fun controlAppThemeMode(applicationContext: Context): Boolean
     fun saveCurrentThemeToShared(boolean: Boolean)
+    fun switchTheme(savedTheme: Boolean)
 }

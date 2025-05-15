@@ -1,7 +1,9 @@
 package com.example.playlistmaker.data.repositories
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.R
@@ -47,20 +49,20 @@ class SettingsReposytoryImpl(private val context: Context) : SettingsRepository 
     }
 
     override fun controlAppThemeMode(applicationContext: Context): Boolean {
-        val currentTheme = applicationContext as App
         val themeSharedPrefs =
             context.getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
 
-
-        if (currentTheme.hasBooleanValue(context, Constants.KEY_THEME_MODE)) {
-            var savedTheme = themeSharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
-            currentTheme.switchTheme(savedTheme)
+        val savedTheme = themeSharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
+        if (savedTheme != null) {
+       switchTheme(savedTheme)
             return savedTheme
         } else {
             AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            return currentTheme.isSystemInDarkTheme(context)
-
+            val currentNightMode =
+                context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            return currentNightMode == Configuration.UI_MODE_NIGHT_YES
         }
+
 
     }
 
@@ -73,5 +75,19 @@ class SettingsReposytoryImpl(private val context: Context) : SettingsRepository 
 
     }
 
+
+    override fun switchTheme(savedTheme: Boolean) {
+
+        if (savedTheme != null) {
+            AppCompatDelegate.setDefaultNightMode(
+                if (savedTheme) {
+                    AppCompatDelegate.MODE_NIGHT_YES
+                } else {
+                    AppCompatDelegate.MODE_NIGHT_NO
+                }
+            )
+        }
+
+    }
 
 }

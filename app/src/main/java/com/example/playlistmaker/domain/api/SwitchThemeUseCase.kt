@@ -13,7 +13,7 @@ interface SwitchThemeUseCase {
 
     fun controlThemeInOtherWindows(
         applicationContext: App,
-        context: Context,
+
     )
 
 }

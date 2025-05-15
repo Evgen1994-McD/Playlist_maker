@@ -9,12 +9,11 @@ import com.example.playlistmaker.domain.api.SettingsRepository
 import com.example.playlistmaker.domain.api.SwitchThemeUseCase
 import com.google.android.material.switchmaterial.SwitchMaterial
 
-class SwitchThemeUseCaseImpl(private val repository: SettingsRepository, context: Context) :
+class SwitchThemeUseCaseImpl(private val repository: SettingsRepository) :
     SwitchThemeUseCase {
     override fun switchThemeModeBySettings(
         switch: SwitchMaterial?,
         applicationContext: Context,
-
     ) {
         val theme = repository.controlAppThemeMode(applicationContext)
 
@@ -22,14 +21,7 @@ class SwitchThemeUseCaseImpl(private val repository: SettingsRepository, context
         switch.setOnCheckedChangeListener { _, isChecked ->
             // Сохранить новое значение темы in Sharedpreferences
             repository.saveCurrentThemeToShared(isChecked)
-
-            // Переключить тему
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-
+                repository.switchTheme(isChecked)
 
         }
 
@@ -37,12 +29,10 @@ class SwitchThemeUseCaseImpl(private val repository: SettingsRepository, context
 
 
     override fun controlThemeInOtherWindows(
-
-        applicationContext: App,
-        context: Context,
+        applicationContext: App
     ) {
         val theme = repository.controlAppThemeMode(applicationContext)
-        applicationContext.switchTheme(theme)
-        // Перезапустить активность для применения новой темы
+     repository.switchTheme(theme)
+
     }
 }
