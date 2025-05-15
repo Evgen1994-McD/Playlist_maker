@@ -21,95 +21,101 @@ class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackR
     private val gson = Gson()
     private var tracks = mutableListOf<TrackDto>() // Список для хранения треков
 
+
     init {
-        loadTracksFromPrefs() // Загрузим треки при создании объекта
-    }
-
-    override fun addTrack(track: Track) {
-        if (tracks.removeIf { it.trackId == track.trackId }) {
-
-            // Добавляем новый трек в начало списка
-            tracks.add(0, createTrackDtoFromTrack(track))
-        } else {
-            // Добавляем новый трек
-            if (tracks.size >= 10) {
-                tracks.removeAt(tracks.lastIndex) // Удаляем последний трек
-            }
-            tracks.add(0, createTrackDtoFromTrack(track)) // Добавляем новый трек в начало
-        }
-        // Ограничиваем количество треков до 10
-        if (tracks.size >= 10) {
-            tracks = tracks.takeLast(10).toMutableList()
-        }
-        saveTracksToPrefs() // Сохраняем изменения в SharedPreferences
-    }
-
-    override fun getAllTracks(): List<Track> {
-        return tracks.map {
-            createTrackFromTrackDto(it)
-        }
-    }
-
-    // Метод для загрузки треков из SharedPreferences
-    override fun loadTracksFromPrefs(): List<TrackDto> {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val tracksJson = prefs.getString(TRACKS_KEY, null)
         if (!tracksJson.isNullOrBlank()) {
             val type = object : TypeToken<List<TrackDto>>() {}.type
             tracks = gson.fromJson(tracksJson, type) ?: mutableListOf()
-
         }
-        return tracks
+
+
     }
 
-    // Метод для сохранения треков в SharedPreferences
-    override fun saveTracksToPrefs() {
+
+
+    override fun addTrack(track: Track) {
+        if (tracks.removeIf { it.trackId == track.trackId }) {
+
+            // Добавляем новый трек в начало списка
+            tracks.add(0, TrackDto(
+                trackName = track.trackName,
+                artistName = track.artistName,
+                trackTimeMillis = track.trackTimeMillis,
+                artworkUrl100 = track.artworkUrl100,
+                trackId = track.trackId,
+                collectionName = track.collectionName,
+                releaseDate = track.releaseDate,
+                primaryGenreName = track.primaryGenreName,
+                country = track.country,
+                previewUrl = track.previewUrl
+            ))
+        } else {
+            // Добавляем новый трек
+            if (tracks.size >= 10) {
+                tracks.removeAt(tracks.lastIndex) // Удаляем последний трек
+            }
+            tracks.add(0, TrackDto(
+                trackName = track.trackName,
+                artistName = track.artistName,
+                trackTimeMillis = track.trackTimeMillis,
+                artworkUrl100 = track.artworkUrl100,
+                trackId = track.trackId,
+                collectionName = track.collectionName,
+                releaseDate = track.releaseDate,
+                primaryGenreName = track.primaryGenreName,
+                country = track.country,
+                previewUrl = track.previewUrl
+            )) // Добавляем новый трек в начало
+        }
+        // Ограничиваем количество треков до 10
+        if (tracks.size >= 10) {
+            tracks = tracks.takeLast(10).toMutableList()
+        }
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val editor = prefs.edit()
         val tracksJson = gson.toJson(tracks)
         editor.putString(TRACKS_KEY, tracksJson)
-        editor.apply()
+        editor.apply() // Сохраняем изменения в SharedPreferences
     }
+
+    override fun getAllTracks(): List<Track> {
+        return tracks.map {
+            Track(
+                trackName = it.trackName,
+                artistName = it.artistName,
+                trackTimeMillis = it.trackTimeMillis, // преобразую и пеоедам время сразу
+                artworkUrl100 = it.artworkUrl100,
+                trackId = it.trackId,
+                collectionName = it.collectionName,
+                releaseDate = it.releaseDate,
+                primaryGenreName = it.primaryGenreName,
+                country = it.country,
+                previewUrl = it.previewUrl
+
+            )
+        }
+    }
+
+
+
+
 
     override fun clearHistory() {
         tracks.clear() // Метод теперь очищает список треков
-        saveTracksToPrefs() // сохраняет очищенный список треков
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val editor = prefs.edit()
+        val tracksJson = gson.toJson(tracks)
+        editor.putString(TRACKS_KEY, tracksJson)
+        editor.apply() // сохраняет очищенный список треков
     }
 
-    override fun createTrackDtoFromTrack(track: Track): TrackDto {
-        return TrackDto(
-            trackName = track.trackName,
-            artistName = track.artistName,
-            trackTimeMillis = track.trackTimeMillis,
-            artworkUrl100 = track.artworkUrl100,
-            trackId = track.trackId,
-            collectionName = track.collectionName,
-            releaseDate = track.releaseDate,
-            primaryGenreName = track.primaryGenreName,
-            country = track.country,
-            previewUrl = track.previewUrl
-        )
-    }
 
-    override fun createTrackFromTrackDto(trackDto: TrackDto): Track {
-        return Track(
-            trackName = trackDto.trackName,
-            artistName = trackDto.artistName,
-            trackTimeMillis = trackDto.trackTimeMillis, // преобразую и пеоедам время сразу
-            artworkUrl100 = trackDto.artworkUrl100,
-            trackId = trackDto.trackId,
-            collectionName = trackDto.collectionName,
-            releaseDate = trackDto.releaseDate,
-            primaryGenreName = trackDto.primaryGenreName,
-            country = trackDto.country,
-            previewUrl = trackDto.previewUrl
 
-        )
-    }
-
-    val sharedPrefsForListener = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     override fun favoriteSharedListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        val sharedPrefsForListener = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         sharedPrefsForListener.registerOnSharedPreferenceChangeListener(listener)
         // Логика обновления треков
     }

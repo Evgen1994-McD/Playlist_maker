@@ -9,15 +9,11 @@ interface FavoriteTrackRepository {
 
     fun getAllTracks(): List<Track>
 
-    fun loadTracksFromPrefs(): List<TrackDto>
 
-    fun saveTracksToPrefs()
 
     fun clearHistory()
 
-    fun createTrackDtoFromTrack(track: Track): TrackDto
 
 
-    fun createTrackFromTrackDto(trackDto: TrackDto): Track
     fun favoriteSharedListener(listener: SharedPreferences.OnSharedPreferenceChangeListener)
 }

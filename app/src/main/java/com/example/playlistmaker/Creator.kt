@@ -5,7 +5,7 @@ import android.media.MediaPlayer
 import com.example.playlistmaker.data.repositories.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.data.repositories.TrackRepositoryImpl
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
-import com.example.playlistmaker.data.repositories.MediaPlayerManagerImpl
+import com.example.playlistmaker.data.repositories.MediaPlayerInteractorImpl
 import com.example.playlistmaker.data.repositories.SettingsReposytoryImpl
 import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.api.FavoriteTrackRepository
@@ -74,12 +74,12 @@ object Creator {
     }
 
 
-    fun getMediaPlayerManager(): MediaPlayerRepository {
-        return MediaPlayerManagerImpl(getMediaPlayer())
+    fun getMediaPlayerInteractor(): MediaPlayerRepository {
+        return MediaPlayerInteractorImpl(getMediaPlayer())
     }
 
     fun provideMediaInteractor(): MediaInteractor {
-        return MediaInteractorImpl(getMediaPlayerManager())
+        return MediaInteractorImpl(getMediaPlayerInteractor())
     }
 
 }

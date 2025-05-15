@@ -6,7 +6,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class MediaPlayerManagerImpl(val mediaPlayer: MediaPlayer) : MediaPlayerRepository {
+class MediaPlayerInteractorImpl(val mediaPlayer: MediaPlayer) : MediaPlayerRepository {
     companion object {
 
 
