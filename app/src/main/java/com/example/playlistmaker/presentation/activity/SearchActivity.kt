@@ -29,7 +29,6 @@ import com.example.playlistmaker.domain.api.OnTrackClickListener
 import com.example.playlistmaker.data.repositories.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.App
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.adapters.TrackAdapter
@@ -128,9 +127,6 @@ class SearchActivity : AppCompatActivity(),
             searchTracks(txtForSearch)
 
         }
-        favoriteTrackInteractor.registerOnSharedPrefsChanger(sharedPrefListener)
-        updateTracksFromStorage()
-
 
         btCleanHistory.setOnClickListener {  // кнопка очистки истории
             favoriteTrackInteractor.clearHistory()

@@ -1,16 +1,12 @@
 package com.example.playlistmaker.data.repositories
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.example.playlistmaker.data.Constants
 import com.example.playlistmaker.data.dto.TrackDto
 import com.example.playlistmaker.domain.api.FavoriteTrackRepository
-import com.example.playlistmaker.domain.api.OnTrackClickListener
 import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackRepository {
     companion object {
@@ -114,11 +110,6 @@ class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackR
 
 
 
-    override fun favoriteSharedListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
-        val sharedPrefsForListener = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        sharedPrefsForListener.registerOnSharedPreferenceChangeListener(listener)
-        // Логика обновления треков
-    }
 }
 
 
