@@ -1,9 +1,6 @@
-package com.example.playlistmaker.retrofit
+package com.example.playlistmaker.domain.models
 
-data class TrackResponse(
-    val resultCount: Int,
-    val results: List<Track>
-)
+
 
 data class Track(
     val trackName: String, // Название композиции

@@ -1,20 +1,19 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.playlistmaker.SettingsActivity
-import com.example.playlistmaker.utils.Constants
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.App
+import com.example.playlistmaker.R
 
 class MainActivity : AppCompatActivity() {
+    private val switchThemeUseCase by lazy {Creator.provideSwitchThemeUseCase() }
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -25,9 +24,12 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
-// Пуш сдача работы
 
         }
+
+        switchThemeUseCase.controlThemeInOtherWindows(
+            applicationContext as App)
+
         val searchClicker = findViewById<Button>(R.id.search_day)
         searchClicker.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
@@ -47,15 +49,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(displayIntent)
         }
 
-        val sharedPrefs =
-            getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
-        val theme = applicationContext as App  // загрузка сохранённой темы в SharedPreferences
-        if(theme.hasBooleanValue(this@MainActivity, Constants.KEY_THEME_MODE)) {
-            var savedTheme = sharedPrefs.getBoolean(Constants.KEY_THEME_MODE, false)
-            theme.switchTheme(savedTheme)
-        }else {
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        }
 
     }
 }
