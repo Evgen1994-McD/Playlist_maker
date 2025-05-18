@@ -54,6 +54,12 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+
+    // ViewModel
+    val lifecycle_version = "2.6.1" // Убедитесь, что версия актуальна
+    implementation ("androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version")
+    implementation ("androidx.lifecycle:lifecycle-livedata:$lifecycle_version")
+
         implementation ("com.google.android.material:material:1.6.1")
         implementation ("com.github.bumptech.glide:glide:4.14.2")
         annotationProcessor ("com.github.bumptech.glide:compiler:4.14.2")
