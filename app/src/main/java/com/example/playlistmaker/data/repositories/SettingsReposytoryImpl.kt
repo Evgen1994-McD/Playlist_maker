@@ -48,7 +48,7 @@ class SettingsReposytoryImpl(private val context: Context) : SettingsRepository 
         return intent
     }
 
-    override fun controlAppThemeMode(applicationContext: Context): Boolean {
+    override fun controlAppThemeMode(): Boolean {
         val themeSharedPrefs =
             context.getSharedPreferences(Constants.SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
 

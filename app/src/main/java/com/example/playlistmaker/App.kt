@@ -18,7 +18,7 @@ class App : Application() { // класс АПП для смены темы
         super.onCreate()
         instance = this
         val controlTheme =  Creator.provideSwitchThemeUseCase()
-        controlTheme.controlThemeInOtherWindows(instance)
+        controlTheme.controlThemeInOtherWindows()
 
 
     }

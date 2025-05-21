@@ -68,7 +68,7 @@ class SearchActivity : AppCompatActivity(),
         favoriteAdapter =
             TrackAdapter(favoriteTrackInteractor.getAllTracksFromStorage(), this@SearchActivity)
         switchThemeInteractor.controlThemeInOtherWindows(
-            applicationContext as App
+//            applicationContext as App
         )
 
 

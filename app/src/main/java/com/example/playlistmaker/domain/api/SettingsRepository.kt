@@ -8,7 +8,7 @@ interface SettingsRepository {
 
     fun sendSuppEmail(myEmail: String, subject: String, body: String): Intent
     fun openUrlInDefaultBrowser(url: String): Intent
-    fun controlAppThemeMode(applicationContext: Context): Boolean
+    fun controlAppThemeMode(): Boolean
     fun saveCurrentThemeToShared(boolean: Boolean)
     fun switchTheme(savedTheme: Boolean)
 }

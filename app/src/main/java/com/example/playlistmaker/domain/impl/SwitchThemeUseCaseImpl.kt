@@ -13,9 +13,9 @@ class SwitchThemeUseCaseImpl(private val repository: SettingsRepository) :
     SwitchThemeUseCase {
     override fun switchThemeModeBySettings(
         switch: SwitchMaterial?,
-        applicationContext: Context,
+//        applicationContext: Context,
     ) {
-        val theme = repository.controlAppThemeMode(applicationContext)
+        val theme = repository.controlAppThemeMode()
 
         switch!!.isChecked = theme
         switch.setOnCheckedChangeListener { _, isChecked ->
@@ -29,10 +29,10 @@ class SwitchThemeUseCaseImpl(private val repository: SettingsRepository) :
 
 
     override fun controlThemeInOtherWindows(
-        applicationContext: App
-    ) {
-        val theme = repository.controlAppThemeMode(applicationContext)
+    ) : Boolean {
+        val theme = repository.controlAppThemeMode()
      repository.switchTheme(theme)
-
+return theme
     }
+
 }

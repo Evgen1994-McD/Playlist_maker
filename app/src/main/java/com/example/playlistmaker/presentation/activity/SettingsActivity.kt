@@ -66,8 +66,8 @@ private  val switchThemeUseCase by lazy { Creator.provideSwitchThemeUseCase() }
 
 
         switchThemeUseCase.switchThemeModeBySettings(
-            switcherTheme,
-            applicationContext as App,
+            switcherTheme
+
         )
 
 

@@ -88,7 +88,7 @@ class MediaActivity : AppCompatActivity() {
 
         val switchThemeUseCase = Creator.provideSwitchThemeUseCase()
         switchThemeUseCase.controlThemeInOtherWindows(
-            applicationContext as App
+
         )
 
         if (!intent.getStringExtra("trackName")
