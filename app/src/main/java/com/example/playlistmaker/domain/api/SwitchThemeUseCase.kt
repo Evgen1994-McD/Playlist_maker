@@ -16,4 +16,5 @@ interface SwitchThemeUseCase {
 
     ): Boolean
 
+
 }

@@ -7,6 +7,7 @@ import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
@@ -34,13 +35,16 @@ class MainActivity : AppCompatActivity() {
 
 
 
+        viewModel = ViewModelProvider(this, MainViewModel.getViewModelFactory())[MainViewModel::class.java]  // Инициализируем модел
+viewModel.loadingLiveData().observe(this) { newTheme ->
+    switchThemeUseCase.controlThemeInOtherWindows()
+}
 
-        viewModel = ViewModelProvider(this, MainViewModel.getViewModelFactory(switchThemeUseCase))[MainViewModel::class.java]  // Инициализируем модел
 
 
 
-//        switchThemeUseCase.controlThemeInOtherWindows(
-//            applicationContext as App)
+
+
 
         val searchClicker = binding.searchDay
         searchClicker.setOnClickListener(object : View.OnClickListener {
@@ -48,12 +52,15 @@ class MainActivity : AppCompatActivity() {
                 val context = v?.context ?: return // Получаем контекст из представления
                 val displayIntentSrc = Intent(context, SearchActivity::class.java)
                 startActivity(displayIntentSrc)
+
             }
         })
         val mediaClicker = binding.mediaDay
         mediaClicker.setOnClickListener {
             val displayIntentMedia = Intent(this, MediaActivity::class.java)
-            startActivity(displayIntentMedia)
+        startActivity(displayIntentMedia)
+
+
         }
         val settingsClicker = binding.settingsDay
         settingsClicker.setOnClickListener {
@@ -63,4 +70,10 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.loadingLiveData().removeObservers(this) //удалили обсерверы
+    }
+
 }
