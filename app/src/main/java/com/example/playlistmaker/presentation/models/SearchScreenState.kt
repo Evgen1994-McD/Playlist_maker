@@ -6,6 +6,6 @@ data class SearchScreenState(
     val isLoading: Boolean = false,
     val searchQuery: String = "",
     val searchResults: List<Track>? = null,
-    val history: List<String> = listOf(),
+    val history: List<Track>? = null,
     val errorMessage: String? = ""
 )

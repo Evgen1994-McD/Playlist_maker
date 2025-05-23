@@ -21,6 +21,25 @@ class SearchViewModel(private val trackInteractor: TrackInteractor,
     val getLiveData: LiveData<SearchScreenState> get() = mutableScreenState
 
 
+    fun addTrackToFavorite(track: Track){
+        if (trackInteractor.clickDebounce()) {
+            favoriteTrackInteractor.addTrack(track)
+        }
+    }
+
+    fun getAllTracks() {
+       mutableScreenState.value = mutableScreenState.value!!.copy(history = favoriteTrackInteractor.getAllTracksFromStorage())
+
+    }
+
+    fun clearHistory(){
+        favoriteTrackInteractor.clearHistory()
+       mutableScreenState.value = mutableScreenState.value!!.copy(history = null, searchResults = null)
+
+    }
+
+
+
     fun searchTracks( txtForSearch:String){
         viewModelScope.launch(Dispatchers.IO){
             mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = true)) // при начале запроса - выставляем лоадинг в тру

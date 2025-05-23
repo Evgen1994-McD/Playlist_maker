@@ -78,7 +78,6 @@ class MediaActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
             finish()
         }
-        val switchThemeUseCase = Creator.provideSwitchThemeUseCase()
 
         themeViewModel = ViewModelProvider(this, ThemeViewModel.getViewModelFactory())[ThemeViewModel::class.java]  // Инициализируем модел
        themeViewModel.controlThemeInOtherWindows()

@@ -1,6 +1,8 @@
 package com.example.playlistmaker.presentation.activity
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
@@ -53,7 +55,7 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var tvMsgSearch: TextView
     private lateinit var btCleanHistory: TextView
     private lateinit var myTracks: List<Track>
-    private lateinit var favoriteAdapter: TrackAdapter //адаптер будущий
+//    private lateinit var favoriteAdapter: TrackAdapter //адаптер будущий
     private lateinit var pbs: ProgressBar
     private lateinit var viewModel: SearchViewModel
     private lateinit var themeViewModel: ThemeViewModel
@@ -104,14 +106,15 @@ viewModel.getLiveData.observe(this){ newState ->
         displayTracks(newState.searchResults)
         pbs.makeGone()
         }
+
     }
 
 }
-
-        favoriteAdapter =
-            TrackAdapter(favoriteTrackInteractor.getAllTracksFromStorage(), this@SearchActivity)
-
-
+//
+//        favoriteAdapter =
+//            TrackAdapter(favoriteTrackInteractor.getAllTracksFromStorage(), this@SearchActivity)
+//
+//
 
 
 
@@ -163,18 +166,27 @@ viewModel.getLiveData.observe(this){ newState ->
         }
 
         btCleanHistory.setOnClickListener {  // кнопка очистки истории
-            favoriteTrackInteractor.clearHistory()
+//            favoriteTrackInteractor.clearHistory()
+            viewModel.clearHistory()
             recyclerView.makeInvisible() // делаю ресайклер вью невидимым
             tvMsgSearch.makeInvisible() //делаем сообщение "Вы искали" невидимым
             btCleanHistory.makeInvisible() // делаем саму кнопку невидимой при выполнении логики
             searchEditText.clearFocus()  // убираю фокус
         }
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && searchEditText.text?.isNullOrEmpty() == true && !favoriteTrackInteractor.getAllTracksFromStorage()
-                    .isNullOrEmpty()
-            ) {
-                updateTracksFromStorage()
-                displayFavoriteTracks()
+            if (hasFocus && searchEditText.text?.isNullOrEmpty() == true) {
+                viewModel.getAllTracks()
+                viewModel.getLiveData.observe(this) { newState ->
+                    when {
+                        !newState.history.isNullOrEmpty() -> {
+                            displayTracks(newState.history)
+                            btCleanHistory.makeVisible()
+                        }
+
+
+                    }
+
+                }
 
             }
         }
@@ -328,18 +340,18 @@ viewModel.getLiveData.observe(this){ newState ->
         tvMsgSearch.makeGone()
         btCleanHistory.makeGone()
     }
-
-    private fun displayFavoriteTracks() {
-        tvMsgSearch.makeVisible()
-        btCleanHistory.makeVisible()
-        phForNothingToShow.makeGone()
-        msgBotTxt.makeGone()
-        msgTopTxt.makeGone()
-        buttonNoInternet.makeGone()
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = favoriteAdapter
-        recyclerView.makeVisible()
-    }
+//
+//    private fun displayFavoriteTracks() {
+//        tvMsgSearch.makeVisible()
+//        btCleanHistory.makeVisible()
+//        phForNothingToShow.makeGone()
+//        msgBotTxt.makeGone()
+//        msgTopTxt.makeGone()
+//        buttonNoInternet.makeGone()
+//        recyclerView.layoutManager = LinearLayoutManager(this)
+//        recyclerView.adapter = favoriteAdapter
+//        recyclerView.makeVisible()
+//    }
 
 
     private fun displayTracks(tracks: List<Track>) {
@@ -381,10 +393,12 @@ viewModel.getLiveData.observe(this){ newState ->
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек
-        if (trackInteractor.clickDebounce()) { //если нажали более 1 раза за секунду не сработает
-            trackInteractor.getTrackIntentAndStart(track, this)
-            favoriteTrackInteractor.addTrack(track)
-        }
+//        if (trackInteractor.clickDebounce()) { //если нажали более 1 раза за секунду не сработает
+//            trackInteractor.getTrackIntentAndStart(track, this)
+            getTrackIntentAndStart(track,this)
+//            favoriteTrackInteractor.addTrack(track)
+            viewModel.addTrackToFavorite(track)
+//        }
         // вызову функцию и передам путэкстра
 
     }
@@ -395,17 +409,41 @@ viewModel.getLiveData.observe(this){ newState ->
         SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == FavoriteTrackRepositoryImpl.Companion.TRACKS_KEY) {
                 // Логика обновления треков
-                updateTracksFromStorage()
+//                updateTracksFromStorage()
+                viewModel.getAllTracks()
+
+
             }
         }
 
 
 
+    fun getTrackIntentAndStart(track: Track, context: Context) {
+        val intent =
+            Intent(context, MediaActivity::class.java) // создали интент для перехода на активити
+        intent.putExtra("trackName", track.trackName)
+        if (!track.collectionName.isNullOrEmpty()) {
+            intent.putExtra(
+                "collectionName",
+                track.collectionName
+            )  // отправим альбом только если он есть
+        }
+        intent.putExtra("trackTimeMillis", track.trackTimeMillis)
+        intent.putExtra("artistName", track.artistName)
+        intent.putExtra("primaryGenreName", track.primaryGenreName)
+        intent.putExtra("country", track.country)
+        intent.putExtra("artworkUrl100", track.artworkUrl100)
+        intent.putExtra("previewUrl", track.previewUrl)
+
+        intent.putExtra("relieseDate", track.releaseDate)
+        context.startActivity(intent)
+    }
 
     @SuppressLint("SuspiciousIndentation")
     private fun updateTracksFromStorage() {
-        myTracks = favoriteTrackInteractor.getAllTracksFromStorage()
-        favoriteAdapter.updateData(myTracks as MutableList<Track>)
+       myTracks = favoriteTrackInteractor.getAllTracksFromStorage()
+//
+//        favoriteAdapter.updateData(myTracks as MutableList<Track>)
     }
 
 

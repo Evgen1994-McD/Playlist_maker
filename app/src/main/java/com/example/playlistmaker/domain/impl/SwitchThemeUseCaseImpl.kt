@@ -13,14 +13,9 @@ class SwitchThemeUseCaseImpl(private val repository: SettingsRepository) :
     SwitchThemeUseCase {
     override fun switchThemeModeBySettings(
         myTheme : Boolean
-//        switch: SwitchMaterial?,
-//        applicationContext: Context,
+
     ) {
-//        var theme = repository.controlAppThemeMode()
-//myTheme = theme
-////        switch!!.isChecked = theme
-//        switch.setOnCheckedChangeListener { _, isChecked ->
-            // Сохранить новое значение темы in Sharedpreferences
+
             repository.saveCurrentThemeToShared(myTheme)
                 repository.switchTheme(myTheme)
 

@@ -8,13 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.presentation.viewModels.ThemeViewModel
 
 class MainActivity : AppCompatActivity() {
-    private val switchThemeUseCase by lazy {Creator.provideSwitchThemeUseCase() }
+
     private lateinit var binding : ActivityMainBinding
     private lateinit var themeViewModel : ThemeViewModel
 

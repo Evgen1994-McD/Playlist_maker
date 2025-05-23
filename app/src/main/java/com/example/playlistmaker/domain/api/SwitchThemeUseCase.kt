@@ -8,13 +8,9 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 interface SwitchThemeUseCase {
     fun switchThemeModeBySettings(
         myTheme : Boolean
-//        switch: SwitchMaterial?,
-//        applicationContext: Context,
     )
 
     fun controlThemeInOtherWindows(
-//        applicationContext: App,
-
     ): Boolean
 
 
