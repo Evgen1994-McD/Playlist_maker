@@ -12,6 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
@@ -22,18 +23,19 @@ import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.api.MediaInteractor
+import com.example.playlistmaker.presentation.viewModels.ThemeViewModel
 
 class MediaActivity : AppCompatActivity() {
 
     private val favoriteTrackInteractorImpl by lazy {
-    Creator.provideFavoriteInteractor(this) }// создал экземлпр фаворитинтерактора для доступа к коллекции
+    Creator.provideFavoriteInteractor() }// создал экземлпр фаворитинтерактора для доступа к коллекции
    private val mediaPlayerInteractor by lazy {  Creator.provideMediaInteractor()}
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
     private lateinit var artworkUrl100: String
     private lateinit var collectionName: String
     private lateinit var previewUrl: String
     private var isPlaying = false // переменная статуса плеера
-
+    private lateinit var themeViewModel: ThemeViewModel
 
     companion object { // компаньон медиаплеера
 
@@ -76,6 +78,13 @@ class MediaActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
             finish()
         }
+        val switchThemeUseCase = Creator.provideSwitchThemeUseCase()
+
+        themeViewModel = ViewModelProvider(this, ThemeViewModel.getViewModelFactory())[ThemeViewModel::class.java]  // Инициализируем модел
+        themeViewModel.loadingLiveData().observe(this) { newTheme ->
+            switchThemeUseCase.controlThemeInOtherWindows()
+        }
+
 
 
         val myTracks =
@@ -86,10 +95,8 @@ class MediaActivity : AppCompatActivity() {
         )  // листенер для определения начала и окончания воспроизведения
 
 
-        val switchThemeUseCase = Creator.provideSwitchThemeUseCase()
-        switchThemeUseCase.controlThemeInOtherWindows(
 
-        )
+
 
         if (!intent.getStringExtra("trackName")
                 .isNullOrEmpty()
@@ -258,6 +265,10 @@ class MediaActivity : AppCompatActivity() {
 
         mediaPlayerInteractor.releasePlayer()
         stopUpdateProgress()
+
+
+            themeViewModel.loadingLiveData().removeObservers(this) //удалили обсерверы
+
     }
 
 

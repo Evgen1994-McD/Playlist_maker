@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.App
 import com.example.playlistmaker.R
@@ -14,6 +15,7 @@ import com.example.playlistmaker.domain.api.OpenUrlUseCase
 import com.example.playlistmaker.domain.api.SendSuppEmailUseCase
 import com.example.playlistmaker.domain.api.ShareAppUseCase
 import com.example.playlistmaker.domain.api.SwitchThemeUseCase
+import com.example.playlistmaker.presentation.viewModels.ThemeViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 
@@ -22,6 +24,7 @@ private val shareAppUseCase by lazy { Creator.provideShareAppUseCase()  }
 private val sendSuppEmailUseCase by lazy {  Creator.provideSendSuppEmailUseCase() }
 private  val opernUrlUseCase by lazy {  Creator.provideOpenUrlUseCase()}
 private  val switchThemeUseCase by lazy { Creator.provideSwitchThemeUseCase() }
+    private lateinit var themeViewModel: ThemeViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,10 +68,16 @@ private  val switchThemeUseCase by lazy { Creator.provideSwitchThemeUseCase() }
 
 
 
-        switchThemeUseCase.switchThemeModeBySettings(
-            switcherTheme
+//        switchThemeUseCase.switchThemeModeBySettings(
+//            switcherTheme
+//
+//        )
 
-        )
+        themeViewModel = ViewModelProvider(this, ThemeViewModel.getViewModelFactory())[ThemeViewModel::class.java]  // Инициализируем модел
+        themeViewModel.loadingLiveData().observe(this) { newTheme ->
+            switchThemeUseCase.switchThemeModeBySettings(switcherTheme)
+        }
+
 
 
     }
@@ -89,6 +98,14 @@ private  val switchThemeUseCase by lazy { Creator.provideSwitchThemeUseCase() }
 
     private fun openUrlInDefaultBrowser(url: String, context: Context) {
         opernUrlUseCase.openUrlInDefaultBrowser(context, url)
+    }
+
+    override fun onDestroy() { // закрываем плеер при завершении работы
+        super.onDestroy()
+
+
+        themeViewModel.loadingLiveData().removeObservers(this) //удалили обсерверы
+
     }
 
 }

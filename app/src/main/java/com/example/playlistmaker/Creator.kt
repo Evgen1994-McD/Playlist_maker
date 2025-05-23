@@ -39,12 +39,12 @@ object Creator {
         return TracksInteractorImpl(getTracksRepository())
     }
 
-    private fun getFavoriteTrackRepository(context: Context): FavoriteTrackRepository {
+    private fun getFavoriteTrackRepository(): FavoriteTrackRepository {
         return FavoriteTrackRepositoryImpl(context)
     }
 
-    fun provideFavoriteInteractor(context: Context): FavoriteTrackInteractor {
-        return FavoriteTrackInteractorImpl(getFavoriteTrackRepository(context))
+    fun provideFavoriteInteractor(): FavoriteTrackInteractor {
+        return FavoriteTrackInteractorImpl(getFavoriteTrackRepository())
     }
 
     private fun getSettingsRepository(): SettingsRepository {

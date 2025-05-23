@@ -3,25 +3,24 @@ package com.example.playlistmaker.presentation.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.Creator
-import com.example.playlistmaker.App
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
-import com.example.playlistmaker.databinding.ActivityMediaBinding
-import com.example.playlistmaker.presentation.viewModels.MainViewModel
+import com.example.playlistmaker.presentation.viewModels.ThemeViewModel
+import androidx.fragment.app.activityViewModels
 
 class MainActivity : AppCompatActivity() {
     private val switchThemeUseCase by lazy {Creator.provideSwitchThemeUseCase() }
     private lateinit var binding : ActivityMainBinding
-    private lateinit var viewModel : MainViewModel
+    private lateinit var viewModel : ThemeViewModel
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -35,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        viewModel = ViewModelProvider(this, MainViewModel.getViewModelFactory())[MainViewModel::class.java]  // Инициализируем модел
+        viewModel = ViewModelProvider(this, ThemeViewModel.getViewModelFactory())[ThemeViewModel::class.java]  // Инициализируем модел
 viewModel.loadingLiveData().observe(this) { newTheme ->
     switchThemeUseCase.controlThemeInOtherWindows()
 }

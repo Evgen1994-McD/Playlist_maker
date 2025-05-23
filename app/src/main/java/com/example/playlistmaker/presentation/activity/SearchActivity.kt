@@ -21,6 +21,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
@@ -32,6 +33,8 @@ import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.adapters.TrackAdapter
+import com.example.playlistmaker.presentation.viewModels.SearchViewModel
+import com.example.playlistmaker.presentation.viewModels.ThemeViewModel
 import kotlinx.coroutines.Runnable
 
 class SearchActivity : AppCompatActivity(),
@@ -52,36 +55,67 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var myTracks: List<Track>
     private lateinit var favoriteAdapter: TrackAdapter //адаптер будущий
     private lateinit var pbs: ProgressBar
+    private lateinit var viewModel: SearchViewModel
+    private lateinit var themeViewModel: ThemeViewModel
+
     private val handler =
         Handler(Looper.getMainLooper()) // Сделал Хандлер для доступа к главному потоку
    private val trackInteractor by lazy {  Creator.provideTracksInteractor()}
     private val favoriteTrackInteractor by lazy {
-    Creator.provideFavoriteInteractor(this@SearchActivity) }// Создал Фаворитинтерактор
+    Creator.provideFavoriteInteractor() }// Создал Фаворитинтерактор
    private val switchThemeInteractor by lazy{Creator.provideSwitchThemeUseCase()}
 
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
-        favoriteAdapter =
-            TrackAdapter(favoriteTrackInteractor.getAllTracksFromStorage(), this@SearchActivity)
-        switchThemeInteractor.controlThemeInOtherWindows(
-//            applicationContext as App
-        )
-
-
-
-
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_search)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.searchLayout)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        themeViewModel = ViewModelProvider(this, ThemeViewModel.getViewModelFactory())[ThemeViewModel::class.java]  // Инициализируем модел
+        themeViewModel.loadingLiveData().observe(this) { newTheme ->
+            switchThemeInteractor.controlThemeInOtherWindows()
+        }
+
+
+
+       viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
+
+viewModel.getLiveData.observe(this){ newState ->
+    when {
+        newState.isLoading -> pbs.makeVisible()
+            //!newState.isLoading -> pbs.makeInvisible()
+        !newState.errorMessage.isNullOrEmpty() && newState.isLoading==false -> {
+            handleNoInternetConnection()
+            pbs.makeGone()
+
+        }
+        newState.searchResults.isNullOrEmpty()  && newState.errorMessage == null -> {
+            pbs.makeGone()
+            handleNoResults()
+        }
+        !newState.searchResults.isNullOrEmpty()->{
+
+        displayTracks(newState.searchResults)
+        pbs.makeGone()
+        }
+    }
+
+}
+
+        favoriteAdapter =
+            TrackAdapter(favoriteTrackInteractor.getAllTracksFromStorage(), this@SearchActivity)
+
+
+
+
+
 
         pbs = findViewById<ProgressBar>(R.id.pbs)
 
@@ -124,7 +158,8 @@ class SearchActivity : AppCompatActivity(),
             msgBotTxt.makeGone()
             buttonNoInternet.makeGone()
             txtForSearch = searchEditText.text.toString() // текст для поиска
-            searchTracks(txtForSearch)
+            viewModel.searchTracks(txtForSearch)
+//            searchTracks(txtForSearch)
 
         }
 
@@ -176,7 +211,6 @@ class SearchActivity : AppCompatActivity(),
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 logicClearIc(p0)
 
-
                 if (!p0.isNullOrEmpty()) {
 
 
@@ -185,7 +219,8 @@ class SearchActivity : AppCompatActivity(),
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeGone()
-                    searchTracks(txtForSearch) // в интеракторе поиск настроен на поиск через 2 секунды
+//                    searchTracks(txtForSearch) // в интеракторе поиск настроен на поиск через 2 секунды
+                    viewModel.searchTracks(txtForSearch)
                     phForNothingToShow.makeGone()
                     recyclerView.makeGone()
                     msgTopTxt.makeGone()
@@ -366,42 +401,7 @@ class SearchActivity : AppCompatActivity(),
         }
 
 
-    private fun searchTracks(txtForSearch: String) {
-        val delayedShowPbs = Runnable {
-            runOnUiThread {
-                pbs.makeVisible()
-            }
-        }
-        handler.postDelayed(delayedShowPbs, 2000L)
 
-        trackInteractor.searchTracks(
-            txtForSearch,
-            object : TrackInteractor.TracksConsumer {
-                override fun consume(tracks: List<Track>) {
-                    runOnUiThread {
-                        handler.removeCallbacks(delayedShowPbs)
-                        pbs.makeGone()
-
-                        if (tracks.isNullOrEmpty()) {
-                            handleNoResults()
-                        } else {
-
-                            displayTracks(tracks!!)
-                        }
-                    }
-                }
-
-                override fun onFailure(error: Throwable) {
-                    runOnUiThread {
-                        handler.removeCallbacks(delayedShowPbs)
-
-                        pbs.makeGone()
-                        handleNoInternetConnection()
-                    }
-                }
-
-            })
-    }
 
     @SuppressLint("SuspiciousIndentation")
     private fun updateTracksFromStorage() {
