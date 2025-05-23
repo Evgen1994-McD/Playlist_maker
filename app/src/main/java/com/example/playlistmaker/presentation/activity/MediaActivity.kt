@@ -81,9 +81,7 @@ class MediaActivity : AppCompatActivity() {
         val switchThemeUseCase = Creator.provideSwitchThemeUseCase()
 
         themeViewModel = ViewModelProvider(this, ThemeViewModel.getViewModelFactory())[ThemeViewModel::class.java]  // Инициализируем модел
-        themeViewModel.loadingLiveData().observe(this) { newTheme ->
-            switchThemeUseCase.controlThemeInOtherWindows()
-        }
+       themeViewModel.controlThemeInOtherWindows()
 
 
 

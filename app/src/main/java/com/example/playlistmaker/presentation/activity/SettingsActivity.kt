@@ -68,17 +68,15 @@ private  val switchThemeUseCase by lazy { Creator.provideSwitchThemeUseCase() }
 
 
 
-//        switchThemeUseCase.switchThemeModeBySettings(
-//            switcherTheme
-//
-//        )
+
 
         themeViewModel = ViewModelProvider(this, ThemeViewModel.getViewModelFactory())[ThemeViewModel::class.java]  // Инициализируем модел
-        themeViewModel.loadingLiveData().observe(this) { newTheme ->
-            switchThemeUseCase.switchThemeModeBySettings(switcherTheme)
+
+        switcherTheme.setOnCheckedChangeListener { _, isChecked ->
+
+          themeViewModel.controlTHemeBySwitcher(isChecked)
+
         }
-
-
 
     }
 

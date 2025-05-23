@@ -79,13 +79,12 @@ class SearchActivity : AppCompatActivity(),
         }
 
         themeViewModel = ViewModelProvider(this, ThemeViewModel.getViewModelFactory())[ThemeViewModel::class.java]  // Инициализируем модел
-        themeViewModel.loadingLiveData().observe(this) { newTheme ->
-            switchThemeInteractor.controlThemeInOtherWindows()
-        }
+        themeViewModel.controlThemeInOtherWindows()
 
 
 
-       viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
+
+        viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
 
 viewModel.getLiveData.observe(this){ newState ->
     when {

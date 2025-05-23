@@ -7,7 +7,8 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 
 interface SwitchThemeUseCase {
     fun switchThemeModeBySettings(
-        switch: SwitchMaterial?,
+        myTheme : Boolean
+//        switch: SwitchMaterial?,
 //        applicationContext: Context,
     )
 

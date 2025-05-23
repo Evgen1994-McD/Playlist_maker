@@ -12,20 +12,21 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 class SwitchThemeUseCaseImpl(private val repository: SettingsRepository) :
     SwitchThemeUseCase {
     override fun switchThemeModeBySettings(
-        switch: SwitchMaterial?,
+        myTheme : Boolean
+//        switch: SwitchMaterial?,
 //        applicationContext: Context,
     ) {
-        val theme = repository.controlAppThemeMode()
-
-        switch!!.isChecked = theme
-        switch.setOnCheckedChangeListener { _, isChecked ->
+//        var theme = repository.controlAppThemeMode()
+//myTheme = theme
+////        switch!!.isChecked = theme
+//        switch.setOnCheckedChangeListener { _, isChecked ->
             // Сохранить новое значение темы in Sharedpreferences
-            repository.saveCurrentThemeToShared(isChecked)
-                repository.switchTheme(isChecked)
+            repository.saveCurrentThemeToShared(myTheme)
+                repository.switchTheme(myTheme)
 
         }
 
-    }
+
 
 
     override fun controlThemeInOtherWindows(

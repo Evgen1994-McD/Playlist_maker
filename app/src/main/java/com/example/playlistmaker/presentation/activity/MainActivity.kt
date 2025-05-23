@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -13,12 +12,11 @@ import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.presentation.viewModels.ThemeViewModel
-import androidx.fragment.app.activityViewModels
 
 class MainActivity : AppCompatActivity() {
     private val switchThemeUseCase by lazy {Creator.provideSwitchThemeUseCase() }
     private lateinit var binding : ActivityMainBinding
-    private lateinit var viewModel : ThemeViewModel
+    private lateinit var themeViewModel : ThemeViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,10 +32,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        viewModel = ViewModelProvider(this, ThemeViewModel.getViewModelFactory())[ThemeViewModel::class.java]  // Инициализируем модел
-viewModel.loadingLiveData().observe(this) { newTheme ->
-    switchThemeUseCase.controlThemeInOtherWindows()
-}
+        themeViewModel = ViewModelProvider(this, ThemeViewModel.getViewModelFactory())[ThemeViewModel::class.java]  // Инициализируем модел
+        themeViewModel.controlThemeInOtherWindows()
+
 
 
 
@@ -72,7 +69,7 @@ viewModel.loadingLiveData().observe(this) { newTheme ->
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.loadingLiveData().removeObservers(this) //удалили обсерверы
+        themeViewModel.loadingLiveData().removeObservers(this) //удалили обсерверы
     }
 
 }

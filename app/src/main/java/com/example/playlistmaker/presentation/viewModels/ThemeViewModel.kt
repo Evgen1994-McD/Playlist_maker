@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.domain.api.SwitchThemeUseCase
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class ThemeViewModel(private val switchThemeUseCase: SwitchThemeUseCase) : ViewModel() {
 
@@ -19,6 +20,17 @@ class ThemeViewModel(private val switchThemeUseCase: SwitchThemeUseCase) : ViewM
     init {
 
        currentThemeLiveData.value = switchThemeUseCase.controlThemeInOtherWindows()
+    }
+
+
+
+    fun controlThemeInOtherWindows(){
+        switchThemeUseCase.controlThemeInOtherWindows()
+    }
+
+    fun controlTHemeBySwitcher(theme : Boolean){
+        switchThemeUseCase.switchThemeModeBySettings(theme)
+
     }
 
 
