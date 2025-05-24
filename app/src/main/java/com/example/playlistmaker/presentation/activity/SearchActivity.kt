@@ -30,14 +30,11 @@ import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.OnTrackClickListener
 import com.example.playlistmaker.data.repositories.FavoriteTrackRepositoryImpl
-import com.example.playlistmaker.App
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.adapters.TrackAdapter
 import com.example.playlistmaker.presentation.viewModels.SearchViewModel
 import com.example.playlistmaker.presentation.viewModels.ThemeViewModel
-import kotlinx.coroutines.Runnable
 
 class SearchActivity : AppCompatActivity(),
     OnTrackClickListener {  // Добавили имлементацию нашего интерфейса OnTrackClickListener для того чтобы определить трек
@@ -55,7 +52,7 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var tvMsgSearch: TextView
     private lateinit var btCleanHistory: TextView
     private lateinit var myTracks: List<Track>
-//    private lateinit var favoriteAdapter: TrackAdapter //адаптер будущий
+    private lateinit var trackAdapter: TrackAdapter //адаптер будущий
     private lateinit var pbs: ProgressBar
     private lateinit var viewModel: SearchViewModel
     private lateinit var themeViewModel: ThemeViewModel
@@ -85,31 +82,101 @@ class SearchActivity : AppCompatActivity(),
 
 
 
-
         viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
 
-viewModel.getLiveData.observe(this){ newState ->
-    when {
-        newState.isLoading -> pbs.makeVisible()
-            //!newState.isLoading -> pbs.makeInvisible()
-        !newState.errorMessage.isNullOrEmpty() && newState.isLoading==false -> {
-            handleNoInternetConnection()
-            pbs.makeGone()
+//viewModel.getLiveData.observe(this) { newState ->
+//    when {
+//        newState.isLoading -> pbs.makeVisible()
+//        //!newState.isLoading -> pbs.makeInvisible()
+//        !newState.errorMessage.isNullOrEmpty() && newState.isLoading == false -> {
+//            handleNoInternetConnection()
+//            pbs.makeGone()
+//
+//        }
+//
+//        newState.searchResults.isNullOrEmpty() && newState.errorMessage == null -> {
+//            pbs.makeGone()
+//            handleNoResults()
+//        }
+//
+//        !newState.searchResults.isNullOrEmpty() -> {
+//
+//            displayTracks(newState.searchResults)
+//            pbs.makeGone()
+//        }
+////        !newState.history.isNullOrEmpty() -> {
+////            if (searchEditText.hasFocus() && searchEditText.text?.isNullOrEmpty()==true ) {
+////                displayTracks(newState.history)
+////                btCleanHistory.makeVisible()
+////            }
+//////           favoriteAdapter  = TrackAdapter(newState.history, this)
+//////            favoriteAdapter.updateData(newState.history.toMutableList())
+////        }
+//
+//
+//    }
+//
+//}
 
+
+
+
+        searchEditText =  // инициализирую эдиттекст
+            findViewById<AppCompatEditText>(R.id.search_stroke)
+
+
+        searchEditText.setOnFocusChangeListener { _, hasFocus ->
+            viewModel.getAllTracks()
+            // Наблюдаем сразу за обоими источниками данных
+            viewModel.getLiveData.observe(this) { newState ->
+                when {
+                    newState.isLoading -> pbs.makeVisible()
+                    !newState.errorMessage.isNullOrEmpty() && !newState.isLoading -> {
+                        handleNoInternetConnection()
+                        pbs.makeGone()
+                    }
+                    newState.searchResults.isNullOrEmpty() && newState.errorMessage == null -> {
+                        pbs.makeGone()
+                        handleNoResults()
+                    }
+                    else -> {
+                        pbs.makeGone()
+                        if (hasFocus && searchEditText.text.isNullOrEmpty()) {
+                            val tracksToDisplay = newState.history
+                            tracksToDisplay?.let { displayTracks(it) }
+                            btCleanHistory.makeVisible()
+                            if (!tracksToDisplay.isNullOrEmpty()){
+                                btCleanHistory.makeVisible()
+                            }
+
+                        } else if (hasFocus && !searchEditText.text.isNullOrEmpty()){
+                            val tracksToDisplay = newState.searchResults
+                            tracksToDisplay?.let { displayTracks(it) }
+                        }
+//                        // Определяем, какой набор данных показывать
+//                        val tracksToDisplay = if (hasFocus && searchEditText.text.isNullOrEmpty()) {
+//                            newState.history
+//                        } else if (hasFocus && !searchEditText.text.isNullOrEmpty()) {
+//                            newState.searchResults
+//                        } else null
+//
+//                        if (!tracksToDisplay.isNullOrEmpty()) {
+//                            displayTracks(tracksToDisplay)
+//
+//                            // Отображаем кнопку очистки истории только если история доступна
+//                            if (tracksToDisplay === newState.history) {
+//                                btCleanHistory.makeVisible()
+//                            }
+//                        }
+                    }
+                }
+            }
         }
-        newState.searchResults.isNullOrEmpty()  && newState.errorMessage == null -> {
-            pbs.makeGone()
-            handleNoResults()
-        }
-        !newState.searchResults.isNullOrEmpty()->{
 
-        displayTracks(newState.searchResults)
-        pbs.makeGone()
-        }
 
-    }
 
-}
+
+
 //
 //        favoriteAdapter =
 //            TrackAdapter(favoriteTrackInteractor.getAllTracksFromStorage(), this@SearchActivity)
@@ -129,9 +196,6 @@ viewModel.getLiveData.observe(this){ newState ->
 
 
 
-
-        searchEditText =  // инициализирую эдиттекст
-            findViewById<AppCompatEditText>(R.id.search_stroke)
 
         phForNothingToShow =
             findViewById<ImageView>(R.id.ph_ntsh_120)
@@ -171,25 +235,31 @@ viewModel.getLiveData.observe(this){ newState ->
             recyclerView.makeInvisible() // делаю ресайклер вью невидимым
             tvMsgSearch.makeInvisible() //делаем сообщение "Вы искали" невидимым
             btCleanHistory.makeInvisible() // делаем саму кнопку невидимой при выполнении логики
-            searchEditText.clearFocus()  // убираю фокус
+            searchEditText.clearFocus()  // убираю фокус7
+//            handler.removeCallbacksAndMessages(null)
         }
-        searchEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && searchEditText.text?.isNullOrEmpty() == true) {
-                viewModel.getAllTracks()
-                viewModel.getLiveData.observe(this) { newState ->
-                    when {
-                        !newState.history.isNullOrEmpty() -> {
-                            displayTracks(newState.history)
-                            btCleanHistory.makeVisible()
-                        }
 
-
-                    }
-
-                }
-
-            }
-        }
+            //Работа с фаворит треками ( историей поиска)
+//        searchEditText.setOnFocusChangeListener { _, hasFocus ->
+//            if (hasFocus && searchEditText.text?.isNullOrEmpty() == true ) {
+//               recyclerView.makeVisible()
+//              viewModel.getAllTracks()
+//               viewModel.getLiveData.observe(this) { newState ->
+//                   when {
+//                       !newState.history.isNullOrEmpty() -> {
+//
+//                           displayTracks(newState.history)
+//                            btCleanHistory.makeVisible()
+//                        }
+//
+//
+//                    }
+//
+//                }
+//
+//            }
+//
+//        }
 
 
         val backClicker =
@@ -223,8 +293,6 @@ viewModel.getLiveData.observe(this){ newState ->
                 logicClearIc(p0)
 
                 if (!p0.isNullOrEmpty()) {
-
-
                     // инициализ переменную таск в текст ватчере, иначе происходит вылет
                     txtForSearch = searchEditText.text.toString()
                     tvMsgSearch.makeGone()
@@ -341,17 +409,17 @@ viewModel.getLiveData.observe(this){ newState ->
         btCleanHistory.makeGone()
     }
 //
-//    private fun displayFavoriteTracks() {
-//        tvMsgSearch.makeVisible()
-//        btCleanHistory.makeVisible()
-//        phForNothingToShow.makeGone()
-//        msgBotTxt.makeGone()
-//        msgTopTxt.makeGone()
-//        buttonNoInternet.makeGone()
-//        recyclerView.layoutManager = LinearLayoutManager(this)
-//        recyclerView.adapter = favoriteAdapter
-//        recyclerView.makeVisible()
-//    }
+    private fun displayFavoriteTracks() {
+        tvMsgSearch.makeVisible()
+        btCleanHistory.makeVisible()
+        phForNothingToShow.makeGone()
+        msgBotTxt.makeGone()
+        msgTopTxt.makeGone()
+        buttonNoInternet.makeGone()
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = trackAdapter
+        recyclerView.makeVisible()
+    }
 
 
     private fun displayTracks(tracks: List<Track>) {
@@ -410,7 +478,7 @@ viewModel.getLiveData.observe(this){ newState ->
             if (key == FavoriteTrackRepositoryImpl.Companion.TRACKS_KEY) {
                 // Логика обновления треков
 //                updateTracksFromStorage()
-                viewModel.getAllTracks()
+//                viewModel.getAllTracks()
 
 
             }
@@ -439,13 +507,13 @@ viewModel.getLiveData.observe(this){ newState ->
         context.startActivity(intent)
     }
 
-    @SuppressLint("SuspiciousIndentation")
-    private fun updateTracksFromStorage() {
-       myTracks = favoriteTrackInteractor.getAllTracksFromStorage()
-//
-//        favoriteAdapter.updateData(myTracks as MutableList<Track>)
-    }
-
+//    @SuppressLint("SuspiciousIndentation")
+////    private fun updateTracksFromStorage() {
+////       myTracks = favoriteTrackInteractor.getAllTracksFromStorage()
+//////
+//////        favoriteAdapter.updateData(myTracks as MutableList<Track>)
+////    }
+////
 
 
 }
