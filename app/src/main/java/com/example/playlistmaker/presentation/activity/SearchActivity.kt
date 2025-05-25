@@ -51,18 +51,11 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var recyclerView: RecyclerView
     private lateinit var tvMsgSearch: TextView
     private lateinit var btCleanHistory: TextView
-    private lateinit var myTracks: List<Track>
-    private lateinit var trackAdapter: TrackAdapter //адаптер будущий
     private lateinit var pbs: ProgressBar
     private lateinit var viewModel: SearchViewModel
     private lateinit var themeViewModel: ThemeViewModel
 
-    private val handler =
-        Handler(Looper.getMainLooper()) // Сделал Хандлер для доступа к главному потоку
-   private val trackInteractor by lazy {  Creator.provideTracksInteractor()}
-    private val favoriteTrackInteractor by lazy {
-    Creator.provideFavoriteInteractor() }// Создал Фаворитинтерактор
-   private val switchThemeInteractor by lazy{Creator.provideSwitchThemeUseCase()}
+
 
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,53 +63,17 @@ class SearchActivity : AppCompatActivity(),
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
         enableEdgeToEdge()
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.searchLayout)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
         themeViewModel = ViewModelProvider(this, ThemeViewModel.getViewModelFactory())[ThemeViewModel::class.java]  // Инициализируем модел
         themeViewModel.controlThemeInOtherWindows()
 
 
 
         viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
-
-//viewModel.getLiveData.observe(this) { newState ->
-//    when {
-//        newState.isLoading -> pbs.makeVisible()
-//        //!newState.isLoading -> pbs.makeInvisible()
-//        !newState.errorMessage.isNullOrEmpty() && newState.isLoading == false -> {
-//            handleNoInternetConnection()
-//            pbs.makeGone()
-//
-//        }
-//
-//        newState.searchResults.isNullOrEmpty() && newState.errorMessage == null -> {
-//            pbs.makeGone()
-//            handleNoResults()
-//        }
-//
-//        !newState.searchResults.isNullOrEmpty() -> {
-//
-//            displayTracks(newState.searchResults)
-//            pbs.makeGone()
-//        }
-////        !newState.history.isNullOrEmpty() -> {
-////            if (searchEditText.hasFocus() && searchEditText.text?.isNullOrEmpty()==true ) {
-////                displayTracks(newState.history)
-////                btCleanHistory.makeVisible()
-////            }
-//////           favoriteAdapter  = TrackAdapter(newState.history, this)
-//////            favoriteAdapter.updateData(newState.history.toMutableList())
-////        }
-//
-//
-//    }
-//
-//}
 
 
 
@@ -131,11 +88,11 @@ class SearchActivity : AppCompatActivity(),
             viewModel.getLiveData.observe(this) { newState ->
                 when {
                     newState.isLoading -> pbs.makeVisible()
-                    !newState.errorMessage.isNullOrEmpty() && !newState.isLoading -> {
+                    !newState.errorMessage.isNullOrEmpty() && !newState.isLoading && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
                         handleNoInternetConnection()
                         pbs.makeGone()
                     }
-                    newState.searchResults.isNullOrEmpty() && newState.errorMessage == null -> {
+                    newState.searchResults.isNullOrEmpty() && newState.errorMessage == null && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
                         pbs.makeGone()
                         handleNoResults()
                     }
@@ -147,27 +104,21 @@ class SearchActivity : AppCompatActivity(),
                             btCleanHistory.makeVisible()
                             if (!tracksToDisplay.isNullOrEmpty()){
                                 btCleanHistory.makeVisible()
-                            }
+                            }else btCleanHistory.makeGone()
 
-                        } else if (hasFocus && !searchEditText.text.isNullOrEmpty()){
+                        } else if (!searchEditText.text.isNullOrEmpty()){
                             val tracksToDisplay = newState.searchResults
                             tracksToDisplay?.let { displayTracks(it) }
+                        }else {
+                            recyclerView.makeInvisible()
+                            btCleanHistory.makeGone()
+                            phForNothingToShow.makeGone()
+                            msgTopTxt.makeInvisible()
+                            msgBotTxt.makeInvisible()
+
+
                         }
-//                        // Определяем, какой набор данных показывать
-//                        val tracksToDisplay = if (hasFocus && searchEditText.text.isNullOrEmpty()) {
-//                            newState.history
-//                        } else if (hasFocus && !searchEditText.text.isNullOrEmpty()) {
-//                            newState.searchResults
-//                        } else null
-//
-//                        if (!tracksToDisplay.isNullOrEmpty()) {
-//                            displayTracks(tracksToDisplay)
-//
-//                            // Отображаем кнопку очистки истории только если история доступна
-//                            if (tracksToDisplay === newState.history) {
-//                                btCleanHistory.makeVisible()
-//                            }
-//                        }
+
                     }
                 }
             }
@@ -177,42 +128,34 @@ class SearchActivity : AppCompatActivity(),
 
 
 
-//
-//        favoriteAdapter =
-//            TrackAdapter(favoriteTrackInteractor.getAllTracksFromStorage(), this@SearchActivity)
-//
-//
 
-
-
-
-        pbs = findViewById<ProgressBar>(R.id.pbs)
+        pbs = binding.pbs
 
         tvMsgSearch =
-            findViewById<TextView>(R.id.tv_msg_search)
+           binding.tvMsgSearch
 
         btCleanHistory =
-            findViewById<TextView>(R.id.bt_cleanHistory)
+           binding.btCleanHistory
 
 
 
 
         phForNothingToShow =
-            findViewById<ImageView>(R.id.ph_ntsh_120)
+         binding.phNtsh120
 
 
 
         msgTopTxt =
-            findViewById<TextView>(R.id.msg_noint_top_txt)
+          binding.msgNointTopTxt
 
         msgBotTxt =
-            findViewById<TextView>(R.id.msg_noint_bottom_txt)
+         binding.msgNointBottomTxt
 
         buttonNoInternet =
-            findViewById<TextView>(R.id.button_nointernet)
+           binding.buttonNointernet
 
         recyclerView =
-            findViewById<RecyclerView>(R.id.track_list)
+           binding.trackList
 
 
 
@@ -225,45 +168,21 @@ class SearchActivity : AppCompatActivity(),
             buttonNoInternet.makeGone()
             txtForSearch = searchEditText.text.toString() // текст для поиска
             viewModel.searchTracks(txtForSearch)
-//            searchTracks(txtForSearch)
 
         }
 
         btCleanHistory.setOnClickListener {  // кнопка очистки истории
-//            favoriteTrackInteractor.clearHistory()
             viewModel.clearHistory()
             recyclerView.makeInvisible() // делаю ресайклер вью невидимым
             tvMsgSearch.makeInvisible() //делаем сообщение "Вы искали" невидимым
             btCleanHistory.makeInvisible() // делаем саму кнопку невидимой при выполнении логики
             searchEditText.clearFocus()  // убираю фокус7
-//            handler.removeCallbacksAndMessages(null)
         }
 
-            //Работа с фаворит треками ( историей поиска)
-//        searchEditText.setOnFocusChangeListener { _, hasFocus ->
-//            if (hasFocus && searchEditText.text?.isNullOrEmpty() == true ) {
-//               recyclerView.makeVisible()
-//              viewModel.getAllTracks()
-//               viewModel.getLiveData.observe(this) { newState ->
-//                   when {
-//                       !newState.history.isNullOrEmpty() -> {
-//
-//                           displayTracks(newState.history)
-//                            btCleanHistory.makeVisible()
-//                        }
-//
-//
-//                    }
-//
-//                }
-//
-//            }
-//
-//        }
 
 
         val backClicker =
-            findViewById<Toolbar>(R.id.search_toolbar) // Назад в MainActivity
+           binding.searchToolbar// Назад в MainActivity
         backClicker.setNavigationOnClickListener {
             finish()
         }
@@ -298,7 +217,6 @@ class SearchActivity : AppCompatActivity(),
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeGone()
-//                    searchTracks(txtForSearch) // в интеракторе поиск настроен на поиск через 2 секунды
                     viewModel.searchTracks(txtForSearch)
                     phForNothingToShow.makeGone()
                     recyclerView.makeGone()
@@ -339,7 +257,7 @@ class SearchActivity : AppCompatActivity(),
 
     private fun logicClearIc(s: CharSequence?) {
         searchEditText =  // инициализирую эдиттекст
-            findViewById<AppCompatEditText>(R.id.search_stroke)
+            binding.searchStroke
         if (!s.isNullOrBlank()) {  // Перенести в функцию
             searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 ContextCompat.getDrawable(this@SearchActivity, R.drawable.ic_hintsearch_16),
@@ -363,7 +281,7 @@ class SearchActivity : AppCompatActivity(),
     @SuppressLint("ClickableViewAccessibility")
     private fun clearTextFromEditText() { // метод очистки текста в эдиттексте
         searchEditText =
-            findViewById<AppCompatEditText>(R.id.search_stroke)
+           binding.searchStroke
         val inputMethodManager =
             getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         searchEditText.setOnTouchListener { view, event ->
@@ -382,6 +300,7 @@ class SearchActivity : AppCompatActivity(),
                         ) // Прячем клаву
                         // чистим эдит текст
                         recyclerView.makeInvisible() // убрали список треков при очистке эдиттекста
+
                         msgTopTxt.makeGone()  //Убрали сообщение топ
                         msgBotTxt.makeGone() // убрали сообщение бот
                         phForNothingToShow.makeGone() // убрали плейсхолдер
@@ -409,17 +328,6 @@ class SearchActivity : AppCompatActivity(),
         btCleanHistory.makeGone()
     }
 //
-    private fun displayFavoriteTracks() {
-        tvMsgSearch.makeVisible()
-        btCleanHistory.makeVisible()
-        phForNothingToShow.makeGone()
-        msgBotTxt.makeGone()
-        msgTopTxt.makeGone()
-        buttonNoInternet.makeGone()
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = trackAdapter
-        recyclerView.makeVisible()
-    }
 
 
     private fun displayTracks(tracks: List<Track>) {
@@ -461,28 +369,12 @@ class SearchActivity : AppCompatActivity(),
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек
-//        if (trackInteractor.clickDebounce()) { //если нажали более 1 раза за секунду не сработает
-//            trackInteractor.getTrackIntentAndStart(track, this)
             getTrackIntentAndStart(track,this)
-//            favoriteTrackInteractor.addTrack(track)
             viewModel.addTrackToFavorite(track)
-//        }
-        // вызову функцию и передам путэкстра
 
     }
 
 
-    // Слушатель для отслеживания изменений в SharedPreferences
-    private val sharedPrefListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if (key == FavoriteTrackRepositoryImpl.Companion.TRACKS_KEY) {
-                // Логика обновления треков
-//                updateTracksFromStorage()
-//                viewModel.getAllTracks()
-
-
-            }
-        }
 
 
 
@@ -507,13 +399,6 @@ class SearchActivity : AppCompatActivity(),
         context.startActivity(intent)
     }
 
-//    @SuppressLint("SuspiciousIndentation")
-////    private fun updateTracksFromStorage() {
-////       myTracks = favoriteTrackInteractor.getAllTracksFromStorage()
-//////
-//////        favoriteAdapter.updateData(myTracks as MutableList<Track>)
-////    }
-////
 
 
 }

@@ -24,7 +24,6 @@ class SearchViewModel(private val trackInteractor: TrackInteractor,
     fun addTrackToFavorite(track: Track){
         if (trackInteractor.clickDebounce()) {
             favoriteTrackInteractor.addTrack(track)
-//            mutableScreenState.value = mutableScreenState.value!!.copy(history = favoriteTrackInteractor.getAllTracksFromStorage())
         }
     }
 
@@ -48,7 +47,7 @@ class SearchViewModel(private val trackInteractor: TrackInteractor,
             txtForSearch,
             object : TrackInteractor.TracksConsumer {
                 override fun consume(tracks: List<Track>) {
-                    mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = false, searchResults = tracks))
+                    mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = false, searchResults = tracks, errorMessage = null))
 
                 }
 
