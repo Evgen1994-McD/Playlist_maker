@@ -373,7 +373,11 @@ class SearchActivity : AppCompatActivity(),
             viewModel.addTrackToFavorite(track)
 
     }
-
+    override fun onDestroy() {
+        super.onDestroy()
+        themeViewModel.loadingLiveData().removeObservers(this) //удалили обсерверы
+        viewModel.getLiveData.removeObservers(this) // удалил обсервер вью модели поиска треков
+    }
 
 
 
