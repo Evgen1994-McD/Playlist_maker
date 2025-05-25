@@ -1,6 +1,7 @@
 package com.example.playlistmaker.presentation.activity
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -23,6 +24,8 @@ import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.domain.api.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.api.MediaInteractor
+import com.example.playlistmaker.presentation.models.MediaPlayerCommand
+import com.example.playlistmaker.presentation.viewModels.MediaViewModel
 import com.example.playlistmaker.presentation.viewModels.ThemeViewModel
 
 class MediaActivity : AppCompatActivity() {
@@ -36,6 +39,7 @@ class MediaActivity : AppCompatActivity() {
     private lateinit var previewUrl: String
     private var isPlaying = false // переменная статуса плеера
     private lateinit var themeViewModel: ThemeViewModel
+    private lateinit var viewModel: MediaViewModel
 
     companion object { // компаньон медиаплеера
 
@@ -72,7 +76,19 @@ class MediaActivity : AppCompatActivity() {
         }
         //создали интерактор
 
+
+        val factory = MediaViewModel.CustomViewModelFactory(          // Делаю вью модел фактори
+            Creator.provideFavoriteInteractor(),
+            Creator.provideMediaInteractor(),
+            App.instance,
+            intent
+        )
+
+        viewModel = ViewModelProvider(this, factory)[MediaViewModel::class.java]
+
+
         collectionName = "" // инициализировал
+
 
 
         binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
@@ -112,13 +128,14 @@ class MediaActivity : AppCompatActivity() {
                 binding.pause.makeVisible()
                 mediaPlayerInteractor.startPlayback()
                 isPlaying = true
+           // viewModel.mediaCommander(MediaPlayerCommand.Play)
                 startUpdateProgress()
 
         }
         binding.pause.setOnClickListener {
 
                 binding.pause.makeInvisible()
-
+//            viewModel.mediaCommander(MediaPlayerCommand.Pause)
 
                 binding.play.makeVisible()
                 mediaPlayerInteractor.pausePlayback()
