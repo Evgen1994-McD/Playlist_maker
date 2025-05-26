@@ -89,7 +89,7 @@ class MediaActivity : AppCompatActivity() {
 
         collectionName = "" // инициализировал
 
-
+viewModel.addListeners()
 
         binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
             finish()
@@ -102,10 +102,10 @@ class MediaActivity : AppCompatActivity() {
 
         val myTracks =
             favoriteTrackInteractorImpl.getAllTracksFromStorage()//storage.getAllTracks() //все треки
-
-        mediaPlayerInteractor.addListeners(
-            ::onPlayerReady, ::onPlayComplete
-        )  // листенер для определения начала и окончания воспроизведения
+//
+//        mediaPlayerInteractor.addListeners(
+//            ::onPlayerReady, ::onPlayComplete
+//        )  // листенер для определения начала и окончания воспроизведения
 
 
 
@@ -115,7 +115,44 @@ class MediaActivity : AppCompatActivity() {
                 .isNullOrEmpty()
         ) // запускаем интент только если интент есть
         {
-            intentGetExtraBind() // запустим интент
+            viewModel.intentGetExtraBind()
+            viewModel.getLiveData.observe(this){ newState ->
+                when{
+   !newState.trackName.isEmpty() && !newState.collectionName.contains("NoAlbum") -> {
+       binding.tvGenre.text = newState.primaryGenreName
+        binding.tvCountry.text = newState.country
+        binding.tvAlbum.text = newState.collectionName
+        binding.tvTime.text = newState.trackTimeMillis
+        binding.tvYear.text = newState.releaseDate
+            binding.tvAlbum.makeVisible()// убираем поле альбом если нет альбома
+            binding.tvAlbum.text = newState.collectionName// убираем поле альбом если нет альбома
+        binding.tvGroup.text = newState.artistName
+        binding.tvTrackName.text = newState.trackName
+
+       binding.progressTime.text = newState.progress
+       val options = RequestOptions().centerCrop()//опции для Glide
+
+        Glide.with(binding.imMine.context).load(newState.artworkUrl100).apply(options)
+            .placeholder(R.drawable.ph_media_312).error(R.drawable.ph_media_312)
+            .into(binding.imMine)
+}
+                    newState.collectionName.contains("NoAlbum") -> {
+                                    binding.tvAlbum.makeGone()// убираем поле альбом если нет альбома
+            binding.tvAlbumLeft.makeGone()// убираем поле альбом если нет альбома
+                    }
+              !newState.progress.isEmpty()  -> binding.progressTime.text = newState.progress
+                    newState.isPlaying == false -> {
+                        binding.play.isEnabled
+                        binding.play.makeVisible()
+                        binding.pause.makeInvisible()
+                    }
+
+                }
+
+
+
+            }
+    //            intentGetExtraBind() // запустим интент
         } else if (!myTracks.isNullOrEmpty()) {
             val track = myTracks[0] // если myTracks не пуст, возьмем свежий трек для плеера
             loadLastLikedTrack(track)
@@ -126,21 +163,22 @@ class MediaActivity : AppCompatActivity() {
                 binding.play.isEnabled = true
                 binding.play.makeInvisible()
                 binding.pause.makeVisible()
-                mediaPlayerInteractor.startPlayback()
-                isPlaying = true
-           // viewModel.mediaCommander(MediaPlayerCommand.Play)
-                startUpdateProgress()
+//                mediaPlayerInteractor.startPlayback()
+//                isPlaying = true
+            viewModel.mediaCommander(MediaPlayerCommand.Play)
+            viewModel.startUpdateProgress()
+//                startUpdateProgress()
 
         }
         binding.pause.setOnClickListener {
 
                 binding.pause.makeInvisible()
-//            viewModel.mediaCommander(MediaPlayerCommand.Pause)
-
+            viewModel.mediaCommander(MediaPlayerCommand.Pause)
+viewModel.stopUpdateProgress()
                 binding.play.makeVisible()
-                mediaPlayerInteractor.pausePlayback()
-                isPlaying = false
-                stopUpdateProgress()
+//                mediaPlayerInteractor.pausePlayback()
+//                isPlaying = false
+//                stopUpdateProgress()
 
         }
     }
