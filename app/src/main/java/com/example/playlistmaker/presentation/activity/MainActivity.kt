@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        themeViewModel.loadingLiveData().removeObservers(this) //удалили обсерверы
+
     }
 
 }

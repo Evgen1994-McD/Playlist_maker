@@ -39,18 +39,5 @@ class MediaInteractorImpl(
     }
 
 
-    /*override fun clickDebounce(): Boolean { // метод убираю потом решу нужен или нет
 
-        val now = System.currentTimeMillis()
-
-        // Проверяем прошло ли достаточно времени с момента последнего клика
-        if (now - lastClickTime >= debounceIntervalMillis) {
-            lastClickTime = now // Обновляем время последнего клика
-            return true // Клик разрешен
-        }
-        return false // Клик запрещен
-    }
-
-
-     */
 }
