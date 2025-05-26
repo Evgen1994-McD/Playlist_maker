@@ -49,19 +49,19 @@ class MediaActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper()) // хэндлер для доступа к главному потоку
 
 
-    private fun onPlayerReady() { // это функция для листенера
-        binding.play.isEnabled = true
-        startUpdateProgress()
-    }
+//    private fun onPlayerReady() { // это функция для листенера
+//        binding.play.isEnabled = true
+//        startUpdateProgress()
+//    }
 
-    private fun onPlayComplete() { // это тоже
-        stopUpdateProgress()
-        binding.pause.makeInvisible()
-        binding.play.makeVisible()
-        binding.progressTime.text = default_time
-        Log.d("MediaPlayer", "Проигрывание завершено")
-
-    }
+//    private fun onPlayComplete() { // это тоже
+//        stopUpdateProgress()
+//        binding.pause.makeInvisible()
+//        binding.play.makeVisible()
+//        binding.progressTime.text = default_time
+//        Log.d("MediaPlayer", "Проигрывание завершено")
+//
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -99,10 +99,10 @@ viewModel.addListeners()
        themeViewModel.controlThemeInOtherWindows()
 
 
-
+//
         val myTracks =
             favoriteTrackInteractorImpl.getAllTracksFromStorage()//storage.getAllTracks() //все треки
-//
+////
 //        mediaPlayerInteractor.addListeners(
 //            ::onPlayerReady, ::onPlayComplete
 //        )  // листенер для определения начала и окончания воспроизведения
@@ -117,7 +117,22 @@ viewModel.addListeners()
         {
             viewModel.intentGetExtraBind()
             viewModel.getLiveData.observe(this){ newState ->
+              if (newState.isPlaying ==false) {
+                  binding.play.isEnabled
+                  binding.play.makeVisible()
+                  binding.pause.makeInvisible()
+              }else if (newState.isPlaying == true){
+                  binding.play.isEnabled = true
+                  binding.play.makeInvisible()
+                  binding.pause.makeVisible()
+              }
+
+
                 when{
+
+
+
+
    !newState.trackName.isEmpty() && !newState.collectionName.contains("NoAlbum") -> {
        binding.tvGenre.text = newState.primaryGenreName
         binding.tvCountry.text = newState.country
@@ -141,11 +156,7 @@ viewModel.addListeners()
             binding.tvAlbumLeft.makeGone()// убираем поле альбом если нет альбома
                     }
               !newState.progress.isEmpty()  -> binding.progressTime.text = newState.progress
-                    newState.isPlaying == false -> {
-                        binding.play.isEnabled
-                        binding.play.makeVisible()
-                        binding.pause.makeInvisible()
-                    }
+
 
                 }
 
@@ -160,9 +171,9 @@ viewModel.addListeners()
 
         binding.play.setOnClickListener {
 
-                binding.play.isEnabled = true
-                binding.play.makeInvisible()
-                binding.pause.makeVisible()
+//                binding.play.isEnabled = true
+//                binding.play.makeInvisible()
+//                binding.pause.makeVisible()
 //                mediaPlayerInteractor.startPlayback()
 //                isPlaying = true
             viewModel.mediaCommander(MediaPlayerCommand.Play)
@@ -172,10 +183,10 @@ viewModel.addListeners()
         }
         binding.pause.setOnClickListener {
 
-                binding.pause.makeInvisible()
+//                binding.pause.makeInvisible()
             viewModel.mediaCommander(MediaPlayerCommand.Pause)
 viewModel.stopUpdateProgress()
-                binding.play.makeVisible()
+//                binding.play.makeVisible()
 //                mediaPlayerInteractor.pausePlayback()
 //                isPlaying = false
 //                stopUpdateProgress()

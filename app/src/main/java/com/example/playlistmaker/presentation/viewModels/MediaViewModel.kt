@@ -63,7 +63,7 @@ class MediaViewModel(private val favoriteTrackInteractor: FavoriteTrackInteracto
 //        binding.play.isEnabled = true
 //        startUpdateProgress()
         startUpdateProgress()
-
+        mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isPlaying = false)
     }
 
     private fun onPlayComplete() { // это тоже
