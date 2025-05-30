@@ -10,8 +10,9 @@ class SwitchThemeUseCaseImpl(private val repository: SettingsRepository) :
 
     ) {
 
-            repository.saveCurrentThemeToShared(myTheme)
+
                 repository.switchTheme(myTheme)
+        repository.saveCurrentThemeToShared(myTheme)
 
         }
 
@@ -24,5 +25,6 @@ class SwitchThemeUseCaseImpl(private val repository: SettingsRepository) :
      repository.switchTheme(theme)
 return theme
     }
+
 
 }

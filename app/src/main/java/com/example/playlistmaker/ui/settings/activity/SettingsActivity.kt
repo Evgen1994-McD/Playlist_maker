@@ -14,6 +14,7 @@ import com.example.playlistmaker.ui.settings.viewModel.SettingsViewModel
 
 
 class SettingsActivity : AppCompatActivity() {
+    private var isUpdatingUI = false
 
     private lateinit var viewModel: SettingsViewModel
     private lateinit var binding: SettingsBinding
@@ -21,7 +22,6 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = SettingsBinding.inflate(layoutInflater)
-//        setContentView(R.layout.settings)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.settings)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -58,29 +58,28 @@ class SettingsActivity : AppCompatActivity() {
            openUrlInDefaultBrowser(this)
         }
         val switcherTheme = binding.switchTheme
-//        viewModel.getLiveData.observe(this){ currentTheme ->
-//            if (switcherTheme.isChecked != currentTheme) {
-//                switcherTheme.isChecked = currentTheme
-//            } else switcherTheme.setOnCheckedChangeListener { _, isChecked ->
-//                viewModel.controlTHemeBySwitcher(isChecked)
-//            }
-//
-//
-//        }
 
 
-        switcherTheme.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.getLiveData.observe(this){ currentTheme ->
-                if (isChecked != currentTheme) {
-                    switcherTheme.isChecked = currentTheme
-                    viewModel.controlTHemeBySwitcher(currentTheme)
-                }
+
+// Подписка на получение изменений из LiveData
+        viewModel.getLiveData.observe(this) { currentTheme ->
+            if (currentTheme != switcherTheme.isChecked && !isUpdatingUI) {
+                isUpdatingUI = true // Блокируем UI-обновления на время операции
+                switcherTheme.isChecked = currentTheme
+                isUpdatingUI = false // Разрешаем последующие обновления
             }
-            viewModel.controlTHemeBySwitcher(isChecked)
-
-
         }
+
+// Установка обработчика изменений
+        switcherTheme.setOnCheckedChangeListener { _, isChecked ->
+            if (!isUpdatingUI) {
+                viewModel.controlTHemeBySwitcher(isChecked)
+            }
+        }
+
+
     }
+
     fun shareApp(context: Context) {  // Метод - интент для отправки сообщений
         viewModel.shareApp(context)
 
@@ -94,7 +93,7 @@ class SettingsActivity : AppCompatActivity() {
     }
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
-//        themeViewModel.loadingLiveData().removeObservers(this) //удалили обсерверы
+        viewModel.getLiveData.removeObservers(this)
 
     }
 

@@ -1,10 +1,10 @@
-package com.example.playlistmaker.data.player.impl
+package com.example.playlistmaker.data.search.impl
 
 import android.content.Context
-import com.example.playlistmaker.utils.Constants
 import com.example.playlistmaker.data.search.dto.TrackDto
-import com.example.playlistmaker.domain.player.FavoriteTrackRepository
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.FavoriteTrackRepository
+import com.example.playlistmaker.utils.Constants
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -113,6 +113,3 @@ class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackR
 
 
 }
-
-
-

@@ -2,13 +2,13 @@ package com.example.playlistmaker.creator
 
 import android.media.MediaPlayer
 import com.example.playlistmaker.App
-import com.example.playlistmaker.data.player.impl.FavoriteTrackRepositoryImpl
+import com.example.playlistmaker.data.search.impl.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TrackRepositoryImpl
 import com.example.playlistmaker.data.search.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.player.impl.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.data.settings.impl.SettingsReposytoryImpl
-import com.example.playlistmaker.domain.player.FavoriteTrackInteractor
-import com.example.playlistmaker.domain.player.FavoriteTrackRepository
+import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
+import com.example.playlistmaker.domain.search.FavoriteTrackRepository
 import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.player.MediaPlayerRepository
 import com.example.playlistmaker.domain.settings.OpenUrlUseCase
@@ -18,7 +18,7 @@ import com.example.playlistmaker.domain.settings.ShareAppUseCase
 import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
 import com.example.playlistmaker.domain.search.TrackInteractor
 import com.example.playlistmaker.domain.search.TrackRepository
-import com.example.playlistmaker.domain.player.impl.FavoriteTrackInteractorImpl
+import com.example.playlistmaker.domain.search.impl.FavoriteTrackInteractorImpl
 import com.example.playlistmaker.domain.player.impl.MediaInteractorImpl
 import com.example.playlistmaker.domain.settings.impl.OpenUrlUseCaseImpl
 import com.example.playlistmaker.domain.settings.impl.SendSuppEmailUseCaseImpl

@@ -1,8 +1,8 @@
-package com.example.playlistmaker.domain.player.impl
+package com.example.playlistmaker.domain.search.impl
 
-import com.example.playlistmaker.domain.player.FavoriteTrackInteractor
-import com.example.playlistmaker.domain.player.FavoriteTrackRepository
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.FavoriteTrackRepository
+import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 
 class FavoriteTrackInteractorImpl(private val repository: FavoriteTrackRepository) :
     FavoriteTrackInteractor {
