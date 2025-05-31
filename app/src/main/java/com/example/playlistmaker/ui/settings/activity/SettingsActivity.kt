@@ -1,6 +1,6 @@
 package com.example.playlistmaker.ui.settings.activity
 
-import android.content.Context
+
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -45,17 +45,17 @@ class SettingsActivity : AppCompatActivity() {
         val shareTheAppClicker = // Кликер поделиться приложением
           binding.shareApp
         shareTheAppClicker.setOnClickListener {
-            shareApp(this@SettingsActivity)
+            shareApp()
         }
         val mesToSuppClicker = // Пишем в поддержку
             binding.sMesToSuport
         mesToSuppClicker.setOnClickListener {
-            sendSuppEmail(this@SettingsActivity)  //Здесь будет вызван метод
+            sendSuppEmail()  //Здесь будет вызван метод
         }
         val userAssetClicker =
             binding.userAssetUri
         userAssetClicker.setOnClickListener {
-           openUrlInDefaultBrowser(this)
+           openUrlInDefaultBrowser()
         }
         val switcherTheme = binding.switchTheme
 
@@ -80,16 +80,16 @@ class SettingsActivity : AppCompatActivity() {
 
     }
 
-    fun shareApp(context: Context) {  // Метод - интент для отправки сообщений
-        viewModel.shareApp(context)
+    fun shareApp() {  // Метод - интент для отправки сообщений
+        viewModel.shareApp()
 
     }
-    private fun sendSuppEmail(context: Context) {  // Приватный метод для письма в поддержку
-        viewModel.sendSuppEmail(context)
+    private fun sendSuppEmail() {  // Приватный метод для письма в поддержку
+        viewModel.sendSuppEmail()
     }
 
-    private fun openUrlInDefaultBrowser(context: Context) {
-        viewModel.openUrlInDefaultBrowser(context)
+    private fun openUrlInDefaultBrowser() {
+        viewModel.openUrlInDefaultBrowser()
     }
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()

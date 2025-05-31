@@ -9,9 +9,10 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.utils.Constants
 import com.example.playlistmaker.domain.settings.SettingsRepository
 
-class SettingsReposytoryImpl(private val context: Context) : SettingsRepository {
-    override fun shareApp(): Intent {
-        val sendIntent = Intent().apply {
+class SettingsRepositoryImpl(private val context: Context) : SettingsRepository {
+    override fun shareApp() {
+
+        val intent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(
                 Intent.EXTRA_TEXT,
@@ -20,13 +21,22 @@ class SettingsReposytoryImpl(private val context: Context) : SettingsRepository 
             type = "text/plain"
         }
 
-        return sendIntent
 
-//            Intent.createChooser(sendIntent, context.getString(R.string.share_stroke))
-        //  )
+
+       val chooserIntent = Intent.createChooser(
+            intent,
+            context.getString(R.string.share_stroke)
+        )
+        chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(chooserIntent)
+
+
     }
 
-    override fun sendSuppEmail(myEmail: String, subject: String, body: String): Intent {
+    override fun sendSuppEmail(){
+        val myEmail = context.getString(R.string.address)
+        val subject = context.getString(R.string.subject)
+        val body = context.getString(R.string.body)
         val intent = Intent(Intent.ACTION_SEND).apply {
             // Указание категории электронной почты
             type = "message/rfc822"
@@ -34,16 +44,20 @@ class SettingsReposytoryImpl(private val context: Context) : SettingsRepository 
             putExtra(Intent.EXTRA_SUBJECT, subject)
             putExtra(Intent.EXTRA_TEXT, body)
         }
-        return intent
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+   context.startActivity(intent)
 
 
     }
 
-    override fun openUrlInDefaultBrowser(url: String): Intent {
+    override fun openUrlInDefaultBrowser() {
+        val url = context.getString(R.string.Url_userasset)
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
             addCategory(Intent.CATEGORY_BROWSABLE)
+
         }
-        return intent
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
     }
 
 

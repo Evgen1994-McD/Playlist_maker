@@ -1,16 +1,16 @@
 package com.example.playlistmaker.ui.settings.viewModel
 
-import android.content.Context
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.R
+
 import com.example.playlistmaker.domain.settings.OpenUrlUseCase
 import com.example.playlistmaker.domain.settings.SendSuppEmailUseCase
 import com.example.playlistmaker.domain.settings.ShareAppUseCase
 import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
-import com.example.playlistmaker.ui.search.viewModel.SearchScreenState
+
 
 class SettingsViewModel(
     private val switchThemeUseCase: SwitchThemeUseCase,
@@ -24,24 +24,22 @@ companion object{
 
 }
 
-    fun shareApp(context: Context) {  // Метод - интент для отправки сообщений
-        shareAppUseCase.shareApp(context)
+    fun shareApp() {  // Метод - интент для отправки сообщений
+        shareAppUseCase.shareApp()
 
     }
 
 
-     fun openUrlInDefaultBrowser(context: Context) {
-         val url = context.getString(R.string.Url_userasset)
-        openUriUseCase.openUrlInDefaultBrowser(context, url)
+     fun openUrlInDefaultBrowser() {
+
+        openUriUseCase.openUrlInDefaultBrowser()
     }
 
 
-     fun sendSuppEmail(context: Context) {  // Приватный метод для письма в поддержку
-        val myEmail = context.getString(R.string.address)
-        val subject = context.getString(R.string.subject)
-        val body = context.getString(R.string.body)
+     fun sendSuppEmail() {  // Приватный метод для письма в поддержку
 
-        sendToSuppUse.sendSuppEmail(context, myEmail, subject, body)
+
+        sendToSuppUse.sendSuppEmail()
     }
 
 
