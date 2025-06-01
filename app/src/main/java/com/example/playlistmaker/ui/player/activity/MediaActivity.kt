@@ -40,8 +40,6 @@ class MediaActivity : AppCompatActivity() {
         }
 
 
-         val radiusInDP = 8f
-         val radiusInPX = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, radiusInDP, resources.displayMetrics)
 
         val factory = MediaViewModel.CustomViewModelFactory(
             Creator.provideSwitchThemeUseCase(),// Делаю вью модел фактори

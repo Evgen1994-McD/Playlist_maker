@@ -6,8 +6,7 @@ import com.example.playlistmaker.domain.player.MediaPlayerRepository
 class MediaInteractorImpl(
     private var mediaPlayerRepository: MediaPlayerRepository,
 ) : MediaInteractor {
-    private val debounceIntervalMillis = 1000L // Интервал блокировки в миллисекундах
-    private var lastClickTime = System.currentTimeMillis() // Хранение последнего времени клика
+
 
     override fun preparePlayer(previewUrl: String) {
         mediaPlayerRepository.preparePlayer(previewUrl)
