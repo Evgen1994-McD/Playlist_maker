@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     tools:context=".ui.player.activity.MediaActivity"
-    android:theme="@style/Base.Theme.PlaylistMaker"
+    style="@style/Day_night_backGround_media"
 
     >
 

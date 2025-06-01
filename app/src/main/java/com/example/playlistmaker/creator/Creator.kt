@@ -1,11 +1,17 @@
 package com.example.playlistmaker.creator
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.media.MediaPlayer
 import com.example.playlistmaker.App
 import com.example.playlistmaker.data.search.impl.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TrackRepositoryImpl
 import com.example.playlistmaker.data.search.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.player.impl.MediaPlayerRepositoryImpl
+import com.example.playlistmaker.data.search.dto.TrackDto
+import com.example.playlistmaker.data.search.impl.FavoriteTrackRepositoryImpl.Companion.PREFS_NAME
+import com.example.playlistmaker.data.search.impl.FavoriteTrackRepositoryImpl.Companion.TRACKS_KEY
+import com.example.playlistmaker.data.search.network.ITunesApi
 import com.example.playlistmaker.data.settings.impl.SettingsRepositoryImpl
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.search.FavoriteTrackRepository
@@ -25,22 +31,42 @@ import com.example.playlistmaker.domain.settings.impl.SendSuppEmailUseCaseImpl
 import com.example.playlistmaker.domain.settings.impl.ShareAppUseCaseImpl
 import com.example.playlistmaker.domain.settings.impl.SwitchThemeUseCaseImpl
 import com.example.playlistmaker.domain.search.impl.TracksInteractorImpl
+import com.google.gson.reflect.TypeToken
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 object Creator {
 
     private val context by lazy { App.instance.applicationContext }
 
+    private val iTunesBaseUrl = "https://itunes.apple.com"
+
+    private fun createItunesApi(): ITunesApi{
+        return Retrofit.Builder()
+            .baseUrl(iTunesBaseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ITunesApi::class.java)
+
+}
+
+
 
     private fun getTracksRepository(): TrackRepository {
-        return TrackRepositoryImpl(RetrofitNetworkClient())
+        return TrackRepositoryImpl(RetrofitNetworkClient(createItunesApi()))
     }
 
     fun provideTracksInteractor(): TrackInteractor {
         return TracksInteractorImpl(getTracksRepository())
     }
 
+    private fun getFavoriteSharedPrefs(): SharedPreferences{
+       return  context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    }
+
     private fun getFavoriteTrackRepository(): FavoriteTrackRepository {
-        return FavoriteTrackRepositoryImpl(context)
+        return FavoriteTrackRepositoryImpl(getFavoriteSharedPrefs())
     }
 
     fun provideFavoriteInteractor(): FavoriteTrackInteractor {
@@ -81,5 +107,7 @@ object Creator {
     fun provideMediaInteractor(): MediaInteractor {
         return MediaInteractorImpl(getMediaPlayerInteractor())
     }
+
+
 
 }

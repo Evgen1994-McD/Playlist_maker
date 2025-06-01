@@ -345,6 +345,7 @@ viewModel.controlThemeInOtherWindows()
         buttonNoInternet.makeVisible()
         tvMsgSearch.makeGone()
         btCleanHistory.makeGone()
+        recyclerView.makeInvisible()
     }
 
     private fun View.makeGone() {

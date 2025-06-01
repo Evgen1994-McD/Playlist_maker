@@ -2,6 +2,7 @@ package com.example.playlistmaker.ui.player.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.App
 import com.example.playlistmaker.creator.Creator
@@ -23,6 +25,7 @@ class MediaActivity : AppCompatActivity() {
     private lateinit var viewModel: MediaViewModel
     companion object { // компаньон медиаплеера
         private const val noAlbum = "No Album"
+
     }
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -35,6 +38,10 @@ class MediaActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+
+         val radiusInDP = 8f
+         val radiusInPX = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, radiusInDP, resources.displayMetrics)
 
         val factory = MediaViewModel.CustomViewModelFactory(
             Creator.provideSwitchThemeUseCase(),// Делаю вью модел фактори
@@ -76,9 +83,11 @@ viewModel.controlThemeInOtherWindows()
 
        binding.progressTime.text = newState.progress
        val options = RequestOptions().centerCrop()//опции для Glide
-
+       val radiusInDP = 8f
+       val radiusInPX = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, radiusInDP, resources.displayMetrics)
         Glide.with(binding.imMine.context).load(newState.artworkUrl100).apply(options)
             .placeholder(R.drawable.ph_media_312).error(R.drawable.ph_media_312)
+            .transform(RoundedCorners(radiusInPX.toInt()))
             .into(binding.imMine)
 }
                     newState.collectionName.contains(noAlbum) -> {

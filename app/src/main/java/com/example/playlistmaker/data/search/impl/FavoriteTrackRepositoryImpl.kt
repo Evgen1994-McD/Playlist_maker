@@ -1,6 +1,7 @@
 package com.example.playlistmaker.data.search.impl
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.example.playlistmaker.data.search.dto.TrackDto
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.FavoriteTrackRepository
@@ -8,7 +9,7 @@ import com.example.playlistmaker.utils.Constants
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackRepository {
+class FavoriteTrackRepositoryImpl(private val prefs: SharedPreferences) : FavoriteTrackRepository {
     companion object {
         const val PREFS_NAME = Constants.TRACK_STORAGE_PREFS_NAME
         const val TRACKS_KEY = Constants.TRACK_STORAGE_TRACKS_KEY
@@ -19,7 +20,6 @@ class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackR
 
 
     init {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val tracksJson = prefs.getString(TRACKS_KEY, null)
         if (!tracksJson.isNullOrBlank()) {
             val type = object : TypeToken<List<TrackDto>>() {}.type
@@ -71,7 +71,7 @@ class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackR
         if (tracks.size >= 10) {
             tracks = tracks.takeLast(10).toMutableList()
         }
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+//        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val editor = prefs.edit()
         val tracksJson = gson.toJson(tracks)
         editor.putString(TRACKS_KEY, tracksJson)
@@ -102,7 +102,7 @@ class FavoriteTrackRepositoryImpl(private val context: Context) : FavoriteTrackR
 
     override fun clearHistory() {
         tracks.clear() // Метод теперь очищает список треков
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+//        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val editor = prefs.edit()
         val tracksJson = gson.toJson(tracks)
         editor.putString(TRACKS_KEY, tracksJson)
