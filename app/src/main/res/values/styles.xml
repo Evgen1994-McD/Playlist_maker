@@ -80,6 +80,10 @@
 
     </style>
 
+    <style name="Day_night_backGround_media" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="background">@color/white</item>
+    </style>
+
 
     <style name="Day_night_style" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:background">@color/blue</item>
