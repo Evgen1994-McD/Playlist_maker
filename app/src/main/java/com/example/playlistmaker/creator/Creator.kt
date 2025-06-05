@@ -31,6 +31,7 @@ import com.example.playlistmaker.domain.settings.impl.SendSuppEmailUseCaseImpl
 import com.example.playlistmaker.domain.settings.impl.ShareAppUseCaseImpl
 import com.example.playlistmaker.domain.settings.impl.SwitchThemeUseCaseImpl
 import com.example.playlistmaker.domain.search.impl.TracksInteractorImpl
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -66,7 +67,7 @@ object Creator {
     }
 
     private fun getFavoriteTrackRepository(): FavoriteTrackRepository {
-        return FavoriteTrackRepositoryImpl(getFavoriteSharedPrefs())
+        return FavoriteTrackRepositoryImpl(getFavoriteSharedPrefs(),Gson())
     }
 
     fun provideFavoriteInteractor(): FavoriteTrackInteractor {

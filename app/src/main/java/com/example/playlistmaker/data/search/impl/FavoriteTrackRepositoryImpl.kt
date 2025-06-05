@@ -9,13 +9,14 @@ import com.example.playlistmaker.utils.Constants
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class FavoriteTrackRepositoryImpl(private val prefs: SharedPreferences) : FavoriteTrackRepository {
+class FavoriteTrackRepositoryImpl(private val prefs: SharedPreferences,
+    private val gson: Gson) : FavoriteTrackRepository {
     companion object {
         const val PREFS_NAME = Constants.TRACK_STORAGE_PREFS_NAME
         const val TRACKS_KEY = Constants.TRACK_STORAGE_TRACKS_KEY
     }
-
-    private val gson = Gson()
+//
+//    private val gson = Gson()
     private var tracks = mutableListOf<TrackDto>() // Список для хранения треков
 
 
