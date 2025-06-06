@@ -25,11 +25,11 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     companion object { // компаньон медиаплеера
         private const val default_time = "00:00" // для прогресса
         private const val noAlbum = "No Album"
-        private var intent_: Intent? = null
+        private var intentStart: Intent? = null
     }
 
      fun setIntent(intent: Intent){
-         intent_= intent
+         intentStart= intent
     }
 
     private val mutableMediaScreen = MutableLiveData(
@@ -51,6 +51,7 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     fun reliesePlayer(){
         mediaInteractor.releasePlayer()
         stopUpdateProgress()
+
     }
 
     private fun onPlayerReady() { // это функция для листенера
@@ -97,9 +98,9 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     }
 
     fun intentGetExtraBind() {
-        if (!intent_?.getStringExtra("trackName")
+        if (!intentStart?.getStringExtra("trackName")
                 .isNullOrEmpty()) {
-            val intent = intent_ // получаем интент который запустил активность
+            val intent = intentStart // получаем интент который запустил активность
             val trackName = intent?.getStringExtra("trackName")
             val previewUrl = intent?.getStringExtra("previewUrl").toString()
 
