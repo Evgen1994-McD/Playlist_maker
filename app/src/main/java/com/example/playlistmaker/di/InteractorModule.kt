@@ -4,12 +4,22 @@ import android.os.Handler
 import android.os.Looper
 import com.example.playlistmaker.data.search.impl.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TrackRepositoryImpl
+import com.example.playlistmaker.domain.player.MediaInteractor
+import com.example.playlistmaker.domain.player.impl.MediaInteractorImpl
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.search.FavoriteTrackRepository
 import com.example.playlistmaker.domain.search.TrackInteractor
 import com.example.playlistmaker.domain.search.TrackRepository
 import com.example.playlistmaker.domain.search.impl.FavoriteTrackInteractorImpl
 import com.example.playlistmaker.domain.search.impl.TracksInteractorImpl
+import com.example.playlistmaker.domain.settings.OpenUrlUseCase
+import com.example.playlistmaker.domain.settings.SendSuppEmailUseCase
+import com.example.playlistmaker.domain.settings.ShareAppUseCase
+import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
+import com.example.playlistmaker.domain.settings.impl.OpenUrlUseCaseImpl
+import com.example.playlistmaker.domain.settings.impl.SendSuppEmailUseCaseImpl
+import com.example.playlistmaker.domain.settings.impl.ShareAppUseCaseImpl
+import com.example.playlistmaker.domain.settings.impl.SwitchThemeUseCaseImpl
 import org.koin.dsl.module
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -35,6 +45,29 @@ import java.util.concurrent.Executors
         single<FavoriteTrackInteractor>{
             FavoriteTrackInteractorImpl(get())
         }
+//Settings
+
+        single<SwitchThemeUseCase>{
+            SwitchThemeUseCaseImpl(get())
+        }
+
+        single<OpenUrlUseCase>{
+            OpenUrlUseCaseImpl(get())
+        }
+
+        single<SendSuppEmailUseCase>{
+            SendSuppEmailUseCaseImpl(get())
+        }
+
+        single<ShareAppUseCase>{
+            ShareAppUseCaseImpl(get())
+        }
+
+        //Media
+
+single<MediaInteractor>{
+    MediaInteractorImpl(get())
+}
 
 
     }

@@ -1,6 +1,9 @@
 package com.example.playlistmaker.di
 
+import android.app.Application
 import android.content.Context
+import android.content.Intent
+import android.media.MediaPlayer
 import com.example.playlistmaker.data.search.impl.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TrackRepositoryImpl
 import com.example.playlistmaker.data.search.network.ITunesApi
@@ -38,27 +41,25 @@ import retrofit2.converter.gson.GsonConverterFactory
         }
 
 
+
+
         factory { Gson() }  // это Gson()
 
-            /* Описали все состявляющие репозиториев ( фаворит  трак репозиторий и Трек репозиторий,
-            ниже мы их получение тоже опишем
-             */
+
+        single{
+            MediaPlayer()
+        }
+
+        single<Application> {androidContext() as Application  }
 
 
 
-//        single<FavoriteTrackRepository>{
-//            FavoriteTrackRepositoryImpl(get(), get())
-//        }
-//
-//        single<TrackRepository> {
-//            TrackRepositoryImpl(get())
-//        }
+
 
         single<NetworkClient> {
             RetrofitNetworkClient(get())
         }
-/* выше мы описали все зависимости для слоя данных ?
-Трек репозитори и Фаворит трек репозитори не отсюда?
- */
+
+
 
     }

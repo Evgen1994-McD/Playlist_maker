@@ -55,7 +55,9 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     //Koin
-    implementation ("io.insert-koin:koin-android:3.3.0")
+    val koinVersion = "3.3.0"
+    implementation ("io.insert-koin:koin-android:$koinVersion")
+
 
     // ViewModel
     val lifecycle_version = "2.6.1" // Убедитесь, что версия актуальна

@@ -16,15 +16,20 @@ import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
 
 class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
-    private val favoriteTrackInteractor: FavoriteTrackInteractor,
+                     private val favoriteTrackInteractor: FavoriteTrackInteractor,
                      private val mediaInteractor: MediaInteractor,
                      private val application: Application,
-                     private val intent: Intent
+
 ) : AndroidViewModel(application) {
 
     companion object { // компаньон медиаплеера
         private const val default_time = "00:00" // для прогресса
         private const val noAlbum = "No Album"
+        private var intent_: Intent? = null
+    }
+
+     fun setIntent(intent: Intent){
+         intent_= intent
     }
 
     private val mutableMediaScreen = MutableLiveData(
@@ -92,28 +97,28 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     }
 
     fun intentGetExtraBind() {
-        if (!intent.getStringExtra("trackName")
+        if (!intent_?.getStringExtra("trackName")
                 .isNullOrEmpty()) {
-            val intent = intent // получаем интент который запустил активность
-            val trackName = intent.getStringExtra("trackName")
-            val previewUrl = intent.getStringExtra("previewUrl").toString()
+            val intent = intent_ // получаем интент который запустил активность
+            val trackName = intent?.getStringExtra("trackName")
+            val previewUrl = intent?.getStringExtra("previewUrl").toString()
 
-            val trackTimeMillis = intent.getStringExtra("trackTimeMillis")
-            val artistName = intent.getStringExtra("artistName")
-            val primaryGenreName = intent.getStringExtra("primaryGenreName")
-            val country = intent.getStringExtra("country")
-            val relieseDate = intent.getStringExtra("relieseDate")
-            val artworkUrl100 = intent.getStringExtra("artworkUrl100").toString()
+            val trackTimeMillis = intent?.getStringExtra("trackTimeMillis")
+            val artistName = intent?.getStringExtra("artistName")
+            val primaryGenreName = intent?.getStringExtra("primaryGenreName")
+            val country = intent?.getStringExtra("country")
+            val relieseDate = intent?.getStringExtra("relieseDate")
+            val artworkUrl100 = intent?.getStringExtra("artworkUrl100").toString()
 
-            if (intent.getStringExtra("collectionName")
-                    ?.isNullOrEmpty() == true || intent.getStringExtra("collectionName")
+            if (intent?.getStringExtra("collectionName")
+                    ?.isNullOrEmpty() == true || intent?.getStringExtra("collectionName")
                     ?.contains("No Album") == true // Если нет альбома или ответ сервера содержит No Album то убираем поле с альбомом
             ) {
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(collectionName = noAlbum)
 
 
             } else {
-                val collectionName = intent.getStringExtra("collectionName")
+                val collectionName = intent?.getStringExtra("collectionName")
                     .toString()// убираем поле альбом если нет альбома
                 mutableMediaScreen.value =
                     mutableMediaScreen.value!!.copy(collectionName = collectionName.toString())
@@ -187,7 +192,7 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
             private val favoriteInteractor: FavoriteTrackInteractor,
             private val mediaInteractor: MediaInteractor,
             private val application: Application,
-            private val intent: Intent
+
         ) : ViewModelProvider.NewInstanceFactory() {
 
             @Suppress("UNCHECKED_CAST")
@@ -198,7 +203,6 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
                         favoriteInteractor,
                         mediaInteractor,
                         application,
-                        intent
                     ) as T
 
                     else -> throw IllegalArgumentException("Unknown ViewModel class")
