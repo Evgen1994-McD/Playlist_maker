@@ -5,29 +5,25 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.example.playlistmaker.App
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.ui.player.viewModel.MediaPlayerCommand
 import com.example.playlistmaker.ui.player.viewModel.MediaViewModel
-import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
-import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.getValue
 
 class MediaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
-    private val viewModel by viewModel<MediaViewModel>()
+//    private val viewModel by viewModel<MediaViewModel>()
+//    private lateinit var viewModel: MediaViewModel
+    private  val viewModel: MediaViewModel by viewModel { parametersOf(intent) }
 
 
     companion object { // компаньон медиаплеера
@@ -45,9 +41,10 @@ class MediaActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+//if (intent!= null) {
+//    viewModel.setIntent(intent) // передал интент во вью модел
+//}
 
-viewModel.setIntent(intent) // передал интент во вью модел
-//
 //        val factory = MediaViewModel.CustomViewModelFactory(
 //            Creator.provideSwitchThemeUseCase(),// Делаю вью модел фактори
 //            Creator.provideFavoriteInteractor(),
@@ -56,7 +53,7 @@ viewModel.setIntent(intent) // передал интент во вью моде�
 //            intent
 //        )
 //        viewModel = ViewModelProvider(this, factory)[MediaViewModel::class.java]
-
+//        val viewModel: MediaViewModel by viewModel { parametersOf(intent) }
 viewModel.addListeners() // добавил листенеры
         binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
             finish()
@@ -116,24 +113,24 @@ viewModel.stopUpdateProgress()
 
     override fun onSaveInstanceState(outState: Bundle) { // Сохраняем факт видимости аудиоплеера
         super.onSaveInstanceState(outState)// Сохраняем факт видимости аудиоплеера
-        outState.putBoolean("isAudioPlayerVisible", true) // Сохраняем факт видимости аудиоплеера
+//        outState.putBoolean("isAudioPlayerVisible", true) // Сохраняем факт видимости аудиоплеера
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) { // Восстановим активность
         super.onRestoreInstanceState(savedInstanceState) // Восстановим активность
-        if (savedInstanceState.containsKey("isAudioPlayerVisible") && savedInstanceState.getBoolean(
-                "isAudioPlayerVisible"
-            )
-        ) {
-            showAudioPlayerScreen()// Отображаем экран аудиоплеера
-
-        }
+//        if (savedInstanceState.containsKey("isAudioPlayerVisible") && savedInstanceState.getBoolean(
+//                "isAudioPlayerVisible"
+//            )
+//        ) {
+////            showAudioPlayerScreen()// Отображаем экран аудиоплеера
+//
+//        }
     }
 
-    fun showAudioPlayerScreen() { // Восстановим активность
-        val intent = Intent(this, MediaActivity::class.java) // Восстановим активность
-        startActivity(intent) // Восстановим активность
-    }
+//    fun showAudioPlayerScreen() { // Восстановим активность
+//        val intent = Intent(this, MediaActivity::class.java) // Восстановим активность
+//        startActivity(intent) // Восстановим активность
+//    }
 
 
     private fun View.makeGone() {
@@ -157,11 +154,14 @@ viewModel.stopUpdateProgress()
 
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
+
        viewModel.reliesePlayer()
         viewModel.getLiveData.removeObservers(this) // отключил обсерверы от медиа
 
 
     }
+
+
 
 
 

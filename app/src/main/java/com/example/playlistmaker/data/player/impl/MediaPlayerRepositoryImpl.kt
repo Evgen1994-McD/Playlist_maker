@@ -20,6 +20,7 @@ class MediaPlayerRepositoryImpl(val mediaPlayer: MediaPlayer) : MediaPlayerRepos
 
     override fun preparePlayer(previewUrl: String) {
         try {
+            mediaPlayer.stop()
             mediaPlayer.reset()
             mediaPlayer.setDataSource(previewUrl)
             mediaPlayer.prepareAsync()
@@ -42,6 +43,7 @@ class MediaPlayerRepositoryImpl(val mediaPlayer: MediaPlayer) : MediaPlayerRepos
     }
 
     override fun releasePlayer() {
+        mediaPlayer.stop()
         mediaPlayer.release()
         playerState = STATE_IDLE
     }

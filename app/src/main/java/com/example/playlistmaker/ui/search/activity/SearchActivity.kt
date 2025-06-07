@@ -368,7 +368,6 @@ viewModel.controlThemeInOtherWindows()
     }
     override fun onDestroy() {
         super.onDestroy()
-
         viewModel.getLiveData.removeObservers(this) // удалил обсервер вью модели поиска треков
     }
 

@@ -19,18 +19,20 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
                      private val favoriteTrackInteractor: FavoriteTrackInteractor,
                      private val mediaInteractor: MediaInteractor,
                      private val application: Application,
+    private val intentStart: Intent
 
 ) : AndroidViewModel(application) {
 
     companion object { // компаньон медиаплеера
         private const val default_time = "00:00" // для прогресса
         private const val noAlbum = "No Album"
-        private var intentStart: Intent? = null
+//        private var intentStart: Intent? = null
     }
 
-     fun setIntent(intent: Intent){
-         intentStart= intent
-    }
+//     fun setIntent(intent: Intent?){
+//         intentStart= intent
+//         if (intentStart!= null) intentGetExtraBind() else return
+//    }
 
     private val mutableMediaScreen = MutableLiveData(
         MediaScreenState()
@@ -51,6 +53,7 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     fun reliesePlayer(){
         mediaInteractor.releasePlayer()
         stopUpdateProgress()
+        handler.removeCallbacksAndMessages(null)
 
     }
 
@@ -98,6 +101,7 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     }
 
     fun intentGetExtraBind() {
+
         if (!intentStart?.getStringExtra("trackName")
                 .isNullOrEmpty()) {
             val intent = intentStart // получаем интент который запустил активность
@@ -187,29 +191,6 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     }
 
 
-
-        class CustomViewModelFactory(
-            private val switchThemeUseCase: SwitchThemeUseCase,
-            private val favoriteInteractor: FavoriteTrackInteractor,
-            private val mediaInteractor: MediaInteractor,
-            private val application: Application,
-
-        ) : ViewModelProvider.NewInstanceFactory() {
-
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return when {
-                    modelClass.isAssignableFrom(MediaViewModel::class.java) -> MediaViewModel(
-                        switchThemeUseCase,
-                        favoriteInteractor,
-                        mediaInteractor,
-                        application,
-                    ) as T
-
-                    else -> throw IllegalArgumentException("Unknown ViewModel class")
-                }
-            }
-        }
 
     }
 

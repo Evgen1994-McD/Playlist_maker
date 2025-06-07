@@ -46,7 +46,7 @@ import retrofit2.converter.gson.GsonConverterFactory
         factory { Gson() }  // это Gson()
 
 
-        single{
+        single<MediaPlayer>{
             MediaPlayer()
         }
 
