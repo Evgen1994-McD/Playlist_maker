@@ -1,6 +1,7 @@
 package com.example.playlistmaker.data.player.impl
 
 import android.media.MediaPlayer
+import android.util.Log
 import com.example.playlistmaker.domain.player.MediaPlayerRepository
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -19,14 +20,18 @@ class MediaPlayerRepositoryImpl(val mediaPlayer: MediaPlayer) : MediaPlayerRepos
     private var playerState = STATE_IDLE
 
     override fun preparePlayer(previewUrl: String) {
-        try {
-            mediaPlayer.stop()
-            mediaPlayer.reset()
-            mediaPlayer.setDataSource(previewUrl)
-            mediaPlayer.prepareAsync()
-            playerState = STATE_PREPARED
-        } catch (e: IOException) {
-            e.printStackTrace()
+        Log.d("MyLog", "$playerState")
+
+        if (playerState == STATE_IDLE) {
+            try {
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(previewUrl)
+                mediaPlayer.prepareAsync()
+                playerState = STATE_PREPARED
+                Log.d("MyLog", "Плеер готов")
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -50,9 +55,15 @@ class MediaPlayerRepositoryImpl(val mediaPlayer: MediaPlayer) : MediaPlayerRepos
 
     override fun addListeners(onPreparedListener: () -> Unit, onCompletionListener: () -> Unit) {
         mediaPlayer.setOnPreparedListener(MediaPlayer.OnPreparedListener {
+            playerState = STATE_PREPARED
+            Log.d("MyLog", "Плеер точно блин готов")
+
             onPreparedListener()
         })
         mediaPlayer.setOnCompletionListener(MediaPlayer.OnCompletionListener {
+            playerState = STATE_IDLE
+            Log.d("MyLog", "Плеер точно закончил играть, статус $playerState")
+
             onCompletionListener()
         })
     }
