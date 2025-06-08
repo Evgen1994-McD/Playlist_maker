@@ -25,6 +25,7 @@ class App : Application() { // класс АПП для смены темы
         controlTheme.controlThemeInOtherWindows()
 
         startKoin {
+
             androidContext(this@App)
             modules(dataModule, repositoryModule, interactorModule, viewModelModule)
 

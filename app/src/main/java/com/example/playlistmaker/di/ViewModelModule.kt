@@ -36,12 +36,21 @@ import org.koin.dsl.module
 //                get())  // интент оставил Нулл, так как он передаётся вручную
 //        }
 
-        viewModel { (intent: Intent) ->
-            MediaViewModel(  get(),
+//        viewModel { (intent: Intent) ->
+//            MediaViewModel(  get(),
+//                get(),
+//                get(),
+//                get(),
+//                intent)
+//        }
+        viewModel { params ->
+            MediaViewModel(
                 get(),
                 get(),
                 get(),
-                intent)
+                get(),
+                params.get()
+            )
         }
     }
 
