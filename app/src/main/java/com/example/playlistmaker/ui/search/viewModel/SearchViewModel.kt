@@ -68,22 +68,6 @@ class SearchViewModel(
     }
 
 
-    companion object{
-
-        fun getViewModelFactory() : ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return SearchViewModel(
-                        Creator.provideSwitchThemeUseCase(),
-
-                        Creator.provideTracksInteractor(),
-                        Creator.provideFavoriteInteractor()
-
-                    ) as T
-                }
-
-            }
-    }
 
 
 

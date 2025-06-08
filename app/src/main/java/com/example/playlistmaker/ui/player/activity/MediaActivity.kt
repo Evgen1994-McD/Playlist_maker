@@ -100,24 +100,24 @@ viewModel.stopUpdateProgress()
 
     override fun onSaveInstanceState(outState: Bundle) { // Сохраняем факт видимости аудиоплеера
         super.onSaveInstanceState(outState)// Сохраняем факт видимости аудиоплеера
-//        outState.putBoolean("isAudioPlayerVisible", true) // Сохраняем факт видимости аудиоплеера
+        outState.putBoolean("isAudioPlayerVisible", true) // Сохраняем факт видимости аудиоплеера
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) { // Восстановим активность
         super.onRestoreInstanceState(savedInstanceState) // Восстановим активность
-//        if (savedInstanceState.containsKey("isAudioPlayerVisible") && savedInstanceState.getBoolean(
-//                "isAudioPlayerVisible"
-//            )
-//        ) {
-////            showAudioPlayerScreen()// Отображаем экран аудиоплеера
-//
-//        }
+        if (savedInstanceState.containsKey("isAudioPlayerVisible") && savedInstanceState.getBoolean(
+                "isAudioPlayerVisible"
+            )
+        ) {
+            showAudioPlayerScreen()// Отображаем экран аудиоплеера
+
+        }
     }
 
-//    fun showAudioPlayerScreen() { // Восстановим активность
-//        val intent = Intent(this, MediaActivity::class.java) // Восстановим активность
-//        startActivity(intent) // Восстановим активность
-//    }
+    fun showAudioPlayerScreen() { // Восстановим активность
+        val intent = Intent(this, MediaActivity::class.java) // Восстановим активность
+        startActivity(intent) // Восстановим активность
+    }
 
 
     private fun View.makeGone() {

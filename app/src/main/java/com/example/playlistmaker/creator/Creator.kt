@@ -52,62 +52,62 @@ object Creator {
 }
 
 
-
-    private fun getTracksRepository(): TrackRepository {
-        return TrackRepositoryImpl(RetrofitNetworkClient(createItunesApi()))
-    }
-
-    fun provideTracksInteractor(): TrackInteractor {
-        return TracksInteractorImpl(getTracksRepository())
-    }
-
-    private fun getFavoriteSharedPrefs(): SharedPreferences{
-       return  context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-
-    }
-
-    private fun getFavoriteTrackRepository(): FavoriteTrackRepository {
-        return FavoriteTrackRepositoryImpl(getFavoriteSharedPrefs(),Gson())
-    }
-
-    fun provideFavoriteInteractor(): FavoriteTrackInteractor {
-        return FavoriteTrackInteractorImpl(getFavoriteTrackRepository())
-    }
-
+//
+//    private fun getTracksRepository(): TrackRepository {
+//        return TrackRepositoryImpl(RetrofitNetworkClient(createItunesApi()))
+//    }
+//
+//    fun provideTracksInteractor(): TrackInteractor {
+//        return TracksInteractorImpl(getTracksRepository())
+//    }
+//
+//    private fun getFavoriteSharedPrefs(): SharedPreferences{
+//       return  context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+//
+//    }
+//
+//    private fun getFavoriteTrackRepository(): FavoriteTrackRepository {
+//        return FavoriteTrackRepositoryImpl(getFavoriteSharedPrefs(),Gson())
+//    }
+//
+//    fun provideFavoriteInteractor(): FavoriteTrackInteractor {
+//        return FavoriteTrackInteractorImpl(getFavoriteTrackRepository())
+//    }
+//
     private fun getSettingsRepository(): SettingsRepository {
         return SettingsRepositoryImpl(context)
     }
 
-
-    fun provideShareAppUseCase(): ShareAppUseCase {
-        return ShareAppUseCaseImpl(getSettingsRepository())
-    }
-
-    fun provideSendSuppEmailUseCase(): SendSuppEmailUseCase {
-        return SendSuppEmailUseCaseImpl(getSettingsRepository())
-    }
-
-    fun provideOpenUrlUseCase(): OpenUrlUseCase {
-        return OpenUrlUseCaseImpl(getSettingsRepository())
-    }
-
+//
+//    fun provideShareAppUseCase(): ShareAppUseCase {
+//        return ShareAppUseCaseImpl(getSettingsRepository())
+//    }
+//
+//    fun provideSendSuppEmailUseCase(): SendSuppEmailUseCase {
+//        return SendSuppEmailUseCaseImpl(getSettingsRepository())
+//    }
+//
+//    fun provideOpenUrlUseCase(): OpenUrlUseCase {
+//        return OpenUrlUseCaseImpl(getSettingsRepository())
+//    }
+//
     fun provideSwitchThemeUseCase(): SwitchThemeUseCase {
         return SwitchThemeUseCaseImpl(getSettingsRepository())
     }
 
 
-    fun getMediaPlayer(): MediaPlayer {
-        return MediaPlayer()
-    }
-
-
-    fun getMediaPlayerInteractor(): MediaPlayerRepository {
-        return MediaPlayerRepositoryImpl(getMediaPlayer())
-    }
-
-    fun provideMediaInteractor(): MediaInteractor {
-        return MediaInteractorImpl(getMediaPlayerInteractor())
-    }
+//    fun getMediaPlayer(): MediaPlayer {
+//        return MediaPlayer()
+//    }
+//
+//
+//    fun getMediaPlayerInteractor(): MediaPlayerRepository {
+//        return MediaPlayerRepositoryImpl(getMediaPlayer())
+//    }
+//
+//    fun provideMediaInteractor(): MediaInteractor {
+//        return MediaInteractorImpl(getMediaPlayerInteractor())
+//    }
 
 
 
