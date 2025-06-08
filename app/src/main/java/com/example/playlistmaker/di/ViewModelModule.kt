@@ -29,20 +29,6 @@ import org.koin.dsl.module
         }
 
 
-//        viewModel{ // описать получение юз кейсов в интерактор модуле
-//            MediaViewModel(get(),
-//                get(),
-//                get(),
-//                get())  // интент оставил Нулл, так как он передаётся вручную
-//        }
-
-//        viewModel { (intent: Intent) ->
-//            MediaViewModel(  get(),
-//                get(),
-//                get(),
-//                get(),
-//                intent)
-//        }
         viewModel { params ->
             MediaViewModel(
                 get(),

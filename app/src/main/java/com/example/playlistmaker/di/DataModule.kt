@@ -14,6 +14,7 @@ import com.example.playlistmaker.domain.search.TrackRepository
 import com.example.playlistmaker.utils.Constants
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module._scopedInstanceFactory
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -50,6 +51,7 @@ import retrofit2.converter.gson.GsonConverterFactory
             MediaPlayer()
         }
 
+
         single<Application> {androidContext() as Application  }
 
 
@@ -63,3 +65,4 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
     }
+

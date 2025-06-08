@@ -9,8 +9,6 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
@@ -19,20 +17,17 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
                      private val favoriteTrackInteractor: FavoriteTrackInteractor,
                      private val mediaInteractor: MediaInteractor,
                      private val application: Application,
-    private val intentStart: Intent
+    private val intent: Intent
 
 ) : AndroidViewModel(application) {
 
     companion object { // компаньон медиаплеера
         private const val default_time = "00:00" // для прогресса
         private const val noAlbum = "No Album"
-//        private var intentStart: Intent? = null
+
     }
 
-//     fun setIntent(intent: Intent?){
-//         intentStart= intent
-//         if (intentStart!= null) intentGetExtraBind() else return
-//    }
+
 
     private val mutableMediaScreen = MutableLiveData(
         MediaScreenState()
@@ -102,9 +97,9 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
 
     fun intentGetExtraBind() {
 
-        if (!intentStart?.getStringExtra("trackName")
+        if (!intent?.getStringExtra("trackName")
                 .isNullOrEmpty()) {
-            val intent = intentStart // получаем интент который запустил активность
+            val intent = intent // получаем интент который запустил активность
             val trackName = intent?.getStringExtra("trackName")
             val previewUrl = intent?.getStringExtra("previewUrl").toString()
 
@@ -127,6 +122,7 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
                     .toString()// убираем поле альбом если нет альбома
                 mutableMediaScreen.value =
                     mutableMediaScreen.value!!.copy(collectionName = collectionName.toString())
+                Log.d("Mylog" , previewUrl)
 
                 mediaInteractor.preparePlayer(previewUrl)
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
@@ -176,6 +172,7 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
             val artworkUrl100 = track.artworkUrl100
 
             val previewUrl = track.previewUrl
+            Log.d("Mylog" , previewUrl)
             mediaInteractor.preparePlayer(previewUrl)
             mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
                 trackName = trackName,

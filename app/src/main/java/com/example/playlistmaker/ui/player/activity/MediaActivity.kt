@@ -47,6 +47,7 @@ viewModel.addListeners() // добавил листенеры
 
 viewModel.controlThemeInOtherWindows()
             viewModel.intentGetExtraBind()
+
             viewModel.getLiveData.observe(this){ newState ->
               if (newState.isPlaying ==false) {
                   binding.play.isEnabled
