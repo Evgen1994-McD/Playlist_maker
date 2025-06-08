@@ -21,8 +21,6 @@ import kotlin.getValue
 
 class MediaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
-//    private val viewModel by viewModel<MediaViewModel>()
-//    private lateinit var viewModel: MediaViewModel
     private  val viewModel: MediaViewModel by viewModel { parametersOf(intent) }
 
 
@@ -41,19 +39,7 @@ class MediaActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-//if (intent!= null) {
-//    viewModel.setIntent(intent) // передал интент во вью модел
-//}
 
-//        val factory = MediaViewModel.CustomViewModelFactory(
-//            Creator.provideSwitchThemeUseCase(),// Делаю вью модел фактори
-//            Creator.provideFavoriteInteractor(),
-//            Creator.provideMediaInteractor(),
-//            App.instance,
-//            intent
-//        )
-//        viewModel = ViewModelProvider(this, factory)[MediaViewModel::class.java]
-//        val viewModel: MediaViewModel by viewModel { parametersOf(intent) }
 viewModel.addListeners() // добавил листенеры
         binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
             finish()
@@ -154,7 +140,6 @@ viewModel.stopUpdateProgress()
 
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
-
        viewModel.reliesePlayer()
         viewModel.getLiveData.removeObservers(this) // отключил обсерверы от медиа
 

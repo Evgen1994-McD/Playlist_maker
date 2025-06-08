@@ -20,8 +20,6 @@ class MediaPlayerRepositoryImpl(val mediaPlayer: MediaPlayer) : MediaPlayerRepos
     private var playerState = STATE_IDLE
 
     override fun preparePlayer(previewUrl: String) {
-        Log.d("MyLog", "$playerState")
-
         if (playerState == STATE_IDLE) {
             try {
                 mediaPlayer.reset()
@@ -39,18 +37,24 @@ class MediaPlayerRepositoryImpl(val mediaPlayer: MediaPlayer) : MediaPlayerRepos
         if (playerState != STATE_PREPARED && playerState != STATE_PAUSED) return
         mediaPlayer.start()
         playerState = STATE_PLAYING
+        Log.d("MyLog", "Плеер играет")
+
     }
 
     override fun pausePlayback() {
         if (playerState != STATE_PLAYING) return
         mediaPlayer.pause()
         playerState = STATE_PAUSED
+        Log.d("MyLog", "Плеер на Паузе")
     }
 
     override fun releasePlayer() {
-        mediaPlayer.stop()
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.stop()
+        }
         mediaPlayer.release()
         playerState = STATE_IDLE
+        Log.d("MyLog", "Плеер освобождён")
     }
 
     override fun addListeners(onPreparedListener: () -> Unit, onCompletionListener: () -> Unit) {
