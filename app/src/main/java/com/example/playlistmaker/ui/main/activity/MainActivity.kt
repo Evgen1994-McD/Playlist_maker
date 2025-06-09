@@ -7,19 +7,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.ui.main.viewModel.MainViewModel
 import com.example.playlistmaker.ui.player.activity.MediaActivity
 import com.example.playlistmaker.ui.search.activity.SearchActivity
-import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
 import com.example.playlistmaker.ui.settings.activity.SettingsActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
-    private lateinit var viewModel: MainViewModel
+    private val viewModel by viewModel<MainViewModel>()
+
 
 
 
@@ -36,10 +36,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-            viewModel = ViewModelProvider(
-                this,
-                MainViewModel.getViewModelFactory()
-            )[MainViewModel::class.java]
 
 
         viewModel.controlThemeInOtherWindows()

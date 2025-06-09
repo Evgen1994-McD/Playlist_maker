@@ -3,9 +3,7 @@ package com.example.playlistmaker.ui.search.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.search.TrackInteractor
 import com.example.playlistmaker.domain.models.Track

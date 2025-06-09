@@ -6,11 +6,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.SettingsBinding
-import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
 import com.example.playlistmaker.ui.settings.viewModel.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue

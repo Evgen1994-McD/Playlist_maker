@@ -19,11 +19,7 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-
-
-
     val dataModule = module {
-
         single<ITunesApi>{ // это вызов itines aPi
             val iTunesBaseUrl = "https://itunes.apple.com"
             Retrofit.Builder()
@@ -31,26 +27,17 @@ import retrofit2.converter.gson.GsonConverterFactory
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ITunesApi::class.java)
-
-
-
         }
-
         single {  // это вызов шаред префс
             androidContext()
                 .getSharedPreferences(Constants.TRACK_STORAGE_PREFS_NAME, Context.MODE_PRIVATE)
         }
 
+        single { Gson() }  // это Gson()
 
-
-
-        factory { Gson() }  // это Gson()
-
-
-        single<MediaPlayer>{
+        factory<MediaPlayer>{  //инициализировал медиаплеер
             MediaPlayer()
         }
-
 
         single<Application> {androidContext() as Application  }
 

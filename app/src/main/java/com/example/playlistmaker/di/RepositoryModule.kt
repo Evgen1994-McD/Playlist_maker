@@ -26,7 +26,7 @@ import org.koin.dsl.module
             SettingsRepositoryImpl(get())
         }
 
-        single<MediaPlayerRepository>{
+        factory<MediaPlayerRepository>{
             MediaPlayerRepositoryImpl(get())
         }
 

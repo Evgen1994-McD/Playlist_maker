@@ -60,14 +60,13 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPla
     override fun addListeners(onPreparedListener: () -> Unit, onCompletionListener: () -> Unit) {
         mediaPlayer.setOnPreparedListener(MediaPlayer.OnPreparedListener {
             playerState = STATE_PREPARED
-            Log.d("MyLog", "Плеер точно блин готов")
+            Log.d("MyLog", "Плеер точно 100% готов")
 
             onPreparedListener()
         })
         mediaPlayer.setOnCompletionListener(MediaPlayer.OnCompletionListener {
             playerState = STATE_IDLE
             Log.d("MyLog", "Плеер точно закончил играть, статус $playerState")
-
             onCompletionListener()
         })
     }

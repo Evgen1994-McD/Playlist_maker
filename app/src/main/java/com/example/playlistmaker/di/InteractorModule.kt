@@ -24,9 +24,6 @@ import org.koin.dsl.module
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-
-
-
     val interactorModule = module {
 
         single {  // хендлер для интерактора
@@ -34,23 +31,18 @@ import java.util.concurrent.Executors
                 Looper.getMainLooper()
             )
         }
-
         single { Executors.newSingleThreadExecutor() } // Экзекутор для интерактора
 
         single<TrackInteractor>{
             TracksInteractorImpl(get(), get(), get())
         }
-
-
         single<FavoriteTrackInteractor>{
             FavoriteTrackInteractorImpl(get())
         }
 //Settings
-
         single<SwitchThemeUseCase>{
             SwitchThemeUseCaseImpl(get())
         }
-
         single<OpenUrlUseCase>{
             OpenUrlUseCaseImpl(get())
         }
@@ -58,17 +50,14 @@ import java.util.concurrent.Executors
         single<SendSuppEmailUseCase>{
             SendSuppEmailUseCaseImpl(get())
         }
-
         single<ShareAppUseCase>{
             ShareAppUseCaseImpl(get())
         }
 
         //Media
-
-single<MediaInteractor>{
+factory<MediaInteractor>{
     MediaInteractorImpl(get())
 }
-
 
     }
 
