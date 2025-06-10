@@ -26,31 +26,31 @@ import java.util.concurrent.Executors
 
     val interactorModule = module {
 
-        single {  // хендлер для интерактора
+        factory {  // хендлер для интерактора
             Handler(
                 Looper.getMainLooper()
             )
         }
         single { Executors.newSingleThreadExecutor() } // Экзекутор для интерактора
 
-        single<TrackInteractor>{
+        factory<TrackInteractor>{
             TracksInteractorImpl(get(), get(), get())
         }
         single<FavoriteTrackInteractor>{
             FavoriteTrackInteractorImpl(get())
         }
 //Settings
-        single<SwitchThemeUseCase>{
+        factory<SwitchThemeUseCase>{
             SwitchThemeUseCaseImpl(get())
         }
-        single<OpenUrlUseCase>{
+        factory<OpenUrlUseCase>{
             OpenUrlUseCaseImpl(get())
         }
 
-        single<SendSuppEmailUseCase>{
+        factory<SendSuppEmailUseCase>{
             SendSuppEmailUseCaseImpl(get())
         }
-        single<ShareAppUseCase>{
+        factory<ShareAppUseCase>{
             ShareAppUseCaseImpl(get())
         }
 

@@ -14,15 +14,15 @@ import org.koin.dsl.module
 
     val repositoryModule = module {
 
-        single<FavoriteTrackRepository>{
+        factory<FavoriteTrackRepository>{
             FavoriteTrackRepositoryImpl(get(), get())
         }
 
-        single<TrackRepository>{
+        factory<TrackRepository>{
             TrackRepositoryImpl(get())
         }
 
-        single<SettingsRepository>{
+        factory<SettingsRepository>{
             SettingsRepositoryImpl(get())
         }
 
