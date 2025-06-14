@@ -9,13 +9,12 @@ import com.example.playlistmaker.utils.Constants
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class FavoriteTrackRepositoryImpl(private val prefs: SharedPreferences) : FavoriteTrackRepository {
+class FavoriteTrackRepositoryImpl(private val prefs: SharedPreferences,
+    private val gson: Gson) : FavoriteTrackRepository {
     companion object {
         const val PREFS_NAME = Constants.TRACK_STORAGE_PREFS_NAME
         const val TRACKS_KEY = Constants.TRACK_STORAGE_TRACKS_KEY
     }
-
-    private val gson = Gson()
     private var tracks = mutableListOf<TrackDto>() // Список для хранения треков
 
 
@@ -71,7 +70,6 @@ class FavoriteTrackRepositoryImpl(private val prefs: SharedPreferences) : Favori
         if (tracks.size >= 10) {
             tracks = tracks.takeLast(10).toMutableList()
         }
-//        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val editor = prefs.edit()
         val tracksJson = gson.toJson(tracks)
         editor.putString(TRACKS_KEY, tracksJson)
@@ -102,7 +100,6 @@ class FavoriteTrackRepositoryImpl(private val prefs: SharedPreferences) : Favori
 
     override fun clearHistory() {
         tracks.clear() // Метод теперь очищает список треков
-//        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val editor = prefs.edit()
         val tracksJson = gson.toJson(tracks)
         editor.putString(TRACKS_KEY, tracksJson)

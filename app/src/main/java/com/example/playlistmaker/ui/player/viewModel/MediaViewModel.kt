@@ -9,23 +9,25 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
 
 class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
-    private val favoriteTrackInteractor: FavoriteTrackInteractor,
+                     private val favoriteTrackInteractor: FavoriteTrackInteractor,
                      private val mediaInteractor: MediaInteractor,
                      private val application: Application,
-                     private val intent: Intent
+    private val intent: Intent
+
 ) : AndroidViewModel(application) {
 
     companion object { // компаньон медиаплеера
         private const val default_time = "00:00" // для прогресса
         private const val noAlbum = "No Album"
+
     }
+
+
 
     private val mutableMediaScreen = MutableLiveData(
         MediaScreenState()
@@ -46,6 +48,8 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     fun reliesePlayer(){
         mediaInteractor.releasePlayer()
         stopUpdateProgress()
+        handler.removeCallbacksAndMessages(null)
+
     }
 
     private fun onPlayerReady() { // это функция для листенера
@@ -92,31 +96,33 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     }
 
     fun intentGetExtraBind() {
-        if (!intent.getStringExtra("trackName")
+
+        if (!intent?.getStringExtra("trackName")
                 .isNullOrEmpty()) {
             val intent = intent // получаем интент который запустил активность
-            val trackName = intent.getStringExtra("trackName")
-            val previewUrl = intent.getStringExtra("previewUrl").toString()
+            val trackName = intent?.getStringExtra("trackName")
+            val previewUrl = intent?.getStringExtra("previewUrl").toString()
 
-            val trackTimeMillis = intent.getStringExtra("trackTimeMillis")
-            val artistName = intent.getStringExtra("artistName")
-            val primaryGenreName = intent.getStringExtra("primaryGenreName")
-            val country = intent.getStringExtra("country")
-            val relieseDate = intent.getStringExtra("relieseDate")
-            val artworkUrl100 = intent.getStringExtra("artworkUrl100").toString()
+            val trackTimeMillis = intent?.getStringExtra("trackTimeMillis")
+            val artistName = intent?.getStringExtra("artistName")
+            val primaryGenreName = intent?.getStringExtra("primaryGenreName")
+            val country = intent?.getStringExtra("country")
+            val relieseDate = intent?.getStringExtra("relieseDate")
+            val artworkUrl100 = intent?.getStringExtra("artworkUrl100").toString()
 
-            if (intent.getStringExtra("collectionName")
-                    ?.isNullOrEmpty() == true || intent.getStringExtra("collectionName")
+            if (intent?.getStringExtra("collectionName")
+                    ?.isNullOrEmpty() == true || intent?.getStringExtra("collectionName")
                     ?.contains("No Album") == true // Если нет альбома или ответ сервера содержит No Album то убираем поле с альбомом
             ) {
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(collectionName = noAlbum)
 
 
             } else {
-                val collectionName = intent.getStringExtra("collectionName")
+                val collectionName = intent?.getStringExtra("collectionName")
                     .toString()// убираем поле альбом если нет альбома
                 mutableMediaScreen.value =
                     mutableMediaScreen.value!!.copy(collectionName = collectionName.toString())
+                Log.d("Mylog" , previewUrl)
 
                 mediaInteractor.preparePlayer(previewUrl)
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
@@ -166,6 +172,7 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
             val artworkUrl100 = track.artworkUrl100
 
             val previewUrl = track.previewUrl
+            Log.d("Mylog" , previewUrl)
             mediaInteractor.preparePlayer(previewUrl)
             mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
                 trackName = trackName,
@@ -181,30 +188,6 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     }
 
 
-
-        class CustomViewModelFactory(
-            private val switchThemeUseCase: SwitchThemeUseCase,
-            private val favoriteInteractor: FavoriteTrackInteractor,
-            private val mediaInteractor: MediaInteractor,
-            private val application: Application,
-            private val intent: Intent
-        ) : ViewModelProvider.NewInstanceFactory() {
-
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return when {
-                    modelClass.isAssignableFrom(MediaViewModel::class.java) -> MediaViewModel(
-                        switchThemeUseCase,
-                        favoriteInteractor,
-                        mediaInteractor,
-                        application,
-                        intent
-                    ) as T
-
-                    else -> throw IllegalArgumentException("Unknown ViewModel class")
-                }
-            }
-        }
 
     }
 

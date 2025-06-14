@@ -8,21 +8,22 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.example.playlistmaker.App
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.ui.player.viewModel.MediaPlayerCommand
 import com.example.playlistmaker.ui.player.viewModel.MediaViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
+import kotlin.getValue
 
 class MediaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
+    private  val viewModel: MediaViewModel by viewModel { parametersOf(intent) }
 
-    private lateinit var viewModel: MediaViewModel
+
     companion object { // компаньон медиаплеера
         private const val noAlbum = "No Album"
 
@@ -39,17 +40,6 @@ class MediaActivity : AppCompatActivity() {
             insets
         }
 
-
-
-        val factory = MediaViewModel.CustomViewModelFactory(
-            Creator.provideSwitchThemeUseCase(),// Делаю вью модел фактори
-            Creator.provideFavoriteInteractor(),
-            Creator.provideMediaInteractor(),
-            App.instance,
-            intent
-        )
-        viewModel = ViewModelProvider(this, factory)[MediaViewModel::class.java]
-
 viewModel.addListeners() // добавил листенеры
         binding.toolbar.setNavigationOnClickListener {  //назад в Майнактивити
             finish()
@@ -57,6 +47,7 @@ viewModel.addListeners() // добавил листенеры
 
 viewModel.controlThemeInOtherWindows()
             viewModel.intentGetExtraBind()
+
             viewModel.getLiveData.observe(this){ newState ->
               if (newState.isPlaying ==false) {
                   binding.play.isEnabled
@@ -155,6 +146,8 @@ viewModel.stopUpdateProgress()
 
 
     }
+
+
 
 
 

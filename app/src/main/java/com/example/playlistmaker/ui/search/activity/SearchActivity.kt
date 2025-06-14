@@ -19,7 +19,6 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
@@ -29,6 +28,7 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.player.activity.MediaActivity
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity(),
     OnTrackClickListener {  // Добавили имлементацию нашего интерфейса OnTrackClickListener для того чтобы определить трек
@@ -46,8 +46,7 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var tvMsgSearch: TextView
     private lateinit var btCleanHistory: TextView
     private lateinit var pbs: ProgressBar
-    private lateinit var viewModel: SearchViewModel
-
+    private val viewModel by viewModel<SearchViewModel>()
 
 
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
@@ -65,7 +64,6 @@ class SearchActivity : AppCompatActivity(),
 
 
 
-        viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
 
 viewModel.controlThemeInOtherWindows()
 
@@ -368,7 +366,6 @@ viewModel.controlThemeInOtherWindows()
     }
     override fun onDestroy() {
         super.onDestroy()
-
         viewModel.getLiveData.removeObservers(this) // удалил обсервер вью модели поиска треков
     }
 

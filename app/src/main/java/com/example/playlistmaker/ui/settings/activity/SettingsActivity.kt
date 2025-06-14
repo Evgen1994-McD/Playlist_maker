@@ -6,18 +6,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.SettingsBinding
 import com.example.playlistmaker.ui.settings.viewModel.SettingsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.getValue
 
 
 class SettingsActivity : AppCompatActivity() {
     private var isUpdatingUI = false
 
-    private lateinit var viewModel: SettingsViewModel
     private lateinit var binding: SettingsBinding
+    private val viewModel by viewModel<SettingsViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,13 +29,6 @@ class SettingsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val factory = SettingsViewModel.CustomViewModelSettingsFactory(
-            Creator.provideSwitchThemeUseCase(),
-            Creator.provideShareAppUseCase(),
-            Creator.provideSendSuppEmailUseCase(),
-            Creator.provideOpenUrlUseCase()
-        )
-        viewModel = ViewModelProvider(this, factory)[SettingsViewModel::class.java]
 
 
         val backClicker =
