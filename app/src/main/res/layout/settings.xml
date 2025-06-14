@@ -14,7 +14,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id ="@+id/settings_toolbar_day"
         style="@style/MySettings_Toolbar_style"
-        app:title="@string/Settings_name"
+        app:title="@string/settings_name"
         >
     </androidx.appcompat.widget.Toolbar>
 

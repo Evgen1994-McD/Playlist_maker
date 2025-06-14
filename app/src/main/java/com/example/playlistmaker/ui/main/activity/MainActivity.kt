@@ -52,8 +52,7 @@ class MainActivity : AppCompatActivity() {
             })
             val mediaClicker = binding.mediaDay
             mediaClicker.setOnClickListener {
-                val displayIntentMedia = Intent(this, MediaActivity::class.java)
-                startActivity(displayIntentMedia)
+
 
 
             }

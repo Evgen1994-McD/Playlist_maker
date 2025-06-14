@@ -135,4 +135,10 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/bt_new_playlist" />
+
 </LinearLayout>
