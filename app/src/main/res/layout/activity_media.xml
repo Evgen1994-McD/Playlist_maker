@@ -19,34 +19,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/media_name" />
 
-    <ImageView
-        android:id="@+id/ph_ntsh_120"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="106dp"
-        android:src="@drawable/ph_nothing_to_show_120"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabLayout">
-
-    </ImageView>
-
-    <TextView
-        android:id="@+id/msg_noint_top_txt"
-        style="@style/msg_nts_nointernet_style"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/ys_display_medium"
-        android:text="Ваша медиатека пуста"
-
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ph_ntsh_120" />
-
     <com.google.android.material.tabs.TabLayout
         style="@style/tablayout_style"
         android:id="@+id/tabLayout"
