@@ -9,6 +9,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaCatalogueBinding
+import com.example.playlistmaker.ui.media.fragments.FavoriteTrakListFragment
+import com.example.playlistmaker.ui.media.vp2adapter.PagerAdapter
+import com.google.android.material.tabs.TabLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ActivityMediaCatalogue : AppCompatActivity() {
@@ -34,6 +37,20 @@ class ActivityMediaCatalogue : AppCompatActivity() {
         viewModel.controlThemeInOtherWindows()
 
 
+
+
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        val pager = binding.viewpager
+        var adapter = PagerAdapter(supportFragmentManager, lifecycle)
+        pager.adapter = adapter
+/*
+Зарегали адаптер вью пейджера ( он обязателен)
+ */
 
 
     }

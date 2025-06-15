@@ -14,14 +14,14 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.ui.player.viewModel.MediaPlayerCommand
-import com.example.playlistmaker.ui.player.viewModel.MediaViewModel
+import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.getValue
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
-    private  val viewModel: MediaViewModel by viewModel { parametersOf(intent) }
+    private  val viewModel: PlayerViewModel by viewModel { parametersOf(intent) }
 
 
     companion object { // компаньон медиаплеера
@@ -47,6 +47,10 @@ viewModel.addListeners() // добавил листенеры
 
 viewModel.controlThemeInOtherWindows()
             viewModel.intentGetExtraBind()
+
+
+
+
 
             viewModel.getLiveData.observe(this){ newState ->
               if (newState.isPlaying ==false) {

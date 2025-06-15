@@ -13,11 +13,11 @@ import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
 
-class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
-                     private val favoriteTrackInteractor: FavoriteTrackInteractor,
-                     private val mediaInteractor: MediaInteractor,
-                     private val application: Application,
-    private val intent: Intent
+class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
+                      private val favoriteTrackInteractor: FavoriteTrackInteractor,
+                      private val mediaInteractor: MediaInteractor,
+                      private val application: Application,
+                      private val intent: Intent
 
 ) : AndroidViewModel(application) {
 
@@ -32,6 +32,7 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     private val mutableMediaScreen = MutableLiveData(
         MediaScreenState()
     )
+
 
     val getLiveData: LiveData<MediaScreenState> get() = mutableMediaScreen
     private val handler = Handler(Looper.getMainLooper()) // хэндлер для доступа к главному потоку
