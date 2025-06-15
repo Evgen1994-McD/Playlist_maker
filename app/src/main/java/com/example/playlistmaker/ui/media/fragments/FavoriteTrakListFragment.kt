@@ -49,7 +49,9 @@ showFavoriteTracks()
                     msgTxtBottom.makeGone()
                 }
             }
-
+/*
+тут будет логика, это заготовка
+ */
         }
 
     }
