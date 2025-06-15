@@ -7,7 +7,7 @@ import android.os.Looper
 import com.example.playlistmaker.domain.search.TrackInteractor
 import com.example.playlistmaker.domain.search.TrackRepository
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.player.activity.MediaActivity
+import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import kotlinx.coroutines.Runnable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -48,7 +48,7 @@ class TracksInteractorImpl(
 
     override fun getTrackIntentAndStart(track: Track, context: Context) {
         val intent =
-            Intent(context, MediaActivity::class.java) // создали интент для перехода на активити
+            Intent(context, PlayerActivity::class.java) // создали интент для перехода на активити
         intent.putExtra("trackName", track.trackName)
         if (!track.collectionName.isNullOrEmpty()) {
             intent.putExtra(

@@ -19,7 +19,7 @@
     </ImageView>
 
     <TextView
-        android:id="@+id/msg_noint_top_txt2"
+        android:id="@+id/msg_txt_bottom"
         style="@style/msg_nts_nointernet_style"
         android:layout_width="match_parent"
         android:layout_height="20dp"

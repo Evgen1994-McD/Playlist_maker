@@ -19,7 +19,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.getValue
 
-class MediaActivity : AppCompatActivity() {
+class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
     private  val viewModel: MediaViewModel by viewModel { parametersOf(intent) }
 
@@ -115,7 +115,7 @@ viewModel.stopUpdateProgress()
     }
 
     fun showAudioPlayerScreen() { // Восстановим активность
-        val intent = Intent(this, MediaActivity::class.java) // Восстановим активность
+        val intent = Intent(this, PlayerActivity::class.java) // Восстановим активность
         startActivity(intent) // Восстановим активность
     }
 

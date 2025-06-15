@@ -1,5 +1,6 @@
 package com.example.playlistmaker.di
 
+import ActivityMediaCatalogueViewModel
 import com.example.playlistmaker.ui.main.viewModel.MainViewModel
 import com.example.playlistmaker.ui.player.viewModel.MediaViewModel
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
@@ -30,6 +31,10 @@ import org.koin.dsl.module
                 get(),
                 params.get()  // в качестве парамс тут интент передаю в активити
             )
+        }
+
+        viewModel{ // описать получение юз кейсов в интерактор модуле
+            ActivityMediaCatalogueViewModel(get())
         }
     }
 

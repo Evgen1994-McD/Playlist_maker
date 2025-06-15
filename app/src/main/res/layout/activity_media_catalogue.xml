@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/Settings_Day_night_style"
-    android:id="@+id/searchLayout"
+    android:id="@+id/activity_media_catalogue"
     tools:context=".ui.search.activity.SearchActivity"
     android:orientation="vertical"
     >

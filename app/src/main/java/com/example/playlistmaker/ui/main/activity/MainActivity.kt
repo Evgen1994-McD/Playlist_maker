@@ -10,7 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.ui.main.viewModel.MainViewModel
-import com.example.playlistmaker.ui.player.activity.MediaActivity
+import com.example.playlistmaker.ui.media.activity.ActivityMediaCatalogue
 import com.example.playlistmaker.ui.search.activity.SearchActivity
 import com.example.playlistmaker.ui.settings.activity.SettingsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -52,7 +52,8 @@ class MainActivity : AppCompatActivity() {
             })
             val mediaClicker = binding.mediaDay
             mediaClicker.setOnClickListener {
-
+                val mediaCatalogueIntent = Intent(this, ActivityMediaCatalogue::class.java)
+startActivity(mediaCatalogueIntent)
 
 
             }

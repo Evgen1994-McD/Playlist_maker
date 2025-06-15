@@ -26,7 +26,6 @@
     <string name="txt_nointernet_button" translatable="false">Обновить</string>
 
 
-
     <string name="Url_androidDeveloper" translatable="false">https://practicum.yandex.ru/android-developer/?from=catalog</string>
     <string name="Url_userasset" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
 
@@ -36,8 +35,8 @@
     <string name="txt_year_media" translatable="false">Год</string>
     <string name="txt_ganre_media" translatable="false">Жанр</string>
     <string name="txt_country_media" translatable="false">Страна</string>
-
-
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>
