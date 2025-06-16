@@ -12,7 +12,7 @@ class FavoriteFragmentViewModel(private val switchThemeUseCase: SwitchThemeUseCa
 
     private val favoriteTrackList = MutableLiveData(false)
 
-    val getLiveData : MutableLiveData<Boolean> get() = favoriteTrackList
+    val getLiveData : LiveData<Boolean> get() = favoriteTrackList
 /*
 Это временная лайв дата чтобы отобразить плейсхолдеры, потом переделаю
 при появлении задания на реализацию логики.
