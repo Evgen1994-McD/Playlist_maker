@@ -10,10 +10,6 @@ import com.example.playlistmaker.ui.media.fragments.PlaylistFragment
 class PagerAdapter(fm: FragmentManager, lifecycle: Lifecycle) :
     FragmentStateAdapter(fm, lifecycle) {
 
-    private val fragments = listOf(
-        FavoriteTrakListFragment(),
-        PlaylistFragment()
-    )
 
 
 
@@ -21,8 +17,8 @@ class PagerAdapter(fm: FragmentManager, lifecycle: Lifecycle) :
 
     override fun createFragment(position: Int): Fragment =
         when (position) {
-            0 -> fragments[0]
-            1 -> fragments[1]
+            0 -> FavoriteTrakListFragment.newInstance()
+            1 -> PlaylistFragment.newInstance()
             else -> throw IllegalArgumentException("Invalid position!")
         }
 }
