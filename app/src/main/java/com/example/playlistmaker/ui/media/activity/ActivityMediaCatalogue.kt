@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.media.activity
 
-
 import ActivityMediaCatalogueViewModel
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -14,11 +13,12 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ActivityMediaCatalogue : AppCompatActivity() {
-    private var currentPage: Int = 0
+    companion object {
+        const val savedPage = "savedPage"
+    }
 
     private lateinit var binding: ActivityMediaCatalogueBinding
     private val viewModel by viewModel<ActivityMediaCatalogueViewModel>()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,49 +31,32 @@ class ActivityMediaCatalogue : AppCompatActivity() {
             insets
         }
 
-        binding.searchToolbar.setNavigationOnClickListener {  //назад в Майнактивити
-            finish()
-        }
+        binding.searchToolbar.setNavigationOnClickListener { finish() }
         viewModel.controlThemeInOtherWindows()
-if (savedInstanceState == null) {
-    val pager = binding.viewpager
-    var adapter = PagerAdapter(supportFragmentManager, lifecycle)
-    pager.adapter = adapter
 
-    TabLayoutMediator(binding.tabLayout, pager) { tab, position ->
-        when (position) {
-            0 -> {
-                tab.text = getString(R.string.tab1txt)
-                currentPage = 0
-            }
-
-            1 -> {
-                tab.text = getString(R.string.tab2txt)
-currentPage = 1
-            }
-
-        }
-
-
-    }.attach()
-}
+        setupTabsAndPager(savedInstanceState)
     }
-
-
-    override fun onResume() {
-        super.onResume()
-
-/*
-Зарегали адаптер вью пейджера ( он обязателен)
- */
-    }
-
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        // Сохраняем текущее положение вкладки
+        outState.putInt(savedPage, binding.viewpager.currentItem)
+    }
 
-        // Сохраняем флаг логики, чтобы в будущем мы могли его восстановить
-        outState.putInt("tabPosition", currentPage)
+    private fun setupTabsAndPager(savedInstanceState: Bundle?) {
+        val pager = binding.viewpager
+        val adapter = PagerAdapter(supportFragmentManager, lifecycle)
+        pager.adapter = adapter
+
+        savedInstanceState?.let {
+            pager.currentItem = it.getInt(savedPage, 0)
+        }
+
+        TabLayoutMediator(binding.tabLayout, pager) { tab, position ->
+            when (position) {
+                0 -> tab.text = getString(R.string.tab1txt)
+                1 -> tab.text = getString(R.string.tab2txt)
+            }
+        }.attach()
     }
 }
