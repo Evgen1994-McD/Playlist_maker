@@ -14,6 +14,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ActivityMediaCatalogue : AppCompatActivity() {
+    private var currentPage: Int = 0
 
     private lateinit var binding: ActivityMediaCatalogueBinding
     private val viewModel by viewModel<ActivityMediaCatalogueViewModel>()
@@ -34,32 +35,45 @@ class ActivityMediaCatalogue : AppCompatActivity() {
             finish()
         }
         viewModel.controlThemeInOtherWindows()
+if (savedInstanceState == null) {
+    val pager = binding.viewpager
+    var adapter = PagerAdapter(supportFragmentManager, lifecycle)
+    pager.adapter = adapter
+
+    TabLayoutMediator(binding.tabLayout, pager) { tab, position ->
+        when (position) {
+            0 -> {
+                tab.text = getString(R.string.tab1txt)
+                currentPage = 0
+            }
+
+            1 -> {
+                tab.text = getString(R.string.tab2txt)
+currentPage = 1
+            }
+
+        }
 
 
-
-
+    }.attach()
+}
     }
 
 
     override fun onResume() {
         super.onResume()
 
-        val pager = binding.viewpager
-        var adapter = PagerAdapter(supportFragmentManager, lifecycle)
-        pager.adapter = adapter
-
-        TabLayoutMediator(binding.tabLayout, pager) { tab, position ->
-            when (position) {
-                0 -> tab.text = getString(R.string.tab1txt)
-                1 -> tab.text = getString(R.string.tab2txt)
-
-            }
-        }.attach()
-
 /*
 Зарегали адаптер вью пейджера ( он обязателен)
  */
+    }
 
 
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        // Сохраняем флаг логики, чтобы в будущем мы могли его восстановить
+        outState.putInt("tabPosition", currentPage)
     }
 }
