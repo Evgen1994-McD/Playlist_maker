@@ -30,11 +30,11 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
 
 
     private val mutableMediaScreen = MutableLiveData(
-        MediaScreenState()
+        PlayerScreenState()
     )
 
 
-    val getLiveData: LiveData<MediaScreenState> get() = mutableMediaScreen
+    val getLiveData: LiveData<PlayerScreenState> get() = mutableMediaScreen
     private val handler = Handler(Looper.getMainLooper()) // хэндлер для доступа к главному потоку
 
 
@@ -78,15 +78,15 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     }
 
 
-    fun mediaCommander(command: MediaPlayerCommand) {
+    fun mediaCommander(command: PlayerCommand) {
         when (command) {
-            is MediaPlayerCommand.Play -> {
+            is PlayerCommand.Play -> {
                 mediaInteractor.startPlayback()
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isPlaying = true)
                 startUpdateProgress()
 
             }
-            is MediaPlayerCommand.Pause -> {
+            is PlayerCommand.Pause -> {
                 stopUpdateProgress()
             mediaInteractor.pausePlayback()
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isPlaying = false)

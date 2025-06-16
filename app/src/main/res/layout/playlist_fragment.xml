@@ -10,17 +10,17 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_gravity="center"
-        android:layout_marginTop="106dp"
+        android:layout_marginTop="46dp"
         android:src="@drawable/ph_nothing_to_show_120"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/bt_create_playlist">
 
     </ImageView>
 
     <TextView
-        android:id="@+id/msg_noint_top_txt3"
+        android:id="@+id/msg_txt_bottom"
         style="@style/msg_nts_nointernet_style"
         android:layout_width="312dp"
         android:layout_height="46dp"
@@ -37,10 +37,10 @@
         app:layout_constraintTop_toBottomOf="@+id/ph_ntsh_2" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/bt_create_playlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="72dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

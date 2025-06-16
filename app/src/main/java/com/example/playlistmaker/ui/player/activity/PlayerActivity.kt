@@ -13,7 +13,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaBinding
-import com.example.playlistmaker.ui.player.viewModel.MediaPlayerCommand
+import com.example.playlistmaker.ui.player.viewModel.PlayerCommand
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -93,11 +93,11 @@ viewModel.controlThemeInOtherWindows()
 
 
         binding.play.setOnClickListener {
-            viewModel.mediaCommander(MediaPlayerCommand.Play)
+            viewModel.mediaCommander(PlayerCommand.Play)
             viewModel.startUpdateProgress()
         }
         binding.pause.setOnClickListener {
-            viewModel.mediaCommander(MediaPlayerCommand.Pause)
+            viewModel.mediaCommander(PlayerCommand.Pause)
 viewModel.stopUpdateProgress()
         }
     }
@@ -138,7 +138,7 @@ viewModel.stopUpdateProgress()
 
     override fun onPause() { //пауза когда сворачиваем
         super.onPause()
-        viewModel.mediaCommander(MediaPlayerCommand.Pause)
+        viewModel.mediaCommander(PlayerCommand.Pause)
         viewModel.stopUpdateProgress()
 
     }
