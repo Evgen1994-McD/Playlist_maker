@@ -10,10 +10,16 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaCatalogueBinding
 import com.example.playlistmaker.ui.media.vp2adapter.PagerAdapter
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ActivityMediaCatalogue : AppCompatActivity() {
+    private val pager by lazy { binding.viewpager }
+    private val tabs by lazy { binding.tabLayout}
+
+    private val adapter by lazy { PagerAdapter(supportFragmentManager, lifecycle)}
+
     companion object {
         const val savedPage = "savedPage"
     }
@@ -34,11 +40,32 @@ class ActivityMediaCatalogue : AppCompatActivity() {
         binding.searchToolbar.setNavigationOnClickListener { finish() }
         viewModel.controlThemeInOtherWindows()
 
+// Явно добавляем listener для обработки кликов по вкладкам
+        tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                // Убедимся, что при выборе вкладки позиция ViewPager2 обновляется
+                pager.currentItem = tab.position
+            }
 
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+
+            override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
+
+
+
+        /*
+        На всякий случай добавил выше слушатель нажатий на таб, но вроде бы без них работает тоже
+        Проблема нажатий на больших экранах была в кривой разметке, вроде бы и так сейчас все работает, но пока оставлю
+         */
 
 
 
         setupTabsAndPager(savedInstanceState)
+
+
+
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -49,9 +76,7 @@ class ActivityMediaCatalogue : AppCompatActivity() {
 
     private fun setupTabsAndPager(savedInstanceState: Bundle?) {
 
-val tabs = binding.tabLayout
-        val pager = findViewById<ViewPager2>(R.id.viewpager)
-        val adapter = PagerAdapter(supportFragmentManager, lifecycle)
+
         pager.adapter = adapter
         savedInstanceState?.let {
             pager.currentItem = it.getInt(savedPage, 0)
@@ -63,5 +88,6 @@ val tabs = binding.tabLayout
                 1 -> tab.text = getString(R.string.tab2txt)
             }
         }.attach()
+
     }
 }
