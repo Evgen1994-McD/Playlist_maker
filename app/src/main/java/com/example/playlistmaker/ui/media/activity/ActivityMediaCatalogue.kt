@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.viewpager2.widget.ViewPager2
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaCatalogueBinding
 import com.example.playlistmaker.ui.media.vp2adapter.PagerAdapter
@@ -30,9 +31,12 @@ class ActivityMediaCatalogue : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
         binding.searchToolbar.setNavigationOnClickListener { finish() }
         viewModel.controlThemeInOtherWindows()
+
+
+
+
 
         setupTabsAndPager(savedInstanceState)
     }
@@ -44,15 +48,16 @@ class ActivityMediaCatalogue : AppCompatActivity() {
     }
 
     private fun setupTabsAndPager(savedInstanceState: Bundle?) {
-        val pager = binding.viewpager
+
+val tabs = binding.tabLayout
+        val pager = findViewById<ViewPager2>(R.id.viewpager)
         val adapter = PagerAdapter(supportFragmentManager, lifecycle)
         pager.adapter = adapter
-
         savedInstanceState?.let {
             pager.currentItem = it.getInt(savedPage, 0)
         }
 
-        TabLayoutMediator(binding.tabLayout, pager) { tab, position ->
+        TabLayoutMediator(tabs, pager) { tab, position ->
             when (position) {
                 0 -> tab.text = getString(R.string.tab1txt)
                 1 -> tab.text = getString(R.string.tab2txt)

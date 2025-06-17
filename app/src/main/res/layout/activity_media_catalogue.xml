@@ -20,20 +20,17 @@
         app:title="@string/media_name" />
 
     <com.google.android.material.tabs.TabLayout
-        style="@style/tablayout_style"
         android:id="@+id/tabLayout"
+        style="@style/tablayout_style"
         android:layout_width="409dp"
         android:layout_height="48dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_toolbar"
-       app:tabTextAppearance="@style/tablayout_style"
 
 
-
-
-
-        >
+        app:tabTextAppearance="@style/tablayout_style">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -47,8 +44,7 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tab2txt"
- />
+            android:text="@string/tab2txt" />
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2
