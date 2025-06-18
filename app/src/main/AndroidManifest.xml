@@ -13,28 +13,46 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
+
         tools:targetApi="35">
         <activity
-            android:name=".ui.player.activity.MediaActivity"
+            android:name=".ui.player.activity.PlayerActivity"
             android:exported="false"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+
             />
         <activity
             android:name=".ui.search.activity.SearchActivity"
             android:exported="false"
             android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+
            />
         <activity
             android:name=".ui.settings.activity.SettingsActivity"
             android:exported="false"
             android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+
             />
+        <activity
+            android:name=".ui.media.activity.ActivityMediaCatalogue"
+            android:exported="false"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+
+            >
+
+        </activity>
+
         <activity
             android:name=".ui.main.activity.MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize"
-
+            android:screenOrientation="portrait"
             >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

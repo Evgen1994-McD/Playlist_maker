@@ -26,7 +26,7 @@ import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
-import com.example.playlistmaker.ui.player.activity.MediaActivity
+import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -374,7 +374,7 @@ viewModel.controlThemeInOtherWindows()
 
     fun getTrackIntentAndStart(track: Track, context: Context) {
         val intent =
-            Intent(context, MediaActivity::class.java) // создали интент для перехода на активити
+            Intent(context, PlayerActivity::class.java) // создали интент для перехода на активити
         intent.putExtra("trackName", track.trackName)
         if (!track.collectionName.isNullOrEmpty()) {
             intent.putExtra(

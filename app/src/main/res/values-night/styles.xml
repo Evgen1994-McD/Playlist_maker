@@ -116,7 +116,7 @@
         <item name="android:textSize">@dimen/standart_text_size_16sp</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:background">@drawable/edittext_background</item>
-        <item name="android:hint">@string/Search</item>
+        <item name="android:hint">@string/search</item>
 
         <item name="android:drawablePadding">@dimen/st_padding_icon</item>
         <item name="android:paddingStart">30dp</item>
@@ -211,6 +211,23 @@
         <item name="android:layout_gravity">center</item>
         <item name="cornerRadius">@dimen/button_nointernet_radius_54dp</item>
         <item name="textAllCaps">false</item>
+    </style>
+
+
+    <style name="tablayout_style" parent="Widget.MaterialComponents.TextView">
+        <item name="font">@font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/button_nts_txtsize_14sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="textAllCaps">false</item>
+        <item name="tabTextColor">@color/white</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabIndicatorColor">@color/white</item>
+        <item name="android:background">@color/black</item>
+        <item name="android:textStyle">bold</item>
+
+
+
     </style>
 
 

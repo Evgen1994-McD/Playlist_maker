@@ -43,7 +43,6 @@ android {
 
 dependencies {
 
-    implementation ("androidx.recyclerview:recyclerview:[1.2.1](1.2.1)")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -53,27 +52,20 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
     //Koin
-    val koinVersion = "3.3.0"
-    implementation ("io.insert-koin:koin-android:$koinVersion")
-
-
+    implementation(libs.koin)
     // ViewModel
-    val lifecycle_version = "2.6.1" // Убедитесь, что версия актуальна
-    implementation ("androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version")
-    implementation ("androidx.lifecycle:lifecycle-livedata:$lifecycle_version")
-
-        implementation ("androidx.fragment:fragment-ktx:1.6.1") // Используйте последнюю версию
-
-
-        implementation ("com.google.android.material:material:1.6.1")
-        implementation ("com.github.bumptech.glide:glide:4.14.2")
-        annotationProcessor ("com.github.bumptech.glide:compiler:4.14.2")
-    implementation ("com.google.code.gson:gson:2.10")
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.10.0")
+    implementation(libs.view.model)
+    // liveData
+    implementation(libs.live.data)
+    implementation(libs.fragment)
+implementation(libs.glide)
+annotationProcessor(libs.annotation.processor)
+implementation(libs.gson)
+    implementation(libs.retrofit)
+    implementation(libs.gson.converter)
+    implementation(libs.logger.interceptor)
+implementation(libs.recycler.view)
 
 
 

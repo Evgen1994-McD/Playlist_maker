@@ -1,13 +1,15 @@
 <resources>
     <string name="app_name">Playlist Maker</string>
-    <string name="Search" translatable="false">Поиск</string>
-    <string name="Media_name" translatable="false">Медиатека</string>
-    <string name="Settings_name" translatable="false">Настройки</string>
+    <string name="search" translatable="false">Поиск</string>
+    <string name="media_name" translatable="false">Медиатека</string>
+    <string name="settings_name" translatable="false">Настройки</string>
     <string name="dark_theme" translatable="false">Темная тема</string>
     <string name="share_name" translatable="false">Поделиться приложением</string>
     <string name="support_name" translatable="false">Написать в поддержку</string>
     <string name="user_assets_name" translatable="false">Пользовательское соглашение</string>
     <string name="search_toolbar" translatable="false">Поиск</string>
+
+
     <string name="subject" translatable="false">Сообщение разработчиками и разработчицам приложения Playlist Maker</string>
     <string name="body" translatable="false">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="address" translatable="false">mrmarwell@gmail.com</string>
@@ -24,7 +26,6 @@
     <string name="txt_nointernet_button" translatable="false">Обновить</string>
 
 
-
     <string name="Url_androidDeveloper" translatable="false">https://practicum.yandex.ru/android-developer/?from=catalog</string>
     <string name="Url_userasset" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
 
@@ -34,6 +35,10 @@
     <string name="txt_year_media" translatable="false">Год</string>
     <string name="txt_ganre_media" translatable="false">Жанр</string>
     <string name="txt_country_media" translatable="false">Страна</string>
+
+
+    <string name="tab1txt" translatable="false">Избранные треки</string>
+    <string name="tab2txt" translatable="false">Плейлисты</string>
 
 
 

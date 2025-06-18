@@ -13,15 +13,15 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaBinding
-import com.example.playlistmaker.ui.player.viewModel.MediaPlayerCommand
-import com.example.playlistmaker.ui.player.viewModel.MediaViewModel
+import com.example.playlistmaker.ui.player.viewModel.PlayerCommand
+import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.getValue
 
-class MediaActivity : AppCompatActivity() {
+class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
-    private  val viewModel: MediaViewModel by viewModel { parametersOf(intent) }
+    private  val viewModel: PlayerViewModel by viewModel { parametersOf(intent) }
 
 
     companion object { // компаньон медиаплеера
@@ -47,6 +47,10 @@ viewModel.addListeners() // добавил листенеры
 
 viewModel.controlThemeInOtherWindows()
             viewModel.intentGetExtraBind()
+
+
+
+
 
             viewModel.getLiveData.observe(this){ newState ->
               if (newState.isPlaying ==false) {
@@ -89,11 +93,11 @@ viewModel.controlThemeInOtherWindows()
 
 
         binding.play.setOnClickListener {
-            viewModel.mediaCommander(MediaPlayerCommand.Play)
+            viewModel.mediaCommander(PlayerCommand.Play)
             viewModel.startUpdateProgress()
         }
         binding.pause.setOnClickListener {
-            viewModel.mediaCommander(MediaPlayerCommand.Pause)
+            viewModel.mediaCommander(PlayerCommand.Pause)
 viewModel.stopUpdateProgress()
         }
     }
@@ -115,7 +119,7 @@ viewModel.stopUpdateProgress()
     }
 
     fun showAudioPlayerScreen() { // Восстановим активность
-        val intent = Intent(this, MediaActivity::class.java) // Восстановим активность
+        val intent = Intent(this, PlayerActivity::class.java) // Восстановим активность
         startActivity(intent) // Восстановим активность
     }
 
@@ -134,7 +138,7 @@ viewModel.stopUpdateProgress()
 
     override fun onPause() { //пауза когда сворачиваем
         super.onPause()
-        viewModel.mediaCommander(MediaPlayerCommand.Pause)
+        viewModel.mediaCommander(PlayerCommand.Pause)
         viewModel.stopUpdateProgress()
 
     }

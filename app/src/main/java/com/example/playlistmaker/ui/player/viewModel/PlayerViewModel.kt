@@ -13,11 +13,11 @@ import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
 
-class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
-                     private val favoriteTrackInteractor: FavoriteTrackInteractor,
-                     private val mediaInteractor: MediaInteractor,
-                     private val application: Application,
-    private val intent: Intent
+class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
+                      private val favoriteTrackInteractor: FavoriteTrackInteractor,
+                      private val mediaInteractor: MediaInteractor,
+                      private val application: Application,
+                      private val intent: Intent
 
 ) : AndroidViewModel(application) {
 
@@ -30,10 +30,11 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
 
 
     private val mutableMediaScreen = MutableLiveData(
-        MediaScreenState()
+        PlayerScreenState()
     )
 
-    val getLiveData: LiveData<MediaScreenState> get() = mutableMediaScreen
+
+    val getLiveData: LiveData<PlayerScreenState> get() = mutableMediaScreen
     private val handler = Handler(Looper.getMainLooper()) // хэндлер для доступа к главному потоку
 
 
@@ -77,15 +78,15 @@ class MediaViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     }
 
 
-    fun mediaCommander(command: MediaPlayerCommand) {
+    fun mediaCommander(command: PlayerCommand) {
         when (command) {
-            is MediaPlayerCommand.Play -> {
+            is PlayerCommand.Play -> {
                 mediaInteractor.startPlayback()
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isPlaying = true)
                 startUpdateProgress()
 
             }
-            is MediaPlayerCommand.Pause -> {
+            is PlayerCommand.Pause -> {
                 stopUpdateProgress()
             mediaInteractor.pausePlayback()
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isPlaying = false)
