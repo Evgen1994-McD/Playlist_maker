@@ -10,17 +10,17 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediaBinding
 import com.example.playlistmaker.ui.media.activity.ActivityMediaCatalogue.Companion.savedPage
 import com.example.playlistmaker.ui.media.viewmodel.MediaFragmentViewModel
-import com.example.playlistmaker.ui.media.vp2adapter.PagerAdapter
 import com.example.playlistmaker.ui.media.vp2adapter.VpAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class MediaFragment : Fragment() {
 private lateinit var binding: FragmentMediaBinding
     private val pager by lazy { binding.viewpager }
     private val tabs by lazy { binding.tabLayout}
     private val vpAdapter by lazy { VpAdapter(this)}
-    private val viewModel: MediaFragmentViewModel by viewModels()
+    private val mediaFragmentViewModel: MediaFragmentViewModel by activityViewModel()   // Вью модел привязываем к активити!
 
 
 
@@ -34,7 +34,7 @@ private lateinit var binding: FragmentMediaBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        viewModel.controlThemeInOtherWindows()
+        mediaFragmentViewModel.controlThemeInOtherWindows()
 
 // Явно добавляем listener для обработки кликов по вкладкам
         tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

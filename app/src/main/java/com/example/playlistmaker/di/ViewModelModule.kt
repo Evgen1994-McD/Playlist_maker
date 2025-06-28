@@ -50,9 +50,9 @@ import org.koin.dsl.module
 //Ниже рефакторинг на фрагмент
 
 
-        viewModel{ // описать получение юз кейсов в интерактор модуле
-            MediaFragmentViewModel(get())
-        }
+            viewModel{ // описать получение юз кейсов в интерактор модуле
+                MediaFragmentViewModel(get())
+            }
 
     }
 
