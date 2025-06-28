@@ -10,19 +10,11 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.ui.main.viewModel.MainViewModel
-import com.example.playlistmaker.ui.media.activity.ActivityMediaCatalogue
-import com.example.playlistmaker.ui.search.activity.SearchActivity
-import com.example.playlistmaker.ui.settings.activity.SettingsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding : ActivityMainBinding
     private val viewModel by viewModel<MainViewModel>()
-
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -40,28 +32,6 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.controlThemeInOtherWindows()
 
-
-            val searchClicker = binding.searchDay
-            searchClicker.setOnClickListener(object : View.OnClickListener {
-                override fun onClick(v: View?) {
-                    val context = v?.context ?: return // Получаем контекст из представления
-                    val displayIntentSrc = Intent(context, SearchActivity::class.java)
-                    startActivity(displayIntentSrc)
-
-                }
-            })
-            val mediaClicker = binding.mediaDay
-            mediaClicker.setOnClickListener {
-                val mediaCatalogueIntent = Intent(this, ActivityMediaCatalogue::class.java)
-startActivity(mediaCatalogueIntent)
-
-
-            }
-            val settingsClicker = binding.settingsDay
-            settingsClicker.setOnClickListener {
-                val displayIntent = Intent(this, SettingsActivity::class.java)
-                startActivity(displayIntent)
-            }
 
 
 

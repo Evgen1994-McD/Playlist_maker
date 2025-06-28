@@ -51,6 +51,7 @@
             android:exported="true"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
+            tools:ignore="IntentFilterExportedReceiver"
             >
 
             <intent-filter>

@@ -3,6 +3,7 @@ package com.example.playlistmaker.di
 import ActivityMediaCatalogueViewModel
 import com.example.playlistmaker.ui.main.viewModel.MainViewModel
 import com.example.playlistmaker.ui.media.viewmodel.FavoriteFragmentViewModel
+import com.example.playlistmaker.ui.media.viewmodel.MediaFragmentViewModel
 import com.example.playlistmaker.ui.media.viewmodel.PlaylistFragmentViewModel
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
@@ -44,6 +45,13 @@ import org.koin.dsl.module
         }
         viewModel{ // описать получение юз кейсов в интерактор модуле
             PlaylistFragmentViewModel(get())
+        }
+
+//Ниже рефакторинг на фрагмент
+
+
+        viewModel{ // описать получение юз кейсов в интерактор модуле
+            MediaFragmentViewModel(get())
         }
 
     }
