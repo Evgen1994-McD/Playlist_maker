@@ -13,7 +13,7 @@ import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
 
-class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
+class PlayerViewModelDepricate(private val switchThemeUseCase: SwitchThemeUseCase,
                                private val favoriteTrackInteractor: FavoriteTrackInteractor,
                                private val mediaInteractor: MediaInteractor,
                                private val application: Application,
@@ -88,7 +88,7 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
             }
             is PlayerCommand.Pause -> {
                 stopUpdateProgress()
-                mediaInteractor.pausePlayback()
+            mediaInteractor.pausePlayback()
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isPlaying = false)
 
             }
@@ -190,7 +190,7 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
 
 
 
-}
+    }
 
 
 

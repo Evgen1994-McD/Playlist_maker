@@ -3,37 +3,42 @@ package com.example.playlistmaker.ui.search.activity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity.INPUT_METHOD_SERVICE
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
 import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.FragmentMediaBinding
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.player.activity.PlayerActivity
+import com.example.playlistmaker.ui.search.adapters.TrackAdapter
+import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
+import com.example.playlistmaker.ui.search.viewModel.SearchViewModel2
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity(),
-    OnTrackClickListener {  // Добавили имлементацию нашего интерфейса OnTrackClickListener для того чтобы определить трек
+class SearchFragment : Fragment(), OnTrackClickListener {
+    private val viewModel: SearchViewModel2 by activityViewModel()
     private lateinit var searchEditText: AppCompatEditText
-    private lateinit var binding: ActivitySearchBinding // делаю байдинг
     private lateinit var txtForSearch: String
     private var textFromInput: String = null.toString()
     private val keyForWatcher: String =
@@ -46,24 +51,35 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var tvMsgSearch: TextView
     private lateinit var btCleanHistory: TextView
     private lateinit var pbs: ProgressBar
-    private val viewModel by viewModel<SearchViewModel>()
+private lateinit var binding: FragmentSearchBinding
 
 
-    @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        enableEdgeToEdge()
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.searchLayout)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
 
+    }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+if (savedInstanceState?.getString(keyForWatcher)!= null) {
+    var clearEditText: EditText =  // инициализирую эдиттекст
+        binding.searchStroke
+    // Извлечение данных из Bundle
+    val savedText = savedInstanceState.getString(keyForWatcher)
+    if (savedText != null) {
+        clearEditText.setText(savedText)
+    }
+
+}
 
         viewModel.controlThemeInOtherWindows()
 
@@ -75,7 +91,7 @@ class SearchActivity : AppCompatActivity(),
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
             viewModel.getAllTracks()
             // Наблюдаем сразу за обоими источниками данных
-            viewModel.getLiveData.observe(this) { newState ->
+            viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
                 when {
                     newState.isLoading -> pbs.makeVisible()
                     !newState.errorMessage.isNullOrEmpty() && !newState.isLoading && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
@@ -172,13 +188,9 @@ class SearchActivity : AppCompatActivity(),
         }
 
 
-        val backClicker =
-            binding.searchToolbar// Назад в MainActivity
-        backClicker.setNavigationOnClickListener {
-            finish()
-        }
+
         val inputMethodManager =
-            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager // Для того чтобы спрятать клаву
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // Для того чтобы спрятать клаву
 
         savedInstanceState?.let {     // Проверяем, есть ли сохранённый текст в эдит тексте
             val savedText = it.getString(keyForWatcher)
@@ -235,32 +247,23 @@ class SearchActivity : AppCompatActivity(),
         outState.putString(keyForWatcher, textFromInput)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        var clearEditText: EditText =  // инициализирую эдиттекст
-            findViewById<AppCompatEditText>(R.id.search_stroke)
-        // Извлечение данных из Bundle
-        val savedText = savedInstanceState.getString(keyForWatcher)
-        if (savedText != null) {
-            clearEditText.setText(savedText)
-        }
-    }
+
 
     private fun logicClearIc(s: CharSequence?) {
         searchEditText =  // инициализирую эдиттекст
             binding.searchStroke
         if (!s.isNullOrBlank()) {  // Перенести в функцию
             searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                ContextCompat.getDrawable(this@SearchActivity, R.drawable.ic_hintsearch_16),
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_hintsearch_16),
                 null,
-                ContextCompat.getDrawable(this@SearchActivity, R.drawable.ic_clear_16),
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_clear_16),
                 null
             )
             textFromInput = s.toString()
 
         } else {
             searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                ContextCompat.getDrawable(this@SearchActivity, R.drawable.ic_hintsearch_16),
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_hintsearch_16),
                 null,
                 null,
                 null
@@ -274,7 +277,7 @@ class SearchActivity : AppCompatActivity(),
         searchEditText =
             binding.searchStroke
         val inputMethodManager =
-            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         searchEditText.setOnTouchListener { view, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 val drawableEndBounds = searchEditText.compoundDrawables[2]?.bounds
@@ -286,10 +289,16 @@ class SearchActivity : AppCompatActivity(),
                     ) {
                         searchEditText.text?.clear()
                         inputMethodManager.hideSoftInputFromWindow(
-                            currentFocus?.windowToken,
+                            view?.windowToken,
                             0
                         ) // Прячем клаву
                         // чистим эдит текст
+
+
+
+
+
+
                         recyclerView.makeInvisible() // убрали список треков при очистке эдиттекста
 
                         msgTopTxt.makeGone()  //Убрали сообщение топ
@@ -310,7 +319,7 @@ class SearchActivity : AppCompatActivity(),
 
     // Вспомогательные методы
     private fun handleNoResults() {
-        val phNts = ContextCompat.getDrawable(this, R.drawable.ph_nothing_to_show_120)
+        val phNts = ContextCompat.getDrawable(requireContext(), R.drawable.ph_nothing_to_show_120)
         phForNothingToShow.setImageDrawable(phNts)
         phForNothingToShow.makeVisible()
         msgTopTxt.makeVisible()
@@ -328,13 +337,13 @@ class SearchActivity : AppCompatActivity(),
         msgBotTxt.makeGone()
         msgTopTxt.makeGone()
         buttonNoInternet.makeGone()
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = TrackAdapter(tracks, this)
         recyclerView.makeVisible()
     }
 
     private fun handleNoInternetConnection() {
-        val phNts = ContextCompat.getDrawable(this, R.drawable.ph_no_internet_120)
+        val phNts = ContextCompat.getDrawable(requireContext(), R.drawable.ph_no_internet_120)
         phForNothingToShow.setImageDrawable(phNts)
         phForNothingToShow.makeVisible()
         msgTopTxt.makeVisible()
@@ -361,7 +370,7 @@ class SearchActivity : AppCompatActivity(),
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек
-        getTrackIntentAndStart(track, this)
+        getTrackIntentAndStart(track, requireContext())
         viewModel.addTrackToFavorite(track)
 
     }
@@ -395,3 +404,5 @@ class SearchActivity : AppCompatActivity(),
 
 
 }
+
+

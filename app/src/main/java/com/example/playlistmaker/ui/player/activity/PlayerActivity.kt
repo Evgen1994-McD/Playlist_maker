@@ -14,14 +14,14 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.ui.player.viewModel.PlayerCommand
-import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
+import com.example.playlistmaker.ui.player.viewModel.PlayerViewModelDepricate
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.getValue
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMediaBinding // делаю байдинг
-    private  val viewModel: PlayerViewModel by viewModel { parametersOf(intent) }
+    private  val viewModel: PlayerViewModelDepricate by viewModel { parametersOf(intent) }
 
 
     companion object { // компаньон медиаплеера

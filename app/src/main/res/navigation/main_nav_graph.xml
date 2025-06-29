@@ -13,5 +13,36 @@
 
 
 
+        >
+        <action
+            android:id="@+id/action_mediaFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_mediaFragment_to_playerFragment2"
+            app:destination="@id/playerFragment" />
+        <action
+            android:id="@+id/action_mediaFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/playerFragment"
+        android:name="com.example.playlistmaker.ui.player.fragments.PlayerFragment"
+        android:label="PlayerFragment"
+        tools:layout="@layout/fragment_player"
+
+        />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.playlistmaker.ui.search.activity.SearchFragment"
+        android:label="SearchFragment"
+        tools:layout="@layout/fragment_search"
+
+        />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.playlistmaker.ui.settings.activity.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings"
+
         />
 </navigation>

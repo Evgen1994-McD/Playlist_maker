@@ -34,6 +34,10 @@ private lateinit var binding: FragmentMediaBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+
+
+
+
         mediaFragmentViewModel.controlThemeInOtherWindows()
 
 // Явно добавляем listener для обработки кликов по вкладкам
