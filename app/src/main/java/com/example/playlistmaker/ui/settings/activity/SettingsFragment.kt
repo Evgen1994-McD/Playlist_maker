@@ -64,13 +64,13 @@ class SettingsFragment : Fragment() {
 
 
 // Подписка на получение изменений из LiveData
-        viewModel.getLiveData.observe(viewLifecycleOwner) { currentTheme ->
-            if (currentTheme != switcherTheme.isChecked && !isUpdatingUI) {
-                isUpdatingUI = true // Блокируем UI-обновления на время операции
-                switcherTheme.isChecked = currentTheme
-                isUpdatingUI = false // Разрешаем последующие обновления
-            }
-        }
+//        viewModel.getLiveData.observe(viewLifecycleOwner) { currentTheme ->
+//            if (currentTheme != switcherTheme.isChecked && !isUpdatingUI) {
+//                isUpdatingUI = true // Блокируем UI-обновления на время операции
+//                switcherTheme.isChecked = currentTheme
+//                isUpdatingUI = false // Разрешаем последующие обновления
+//            }
+//        }
 
 // Установка обработчика изменений
         switcherTheme.setOnCheckedChangeListener { _, isChecked ->

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import com.example.playlistmaker.databinding.PlaylistFragmentBinding
 import com.example.playlistmaker.ui.media.viewmodel.PlaylistFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -33,7 +34,7 @@ class PlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        viewModel.controlThemeInOtherWindows()
+
 
 
         showPlaylists()

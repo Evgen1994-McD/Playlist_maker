@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets }
 
-        viewModelMain.controlThemeInOtherWindows()
+//        viewModelMain.controlThemeInOtherWindows()
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController =  navHostFragment.navController

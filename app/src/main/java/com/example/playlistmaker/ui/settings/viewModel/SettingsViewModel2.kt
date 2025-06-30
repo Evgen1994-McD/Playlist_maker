@@ -45,28 +45,6 @@ class SettingsViewModel2(
 
 
 
-    class CustomViewModelSettingsFactory(
-        private val switchThemeUseCase: SwitchThemeUseCase,
-        private val shareAppUseCase: ShareAppUseCase,
-        private val sendToSuppUse : SendSuppEmailUseCase,
-        private val openUriUseCase : OpenUrlUseCase
-
-    ) : ViewModelProvider.NewInstanceFactory() {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return when {
-                modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(
-                    switchThemeUseCase,
-                    shareAppUseCase,
-                    sendToSuppUse,
-                    openUriUseCase
-                ) as T
-
-                else -> throw IllegalArgumentException("Unknown ViewModel class")
-            }
-        }
-    }
 
     var currentThemeLiveData = MutableLiveData<Boolean>()
 

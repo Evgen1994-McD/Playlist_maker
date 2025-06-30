@@ -16,13 +16,12 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class MediaFragment : Fragment() {
-private lateinit var binding: FragmentMediaBinding
-    private  val pager by lazy { binding.viewpager }
-    private val tabs by lazy { binding.tabLayout}
-    private val vpAdapter by lazy { VpAdapter(this)}
-    private val mediaFragmentViewModel: MediaFragmentViewModel by activityViewModel()   // Вью модел привязываем к активити!
-
-
+    private lateinit var binding: FragmentMediaBinding
+    private val pager by lazy { binding.viewpager }
+    private val tabs by lazy { binding.tabLayout }
+    private val vpAdapter by lazy { VpAdapter(this) }
+    private val mediaFragmentViewModel: MediaFragmentViewModel by activityViewModel()
+    private var currentPagePosition = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,57 +29,39 @@ private lateinit var binding: FragmentMediaBinding
     ): View {
         binding = FragmentMediaBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (savedInstanceState != null) {
-            val pagePosition = savedInstanceState.getInt(savedPage, 0)
-            pager.currentItem = pagePosition
+        super.onViewCreated(view, savedInstanceState)
+
+        // Получаем сохранённую позицию вкладки
+        savedInstanceState?.let {
+            currentPagePosition = it.getInt(savedPage, 0)
         }
 
+        setupTabsAndPager()
 
-
-//
-        mediaFragmentViewModel.controlThemeInOtherWindows()
-
-// Явно добавляем listener для обработки кликов по вкладкам
+        // Следим за сменой вкладок
         tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                // Убедимся, что при выборе вкладки позиция ViewPager2 обновляется
-                pager.currentItem = tab.position
+                currentPagePosition = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
 
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
-
-
-
-        /*
-        На всякий случай добавил выше слушатель нажатий на таб, но вроде бы без них работает тоже
-        Проблема нажатий на больших экранах была в кривой разметке, вроде бы и так сейчас все работает, но пока оставлю
-         */
-
-
-
-        setupTabsAndPager(savedInstanceState)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         // Сохраняем текущее положение вкладки
-        outState.putInt(savedPage, pager.currentItem)
+        outState.putInt(savedPage, currentPagePosition)
     }
 
-    private fun setupTabsAndPager(savedInstanceState: Bundle?) {
-
-
+    private fun setupTabsAndPager() {
         pager.adapter = vpAdapter
-        savedInstanceState?.let {
-            pager.currentItem = it.getInt(savedPage, 0)
-        }
+        pager.currentItem = currentPagePosition
 
         TabLayoutMediator(tabs, pager) { tab, position ->
             when (position) {
@@ -88,8 +69,5 @@ private lateinit var binding: FragmentMediaBinding
                 1 -> tab.text = getString(R.string.tab2txt)
             }
         }.attach()
-
     }
-
-
 }
