@@ -63,6 +63,7 @@ class MediaFragment : Fragment() {
         pager.adapter = vpAdapter
         pager.currentItem = currentPagePosition
 
+
         TabLayoutMediator(tabs, pager) { tab, position ->
             when (position) {
                 0 -> tab.text = getString(R.string.tab1txt)
