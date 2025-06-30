@@ -19,7 +19,7 @@ class FavoriteTrakListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-viewModel.controlThemeInOtherWindows()
+//viewModel.controlThemeInOtherWindows()
     }
 
 
@@ -45,8 +45,8 @@ showFavoriteTracks()
                 binding.msgTxtBottom.makeVisible()
             } else {
                 with(binding){
-                    phNtsh.makeGone()
-                    msgTxtBottom.makeGone()
+                    phNtsh.makeVisible()
+                    msgTxtBottom.makeVisible()
                 }
             }
 /*

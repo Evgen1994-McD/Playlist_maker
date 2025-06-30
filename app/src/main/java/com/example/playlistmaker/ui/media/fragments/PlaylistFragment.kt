@@ -16,7 +16,6 @@ class PlaylistFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.controlThemeInOtherWindows()
     }
 
 
@@ -34,6 +33,9 @@ class PlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+//        viewModel.controlThemeInOtherWindows()
+
+
         showPlaylists()
         viewModel.getLiveData.observe(viewLifecycleOwner){ new ->
             if(new==false) {
@@ -41,8 +43,8 @@ class PlaylistFragment : Fragment() {
                 binding.msgTxtBottom.makeVisible()
             } else {
                 with(binding){
-                    phNtsh2.makeGone()
-                    msgTxtBottom.makeGone()
+                    phNtsh2.makeVisible()
+                    msgTxtBottom.makeVisible()
                 }
             }
             /*

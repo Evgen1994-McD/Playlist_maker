@@ -75,6 +75,7 @@ class SettingsFragment : Fragment() {
 // Установка обработчика изменений
         switcherTheme.setOnCheckedChangeListener { _, isChecked ->
             if (!isUpdatingUI) {
+
                 viewModel.controlTHemeBySwitcher(isChecked)
             }
         }

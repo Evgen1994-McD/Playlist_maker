@@ -81,7 +81,7 @@ if (savedInstanceState?.getString(keyForWatcher)!= null) {
 
 }
 
-        viewModel.controlThemeInOtherWindows()
+//        viewModel.controlThemeInOtherWindows()
 
 
         searchEditText =  // инициализирую эдиттекст

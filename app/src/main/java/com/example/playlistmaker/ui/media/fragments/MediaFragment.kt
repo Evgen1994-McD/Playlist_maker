@@ -17,7 +17,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class MediaFragment : Fragment() {
 private lateinit var binding: FragmentMediaBinding
-    private val pager by lazy { binding.viewpager }
+    private  val pager by lazy { binding.viewpager }
     private val tabs by lazy { binding.tabLayout}
     private val vpAdapter by lazy { VpAdapter(this)}
     private val mediaFragmentViewModel: MediaFragmentViewModel by activityViewModel()   // Вью модел привязываем к активити!
@@ -30,14 +30,18 @@ private lateinit var binding: FragmentMediaBinding
     ): View {
         binding = FragmentMediaBinding.inflate(inflater, container, false)
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val pagePosition = savedInstanceState.getInt(savedPage, 0)
+            pager.currentItem = pagePosition
+        }
 
 
 
-
-
+//
         mediaFragmentViewModel.controlThemeInOtherWindows()
 
 // Явно добавляем listener для обработки кликов по вкладкам
@@ -67,7 +71,7 @@ private lateinit var binding: FragmentMediaBinding
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         // Сохраняем текущее положение вкладки
-        outState.putInt(savedPage, binding.viewpager.currentItem)
+        outState.putInt(savedPage, pager.currentItem)
     }
 
     private fun setupTabsAndPager(savedInstanceState: Bundle?) {
