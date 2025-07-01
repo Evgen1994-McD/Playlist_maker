@@ -15,7 +15,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private val viewModelMain by viewModel<MainViewModel>()
-
+var isUpdating = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +28,8 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets }
 
-//        viewModelMain.controlThemeInOtherWindows()
+
+viewModelMain.controlThemeInOtherWindows()
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController =  navHostFragment.navController

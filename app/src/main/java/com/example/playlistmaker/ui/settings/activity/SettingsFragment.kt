@@ -18,6 +18,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SettingsFragment : Fragment() {
 
     private var isUpdatingUI = false
+    private var currentThemeChanger = 0
 
     private lateinit var binding: FragmentSettingsBinding
     private val viewModel: SettingsViewModel2 by activityViewModel()
@@ -63,19 +64,14 @@ class SettingsFragment : Fragment() {
 
 
 
-// Подписка на получение изменений из LiveData
-//        viewModel.getLiveData.observe(viewLifecycleOwner) { currentTheme ->
-//            if (currentTheme != switcherTheme.isChecked && !isUpdatingUI) {
-//                isUpdatingUI = true // Блокируем UI-обновления на время операции
-//                switcherTheme.isChecked = currentTheme
-//                isUpdatingUI = false // Разрешаем последующие обновления
-//            }
-//        }
+
 
 // Установка обработчика изменений
+
+switcherTheme.isChecked = viewModel.getLiveData.value as Boolean
+
         switcherTheme.setOnCheckedChangeListener { _, isChecked ->
             if (!isUpdatingUI) {
-
                 viewModel.controlTHemeBySwitcher(isChecked)
             }
         }
