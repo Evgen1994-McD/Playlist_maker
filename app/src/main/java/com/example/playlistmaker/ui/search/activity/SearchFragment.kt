@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity.INPUT_METHOD_SERVICE
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
@@ -382,24 +383,31 @@ if (savedInstanceState?.getString(keyForWatcher)!= null) {
 
 
     fun getTrackIntentAndStart(track: Track, context: Context) {
-        val intent =
-            Intent(context, PlayerActivity::class.java) // создали интент для перехода на активити
-        intent.putExtra("trackName", track.trackName)
-        if (!track.collectionName.isNullOrEmpty()) {
-            intent.putExtra(
-                "collectionName",
-                track.collectionName
-            )  // отправим альбом только если он есть
-        }
-        intent.putExtra("trackTimeMillis", track.trackTimeMillis)
-        intent.putExtra("artistName", track.artistName)
-        intent.putExtra("primaryGenreName", track.primaryGenreName)
-        intent.putExtra("country", track.country)
-        intent.putExtra("artworkUrl100", track.artworkUrl100)
-        intent.putExtra("previewUrl", track.previewUrl)
+val bundle = Bundle().apply {
+    putSerializable("track", track)
 
-        intent.putExtra("relieseDate", track.releaseDate)
-        context.startActivity(intent)
+}
+        findNavController().navigate(R.id.action_searchFragment_to_playerFragment,bundle)
+
+//
+//        val intent =
+//            Intent(context, PlayerActivity::class.java) // создали интент для перехода на активити
+//        intent.putExtra("trackName", track.trackName)
+//        if (!track.collectionName.isNullOrEmpty()) {
+//            intent.putExtra(
+//                "collectionName",
+//                track.collectionName
+//            )  // отправим альбом только если он есть
+//        }
+//        intent.putExtra("trackTimeMillis", track.trackTimeMillis)
+//        intent.putExtra("artistName", track.artistName)
+//        intent.putExtra("primaryGenreName", track.primaryGenreName)
+//        intent.putExtra("country", track.country)
+//        intent.putExtra("artworkUrl100", track.artworkUrl100)
+//        intent.putExtra("previewUrl", track.previewUrl)
+//
+//        intent.putExtra("relieseDate", track.releaseDate)
+//        context.startActivity(intent)
     }
 
 
