@@ -22,15 +22,18 @@ import com.example.playlistmaker.ui.player.viewModel.PlayerCommand
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModelDepricate
 import com.example.playlistmaker.utils.getTrackFromArguments
+import org.koin.android.scope.createScope
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinComponent
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.parametersOf
+import org.koin.core.scope.Scope
 
-class PlayerFragment : Fragment() {
+class PlayerFragment : Fragment(){
 
     private lateinit var binding: FragmentPlayerBinding // делаю байдинг
     private  val viewModel: PlayerViewModel by activityViewModel { parametersOf(getTrackFromArguments()) }
-
 
     companion object { // компаньон медиаплеера
          private const val noAlbum = "No Album"
@@ -43,7 +46,6 @@ class PlayerFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -132,11 +134,7 @@ class PlayerFragment : Fragment() {
 
 
 
-//    fun showAudioPlayerScreen() { // Восстановим активность
-//        val intent = Intent(requireContext(), PlayerActivity::class.java) // Восстановим активность
-//        startActivity(intent) // Восстановим активность
-//
-//    }
+
 
 
     private fun View.makeGone() {
@@ -156,16 +154,21 @@ class PlayerFragment : Fragment() {
         viewModel.mediaCommander(PlayerCommand.Pause)
         viewModel.stopUpdateProgress()
 
+
+
     }
 
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
+
         viewModel.reliesePlayer()
         viewModel.getLiveData.removeObservers(this) // отключил обсерверы от медиа
 
 
 
+
     }
+
 
 
 

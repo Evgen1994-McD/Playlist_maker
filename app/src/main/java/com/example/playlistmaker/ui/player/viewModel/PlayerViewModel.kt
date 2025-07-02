@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
@@ -21,7 +22,7 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
                                private val application: Application,
     private val trackFromArgs: Track
 
-) : AndroidViewModel(application) {
+) : ViewModel(){
 
     companion object { // компаньон медиаплеера
         private const val default_time = "00:00" // для прогресса
