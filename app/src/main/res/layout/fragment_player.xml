@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    style="@style/Day_night_backGround_media"
+    style="@style/Settings_Day_night_style"
 >
 
 
