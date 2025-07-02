@@ -1,5 +1,7 @@
 package com.example.playlistmaker.di
-
+import org.koin.core.scope.Scope
+import org.koin.dsl.module
+import org.koin.dsl.scoped
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -11,6 +13,7 @@ import com.example.playlistmaker.data.search.network.NetworkClient
 import com.example.playlistmaker.data.search.network.RetrofitNetworkClient
 import com.example.playlistmaker.domain.search.FavoriteTrackRepository
 import com.example.playlistmaker.domain.search.TrackRepository
+import com.example.playlistmaker.ui.player.fragments.PlayerFragment
 import com.example.playlistmaker.utils.Constants
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
@@ -36,12 +39,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 
         single { Gson() }  // это Gson()
 
-        factory<MediaPlayer>{  //инициализировал медиаплеер
-            MediaPlayer()
+//        factory<MediaPlayer>{  //инициализировал медиаплеер
+//            MediaPlayer()
+//        }
+
+        scope<PlayerFragment> {
+            scoped { MediaPlayer()}
         }
-
-
-
 
         single<Application> {androidContext() as Application  }
 

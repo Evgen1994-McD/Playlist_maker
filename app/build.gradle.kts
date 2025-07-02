@@ -59,7 +59,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     //Koin
     implementation(libs.koin)
-//    implementation(libs.scopeForKoin)
+
 
     // ViewModel
     implementation(libs.view.model)
