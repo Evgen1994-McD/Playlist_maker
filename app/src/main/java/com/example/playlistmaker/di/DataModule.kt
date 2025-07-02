@@ -44,9 +44,9 @@ const val PLAYER_SCOPE_NAME = "player_scope"
 
         single { Gson() }  // это Gson()
 //
-//        factory<MediaPlayer>{  //инициализировал медиаплеер
-//            MediaPlayer()
-//        }
+        factory<MediaPlayer>{  //инициализировал медиаплеер
+            MediaPlayer()
+        }
 
 
         single<Application> { androidContext() as Application }
