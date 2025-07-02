@@ -19,12 +19,17 @@ import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.component.getScopeName
 import org.koin.core.module._scopedInstanceFactory
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+
+const val PLAYER_SCOPE_NAME = "player_scope"
+
+
     val dataModule = module {
-        single<ITunesApi>{ // это вызов itines aPi
+        single<ITunesApi> { // это вызов itines aPi
             val iTunesBaseUrl = "https://itunes.apple.com"
             Retrofit.Builder()
                 .baseUrl(iTunesBaseUrl)
@@ -38,16 +43,13 @@ import retrofit2.converter.gson.GsonConverterFactory
         }
 
         single { Gson() }  // это Gson()
-
+//
 //        factory<MediaPlayer>{  //инициализировал медиаплеер
 //            MediaPlayer()
 //        }
 
-        scope<PlayerFragment> {
-            scoped { MediaPlayer()}
-        }
 
-        single<Application> {androidContext() as Application  }
+        single<Application> { androidContext() as Application }
 
 
 
@@ -58,6 +60,13 @@ import retrofit2.converter.gson.GsonConverterFactory
         }
 
 
+// Константа для области видимости
+        scope(named(PLAYER_SCOPE_NAME)) {
+            scoped { MediaPlayer() }
 
+
+// Другие зависимости
+
+
+        }
     }
-

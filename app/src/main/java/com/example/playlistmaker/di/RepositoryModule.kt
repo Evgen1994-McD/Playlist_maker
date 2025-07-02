@@ -8,6 +8,7 @@ import com.example.playlistmaker.domain.player.MediaPlayerRepository
 import com.example.playlistmaker.domain.search.FavoriteTrackRepository
 import com.example.playlistmaker.domain.search.TrackRepository
 import com.example.playlistmaker.domain.settings.SettingsRepository
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 
@@ -27,7 +28,7 @@ import org.koin.dsl.module
         }
 
         factory<MediaPlayerRepository>{
-            MediaPlayerRepositoryImpl(get())
+            MediaPlayerRepositoryImpl(get(named(PLAYER_SCOPE_NAME)))
         }
 
 

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -22,21 +23,29 @@ import com.example.playlistmaker.ui.player.viewModel.PlayerCommand
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModelDepricate
 import com.example.playlistmaker.utils.getTrackFromArguments
+import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.createScope
+import org.koin.androidx.scope.scope
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
+import org.koin.dsl.koinApplication
 
 class PlayerFragment : Fragment(){
 
     private lateinit var binding: FragmentPlayerBinding // делаю байдинг
     private  val viewModel: PlayerViewModel by activityViewModel { parametersOf(getTrackFromArguments()) }
 
+
     companion object { // компаньон медиаплеера
          private const val noAlbum = "No Album"
+
+            const val PLAYER_SCOPE_NAME = "player_scope"
 
     }
 
@@ -46,6 +55,8 @@ class PlayerFragment : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+createScope(PLAYER_SCOPE_NAME)
+
     }
 
     override fun onCreateView(
