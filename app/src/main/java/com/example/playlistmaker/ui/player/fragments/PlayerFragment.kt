@@ -81,6 +81,35 @@ class PlayerFragment : Fragment(){
 
         viewModel.intentGetExtraBind()
 
+        composeTrack()
+
+
+        binding.play.setOnClickListener {
+            viewModel.mediaCommander(PlayerCommand.Play)
+            viewModel.startUpdateProgress()
+        }
+        binding.pause.setOnClickListener {
+            viewModel.mediaCommander(PlayerCommand.Pause)
+            viewModel.stopUpdateProgress()
+        }
+
+
+
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) { // Сохраняем факт видимости аудиоплеера
+        super.onSaveInstanceState(outState)// Сохраняем факт видимости аудиоплеера
+        outState.putBoolean("isAudioPlayerVisible", true) // Сохраняем факт видимости аудиоплеера
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.intentGetExtraBind()
+
+    }
+
+    private fun composeTrack(){
         viewModel.getLiveData.observe(viewLifecycleOwner){ newState ->
             if (newState.isPlaying ==false) {
                 binding.play.isEnabled
@@ -119,31 +148,6 @@ class PlayerFragment : Fragment(){
                 !newState.progress.isEmpty()  -> binding.progressTime.text = newState.progress
             }
         }
-
-
-        binding.play.setOnClickListener {
-            viewModel.mediaCommander(PlayerCommand.Play)
-            viewModel.startUpdateProgress()
-        }
-        binding.pause.setOnClickListener {
-            viewModel.mediaCommander(PlayerCommand.Pause)
-            viewModel.stopUpdateProgress()
-        }
-
-
-
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) { // Сохраняем факт видимости аудиоплеера
-        super.onSaveInstanceState(outState)// Сохраняем факт видимости аудиоплеера
-        outState.putBoolean("isAudioPlayerVisible", true) // Сохраняем факт видимости аудиоплеера
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.intentGetExtraBind()
-
     }
 
 
@@ -166,14 +170,13 @@ class PlayerFragment : Fragment(){
         viewModel.stopUpdateProgress()
 
 
-
     }
 
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
 
-//        viewModel.reliesePlayer()
-viewModel.stopPlayerAndReset()
+      viewModel.reliesePlayer()
+//viewModel.stopPlayerAndReset()
         viewModel.getLiveData.removeObservers(this) // отключил обсерверы от медиа
 
     }

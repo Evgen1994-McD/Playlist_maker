@@ -5,17 +5,23 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.ui.main.viewModel.MainViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private val viewModelMain by viewModel<MainViewModel>()
 var isUpdating = false
+    private lateinit var navHostFragment: NavHostFragment
+    private lateinit var navController:NavController
+    private lateinit var bottomNavigationView:BottomNavigationView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,9 +37,9 @@ var isUpdating = false
 
 viewModelMain.controlThemeInOtherWindows()
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
-        val navController =  navHostFragment.navController
-        val bottomNavigationView = binding.bottomNavigationView
+ navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+ navController =  navHostFragment.navController
+bottomNavigationView = binding.bottomNavigationView
         bottomNavigationView.setupWithNavController(navController)
 /*
 
@@ -43,9 +49,27 @@ viewModelMain.controlThemeInOtherWindows()
 3 Далее  надо лишь найти на данном экране BottomNavigationView и передать ему NavController при помощи простого метода setupWithNavController:
  */
 
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when(item.itemId) {
+                R.id.searchFragment -> navigateAndClearOldFragments(R.id.searchFragment)
+                R.id.mediaFragment -> navigateAndClearOldFragments(R.id.mediaFragment)
+                R.id.settingsFragment -> navigateAndClearOldFragments(R.id.settingsFragment)
+                else -> false
+            }
+        }
 
 
     }
+
+
+    private  fun navigateAndClearOldFragments(destinationId: Int): Boolean {
+        // Чистим стек навигации и переходим на указанный пункт
+        navController.popBackStack(NavDestination.NAVIGATION_TYPE_GLOBAL, false)
+        navController.navigate(destinationId)
+        return true
+    }
+
+
 
     override fun onDestroy() {
         super.onDestroy()
