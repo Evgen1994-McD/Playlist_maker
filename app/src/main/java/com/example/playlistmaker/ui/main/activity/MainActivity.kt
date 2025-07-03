@@ -61,10 +61,10 @@ bottomNavigationView = binding.bottomNavigationView
 
     }
 
-
+//
     private  fun navigateAndClearOldFragments(destinationId: Int): Boolean {
         // Чистим стек навигации и переходим на указанный пункт
-        navController.popBackStack(NavDestination.NAVIGATION_TYPE_GLOBAL, false)
+        navController.popBackStack()
         navController.navigate(destinationId)
         return true
     }

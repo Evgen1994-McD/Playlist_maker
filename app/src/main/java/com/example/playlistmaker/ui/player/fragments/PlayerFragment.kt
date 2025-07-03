@@ -176,7 +176,7 @@ class PlayerFragment : Fragment(){
         super.onDestroy()
 
       viewModel.reliesePlayer()
-//viewModel.stopPlayerAndReset()
+
         viewModel.getLiveData.removeObservers(this) // отключил обсерверы от медиа
 
     }
