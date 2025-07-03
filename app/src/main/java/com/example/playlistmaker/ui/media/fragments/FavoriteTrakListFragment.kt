@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoriteTrakListBinding
-import com.example.playlistmaker.ui.media.activity.ActivityMediaCatalogue
 import com.example.playlistmaker.ui.media.viewmodel.FavoriteFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 

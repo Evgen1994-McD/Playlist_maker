@@ -4,7 +4,6 @@ package com.example.playlistmaker.ui.settings.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 
 import com.example.playlistmaker.domain.settings.OpenUrlUseCase
 import com.example.playlistmaker.domain.settings.SendSuppEmailUseCase
@@ -18,11 +17,11 @@ class SettingsViewModel(
     private val sendToSuppUse : SendSuppEmailUseCase,
     private val openUriUseCase : OpenUrlUseCase
 ): ViewModel() {
-companion object{
+    companion object{
 
 
 
-}
+    }
 
     fun shareApp() {  // Метод - интент для отправки сообщений
         shareAppUseCase.shareApp()
@@ -30,13 +29,13 @@ companion object{
     }
 
 
-     fun openUrlInDefaultBrowser() {
+    fun openUrlInDefaultBrowser() {
 
         openUriUseCase.openUrlInDefaultBrowser()
     }
 
 
-     fun sendSuppEmail() {  // Приватный метод для письма в поддержку
+    fun sendSuppEmail() {  // Приватный метод для письма в поддержку
 
 
         sendToSuppUse.sendSuppEmail()
@@ -45,28 +44,6 @@ companion object{
 
 
 
-    class CustomViewModelSettingsFactory(
-        private val switchThemeUseCase: SwitchThemeUseCase,
-        private val shareAppUseCase: ShareAppUseCase,
-        private val sendToSuppUse : SendSuppEmailUseCase,
-        private val openUriUseCase : OpenUrlUseCase
-
-    ) : ViewModelProvider.NewInstanceFactory() {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return when {
-                modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(
-                    switchThemeUseCase,
-                    shareAppUseCase,
-                    sendToSuppUse,
-                    openUriUseCase
-                ) as T
-
-                else -> throw IllegalArgumentException("Unknown ViewModel class")
-            }
-        }
-    }
 
     var currentThemeLiveData = MutableLiveData<Boolean>()
 

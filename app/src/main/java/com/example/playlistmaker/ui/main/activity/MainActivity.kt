@@ -1,5 +1,7 @@
 package com.example.playlistmaker.ui.main.activity
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +20,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private val viewModelMain by viewModel<MainViewModel>()
-var isUpdating = false
     private lateinit var navHostFragment: NavHostFragment
     private lateinit var navController:NavController
     private lateinit var bottomNavigationView:BottomNavigationView

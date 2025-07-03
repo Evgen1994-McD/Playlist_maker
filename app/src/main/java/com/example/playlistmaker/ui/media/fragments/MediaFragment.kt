@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediaBinding
-import com.example.playlistmaker.ui.media.activity.ActivityMediaCatalogue.Companion.savedPage
 import com.example.playlistmaker.ui.media.viewmodel.MediaFragmentViewModel
 import com.example.playlistmaker.ui.media.vp2adapter.VpAdapter
 import com.google.android.material.tabs.TabLayout
@@ -22,6 +21,7 @@ class MediaFragment : Fragment() {
     private lateinit var pager: ViewPager2
     private lateinit var tabs: TabLayout
     private lateinit var vpAdapter: VpAdapter
+    private val savedPage = "savedPage"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

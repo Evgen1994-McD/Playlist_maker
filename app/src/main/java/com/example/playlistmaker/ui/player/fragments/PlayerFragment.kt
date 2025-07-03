@@ -25,7 +25,6 @@ import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 
 class PlayerFragment : Fragment(){
-   val myScope = createScope("myScope")
 
 
     private lateinit var binding: FragmentPlayerBinding // делаю байдинг

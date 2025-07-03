@@ -7,7 +7,6 @@ import android.os.Looper
 import com.example.playlistmaker.domain.search.TrackInteractor
 import com.example.playlistmaker.domain.search.TrackRepository
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import kotlinx.coroutines.Runnable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -45,27 +44,13 @@ class TracksInteractorImpl(
 
     }
 
-
-    override fun getTrackIntentAndStart(track: Track, context: Context) {
-        val intent =
-            Intent(context, PlayerActivity::class.java) // создали интент для перехода на активити
-        intent.putExtra("trackName", track.trackName)
-        if (!track.collectionName.isNullOrEmpty()) {
-            intent.putExtra(
-                "collectionName",
-                track.collectionName
-            )  // отправим альбом только если он есть
-        }
-        intent.putExtra("trackTimeMillis", track.trackTimeMillis)
-        intent.putExtra("artistName", track.artistName)
-        intent.putExtra("primaryGenreName", track.primaryGenreName)
-        intent.putExtra("country", track.country)
-        intent.putExtra("artworkUrl100", track.artworkUrl100)
-        intent.putExtra("previewUrl", track.previewUrl)
-
-        intent.putExtra("relieseDate", track.releaseDate)
-        context.startActivity(intent)
+    override fun getTrackIntentAndStart(
+        track: Track,
+        context: Context
+    ) {
+        TODO("Not yet implemented")
     }
+
 
     override fun clickDebounce(): Boolean {
 

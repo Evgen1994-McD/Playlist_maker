@@ -2,7 +2,6 @@ package com.example.playlistmaker.data.player.impl
 
 import android.media.MediaPlayer
 import android.util.Log
-import com.example.playlistmaker.di.PLAYER_SCOPE_NAME
 import com.example.playlistmaker.domain.player.MediaPlayerRepository
 import java.io.IOException
 import java.text.SimpleDateFormat

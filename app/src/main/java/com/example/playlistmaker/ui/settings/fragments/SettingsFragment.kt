@@ -1,19 +1,13 @@
-package com.example.playlistmaker.ui.settings.activity
+package com.example.playlistmaker.ui.settings.fragments
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.databinding.FragmentSettingsBinding
-import com.example.playlistmaker.databinding.SettingsBinding
 import com.example.playlistmaker.ui.settings.viewModel.SettingsViewModel
-import com.example.playlistmaker.ui.settings.viewModel.SettingsViewModel2
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment() {
 
@@ -21,7 +15,7 @@ class SettingsFragment : Fragment() {
     private var currentThemeChanger = 0
 
     private lateinit var binding: FragmentSettingsBinding
-    private val viewModel: SettingsViewModel2 by activityViewModel()
+    private val viewModel: SettingsViewModel by activityViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -25,7 +25,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-const val PLAYER_SCOPE_NAME = "player_scope"
 
 
     val dataModule = module {
@@ -60,13 +59,7 @@ const val PLAYER_SCOPE_NAME = "player_scope"
         }
 
 
-// Константа для области видимости
-        scope(named(PLAYER_SCOPE_NAME)) {
-            scoped { MediaPlayer() }
-
-
 // Другие зависимости
 
 
         }
-    }

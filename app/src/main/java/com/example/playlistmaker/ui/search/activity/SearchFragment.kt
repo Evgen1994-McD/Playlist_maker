@@ -2,8 +2,6 @@ package com.example.playlistmaker.ui.search.activity
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,28 +15,21 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity.INPUT_METHOD_SERVICE
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.databinding.FragmentMediaBinding
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
-import com.example.playlistmaker.ui.search.viewModel.SearchViewModel2
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment(), OnTrackClickListener {
-    private val viewModel: SearchViewModel2 by activityViewModel()
+    private val viewModel: SearchViewModel by activityViewModel()
     private lateinit var searchEditText: AppCompatEditText
     private lateinit var txtForSearch: String
     private var textFromInput: String = null.toString()
