@@ -20,6 +20,17 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPla
 
     private var playerState = STATE_IDLE
 
+
+    override fun stopPlayerAndReset(){
+        if (mediaPlayer.isPlaying){
+            mediaPlayer.stop()
+        }
+        mediaPlayer.reset()
+    }
+
+
+
+
     override fun preparePlayer(previewUrl: String) {
         if (playerState == STATE_IDLE) {
             try {

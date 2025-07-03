@@ -8,6 +8,11 @@ class MediaInteractorImpl(
 ) : MediaInteractor {
 
 
+
+    override fun stopPlayerAndReset(){
+        mediaPlayerRepository.stopPlayerAndReset()
+    }
+
     override fun preparePlayer(previewUrl: String) {
         mediaPlayerRepository.preparePlayer(previewUrl)
     }

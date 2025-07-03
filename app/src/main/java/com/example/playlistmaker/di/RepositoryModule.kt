@@ -28,7 +28,7 @@ import org.koin.dsl.module
         }
 
         factory<MediaPlayerRepository>{
-            MediaPlayerRepositoryImpl(get(named(PLAYER_SCOPE_NAME)))
+            MediaPlayerRepositoryImpl(get())
         }
 
 

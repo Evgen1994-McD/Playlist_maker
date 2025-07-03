@@ -42,6 +42,13 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     private val handler = Handler(Looper.getMainLooper()) // хэндлер для доступа к главному потоку
 
 
+
+    fun stopPlayerAndReset(){
+        mediaInteractor.stopPlayerAndReset()
+    }
+
+
+
     fun addListeners() {
         mediaInteractor.addListeners(
             ::onPlayerReady, ::onPlayComplete
@@ -70,6 +77,7 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     }
 
     fun stopUpdateProgress() {
+
         handler.removeCallbacksAndMessages(null) // функция отмены колбеков от хендлер
 
     }

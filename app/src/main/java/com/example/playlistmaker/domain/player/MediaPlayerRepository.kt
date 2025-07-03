@@ -8,4 +8,5 @@ interface MediaPlayerRepository {
     fun releasePlayer()
     fun addListeners(onPreparedListener: () -> Unit, onCompletionListener: () -> Unit)
     fun updateProgress(): String
+    fun stopPlayerAndReset()
 }

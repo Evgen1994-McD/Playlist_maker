@@ -1,51 +1,45 @@
 package com.example.playlistmaker.ui.player.fragments
 
-import android.content.Intent
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.TypedValue
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavOptions
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
-import com.example.playlistmaker.ui.player.activity.PlayerActivity
-import com.example.playlistmaker.ui.player.activity.PlayerActivity.Companion
 import com.example.playlistmaker.ui.player.viewModel.PlayerCommand
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
-import com.example.playlistmaker.ui.player.viewModel.PlayerViewModelDepricate
 import com.example.playlistmaker.utils.getTrackFromArguments
-import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.createScope
-import org.koin.androidx.scope.scope
+import org.koin.android.scope.getOrCreateScope
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.Koin
-import org.koin.core.component.KoinComponent
-import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
-import org.koin.dsl.koinApplication
 
 class PlayerFragment : Fragment(){
+   val myScope = createScope("myScope")
+
 
     private lateinit var binding: FragmentPlayerBinding // делаю байдинг
-    private  val viewModel: PlayerViewModel by activityViewModel { parametersOf(getTrackFromArguments()) }
+
+    private  val viewModel: PlayerViewModel by viewModel { parametersOf(getTrackFromArguments()) }
+
+        /*
+        by ViewModel привяжет вьюмодел к циклу жизни фрагмента
+         */
 
 
     companion object { // компаньон медиаплеера
          private const val noAlbum = "No Album"
 
-            const val PLAYER_SCOPE_NAME = "player_scope"
 
     }
 
@@ -55,7 +49,8 @@ class PlayerFragment : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-createScope(PLAYER_SCOPE_NAME)
+        viewModel.intentGetExtraBind()
+
 
     }
 
@@ -65,6 +60,7 @@ createScope(PLAYER_SCOPE_NAME)
     ): View {
         binding = FragmentPlayerBinding.inflate(layoutInflater, container, false)
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -144,7 +140,11 @@ createScope(PLAYER_SCOPE_NAME)
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.intentGetExtraBind()
 
+    }
 
 
 
@@ -172,10 +172,9 @@ createScope(PLAYER_SCOPE_NAME)
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
 
-        viewModel.reliesePlayer()
+//        viewModel.reliesePlayer()
+viewModel.stopPlayerAndReset()
         viewModel.getLiveData.removeObservers(this) // отключил обсерверы от медиа
-
-
 
     }
 
