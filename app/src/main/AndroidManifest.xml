@@ -15,36 +15,11 @@
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
 
         tools:targetApi="35">
-        <activity
-            android:name=".ui.player.activity.PlayerActivity"
-            android:exported="false"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
 
-            />
-        <activity
-            android:name=".ui.search.activity.SearchActivity"
-            android:exported="false"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
 
-           />
-        <activity
-            android:name=".ui.settings.fragments.SettingsActivity"
-            android:exported="false"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
 
-            />
-        <activity
-            android:name=".ui.media.activity.ActivityMediaCatalogue"
-            android:exported="false"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
 
-            >
 
-        </activity>
 
         <activity
             android:name=".ui.main.activity.MainActivity"
@@ -52,6 +27,7 @@
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             tools:ignore="IntentFilterExportedReceiver"
+            android:windowSoftInputMode="stateHidden|adjustNothing"
             >
 
             <intent-filter>

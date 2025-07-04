@@ -8,42 +8,42 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".ui.main.activity.MainActivity"
-    >
+    tools:context=".ui.main.activity.MainActivity">
 
     <fragment
         android:id="@+id/fragmentContainerView"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         app:defaultNavHost="true"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/main_nav_graph"
         tools:ignore="MissingConstraints" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
 
         android:id="@+id/bottomNavigationView"
+        style="@style/BottomNavIconSize"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/primary_background"
+        app:itemIconTint="@color/bottom_view_selector"
+        app:itemTextAppearanceActive="@style/bottomNavigationTextStyle"
+        app:itemTextAppearanceInactive="@style/bottomNavigationTextStyle"
+        app:itemTextColor="@color/bottom_view_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline12"
-        app:menu="@menu/bottom_navigation_menu"
-        app:itemIconTint="@color/bottom_view_selector"
-        app:itemTextColor="@color/bottom_view_selector"
-        app:itemTextAppearanceActive="@style/bottomNavigationTextStyle"
-        app:itemTextAppearanceInactive="@style/bottomNavigationTextStyle"
-        android:background="@color/primary_background"
-        />
+        app:menu="@menu/bottom_navigation_menu" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.93" />
+        app:layout_constraintGuide_percent="0.93088555" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
