@@ -18,42 +18,46 @@ class MediaFragment : Fragment() {
     private lateinit var binding: FragmentMediaBinding
     private val mediaFragmentViewModel: MediaFragmentViewModel by activityViewModel()
     private var currentPagePosition = 0
-    private val savedPage = "savedPage"
+
+    companion object {
+        const val savedPageKey = "savedPage"
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMediaBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Получаем текущее положение вкладки из ViewModel
+        mediaFragmentViewModel.currentTabPosition.observe(viewLifecycleOwner) { position ->
+            currentPagePosition = position
+            binding.viewpager.currentItem = position
+        }
+
         val tabs = binding.tabLayout
         val pager = binding.viewpager
         val vpAdapter = VpAdapter(this)
 
         if (pager.adapter == null) {
             pager.adapter = vpAdapter
-        } else {
-            pager.adapter!!.notifyDataSetChanged()
         }
-        pager.currentItem = currentPagePosition
 
-        // Получаем сохранённую позицию вкладки
-        savedInstanceState?.let {
-            currentPagePosition = it.getInt(savedPage, 0)
-        }
+        // Улучшаем производительность, позволяя предварительно загружать соседнюю страницу
+        pager.offscreenPageLimit = 1
 
         setupTabsAndPager(pager, tabs)
 
-
-        // Следим за сменой вкладок
+        // Обработчик смены вкладок
         tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                currentPagePosition = tab.position
+                mediaFragmentViewModel.setCurrentTabPosition(tab.position)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -62,30 +66,21 @@ class MediaFragment : Fragment() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        val tabs = binding.tabLayout
-        val pager = binding.viewpager
-        val vpAdapter = VpAdapter(this)
-        if (pager.adapter == null) {
-            pager.adapter = vpAdapter
-        } else {
-            pager.adapter!!.notifyDataSetChanged()
-        }
-        setupTabsAndPager(pager, tabs)
-
-    }
-
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         // Сохраняем текущее положение вкладки
-        outState.putInt(savedPage, currentPagePosition)
+        outState.putInt(savedPageKey, currentPagePosition)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        // Восстанавливаем позицию вкладки при повороте экрана
+        savedInstanceState?.let {
+            currentPagePosition = it.getInt(savedPageKey, 0)
+        }
     }
 
     private fun setupTabsAndPager(pager: ViewPager2, tabs: TabLayout) {
-
-
         TabLayoutMediator(tabs, pager) { tab, position ->
             when (position) {
                 0 -> tab.text = getString(R.string.tab1txt)
