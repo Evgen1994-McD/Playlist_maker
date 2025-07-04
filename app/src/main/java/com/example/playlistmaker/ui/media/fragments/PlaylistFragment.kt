@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import com.example.playlistmaker.databinding.PlaylistFragmentBinding
 import com.example.playlistmaker.ui.media.viewmodel.PlaylistFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -12,13 +13,11 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class PlaylistFragment : Fragment() {
     private lateinit var binding: PlaylistFragmentBinding
-    private val viewModel : PlaylistFragmentViewModel by activityViewModel()
+    private val viewModel: PlaylistFragmentViewModel by activityViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.controlThemeInOtherWindows()
     }
-
 
 
     override fun onCreateView(
@@ -34,15 +33,18 @@ class PlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
+
         showPlaylists()
-        viewModel.getLiveData.observe(viewLifecycleOwner){ new ->
-            if(new==false) {
+        viewModel.getLiveData.observe(viewLifecycleOwner) { new ->
+            if (new == false) {
                 binding.phNtsh2.makeVisible()
                 binding.msgTxtBottom.makeVisible()
             } else {
-                with(binding){
-                    phNtsh2.makeGone()
-                    msgTxtBottom.makeGone()
+                with(binding) {
+                    phNtsh2.makeVisible()
+                    msgTxtBottom.makeVisible()
                 }
             }
             /*
@@ -58,8 +60,8 @@ class PlaylistFragment : Fragment() {
 
     }
 
-    private fun showPlaylists(){
-        with(binding){
+    private fun showPlaylists() {
+        with(binding) {
             phNtsh2.makeVisible()
             msgTxtBottom.makeVisible()
             btCreatePlaylist.makeVisible()

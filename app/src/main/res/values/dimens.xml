@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+
+    <dimen name="bottom_menu_icon_size">20dp</dimen>
+
     <dimen name="standart_text_size_16sp">16sp</dimen>
     <dimen name="standart_padding_start">16dp</dimen>
     <dimen name="standart_padding_vertical">20dp</dimen>

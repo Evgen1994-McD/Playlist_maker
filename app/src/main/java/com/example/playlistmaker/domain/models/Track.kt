@@ -1,5 +1,6 @@
 package com.example.playlistmaker.domain.models
 
+import java.io.Serializable
 
 
 data class Track(
@@ -13,7 +14,7 @@ data class Track(
     val primaryGenreName: String,
     val country: String,
     val previewUrl: String
-)
+):Serializable
 
 
 

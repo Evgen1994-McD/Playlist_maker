@@ -3,29 +3,31 @@ package com.example.playlistmaker.ui.player.viewModel
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Intent
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
 
-class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
-                      private val favoriteTrackInteractor: FavoriteTrackInteractor,
-                      private val mediaInteractor: MediaInteractor,
-                      private val application: Application,
-                      private val intent: Intent
+class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteractor,
+                               private val mediaInteractor: MediaInteractor,
+    private val trackFromArgs: Track
 
-) : AndroidViewModel(application) {
+) : ViewModel(){
 
     companion object { // компаньон медиаплеера
         private const val default_time = "00:00" // для прогресса
         private const val noAlbum = "No Album"
 
     }
+
 
 
 
@@ -36,6 +38,9 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
 
     val getLiveData: LiveData<PlayerScreenState> get() = mutableMediaScreen
     private val handler = Handler(Looper.getMainLooper()) // хэндлер для доступа к главному потоку
+
+
+
 
 
     fun addListeners() {
@@ -66,6 +71,7 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     }
 
     fun stopUpdateProgress() {
+
         handler.removeCallbacksAndMessages(null) // функция отмены колбеков от хендлер
 
     }
@@ -88,7 +94,7 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
             }
             is PlayerCommand.Pause -> {
                 stopUpdateProgress()
-            mediaInteractor.pausePlayback()
+                mediaInteractor.pausePlayback()
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isPlaying = false)
 
             }
@@ -98,42 +104,42 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
 
     fun intentGetExtraBind() {
 
-        if (!intent?.getStringExtra("trackName")
+        if (!trackFromArgs?.trackName
                 .isNullOrEmpty()) {
-            val intent = intent // получаем интент который запустил активность
-            val trackName = intent?.getStringExtra("trackName")
-            val previewUrl = intent?.getStringExtra("previewUrl").toString()
 
-            val trackTimeMillis = intent?.getStringExtra("trackTimeMillis")
-            val artistName = intent?.getStringExtra("artistName")
-            val primaryGenreName = intent?.getStringExtra("primaryGenreName")
-            val country = intent?.getStringExtra("country")
-            val relieseDate = intent?.getStringExtra("relieseDate")
-            val artworkUrl100 = intent?.getStringExtra("artworkUrl100").toString()
+            val trackName = trackFromArgs.trackName
+            val previewUrl = trackFromArgs.previewUrl
 
-            if (intent?.getStringExtra("collectionName")
-                    ?.isNullOrEmpty() == true || intent?.getStringExtra("collectionName")
-                    ?.contains("No Album") == true // Если нет альбома или ответ сервера содержит No Album то убираем поле с альбомом
+            val trackTimeMillis = trackFromArgs.trackTimeMillis
+            val artistName = trackFromArgs.artistName
+            val primaryGenreName = trackFromArgs.primaryGenreName
+            val country = trackFromArgs.country
+            val relieseDate = trackFromArgs.releaseDate
+            val artworkUrl100 = trackFromArgs.artworkUrl100
+
+            if (trackFromArgs.collectionName
+                    ?.isNullOrEmpty() == true || trackFromArgs.collectionName
+                        ?.contains("No Album") == true // Если нет альбома или ответ сервера содержит No Album то убираем поле с альбомом
             ) {
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(collectionName = noAlbum)
 
 
             } else {
-                val collectionName = intent?.getStringExtra("collectionName")
-                    .toString()// убираем поле альбом если нет альбома
+                val collectionName = trackFromArgs.collectionName
+                    // убираем поле альбом если нет альбома
                 mutableMediaScreen.value =
-                    mutableMediaScreen.value!!.copy(collectionName = collectionName.toString())
+                    mutableMediaScreen.value!!.copy(collectionName = collectionName)
                 Log.d("Mylog" , previewUrl)
 
                 mediaInteractor.preparePlayer(previewUrl)
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
-                    trackName = trackName.toString(),
-                    primaryGenreName = primaryGenreName.toString(),
-                    artistName = artistName.toString(),
-                    trackTimeMillis = trackTimeMillis.toString(),
-                    artworkUrl100 = artworkUrl100.toString(),
-                    releaseDate = relieseDate.toString(),
-                    country = country.toString()
+                    trackName = trackName,
+                    primaryGenreName = primaryGenreName,
+                    artistName = artistName,
+                    trackTimeMillis = trackTimeMillis,
+                    artworkUrl100 = artworkUrl100,
+                    releaseDate = relieseDate,
+                    country = country
                 )
 
 
@@ -145,9 +151,7 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
 
 
 
-    fun controlThemeInOtherWindows(){
-        switchThemeUseCase.controlThemeInOtherWindows()
-    }
+
 
 
 
@@ -190,7 +194,7 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
 
 
 
-    }
+}
 
 
 

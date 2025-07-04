@@ -1,27 +1,23 @@
 package com.example.playlistmaker.ui.media.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
-import com.example.playlistmaker.R
+import androidx.fragment.app.Fragment
 import com.example.playlistmaker.databinding.FragmentFavoriteTrakListBinding
-import com.example.playlistmaker.ui.media.activity.ActivityMediaCatalogue
 import com.example.playlistmaker.ui.media.viewmodel.FavoriteFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
 class FavoriteTrakListFragment : Fragment() {
     private lateinit var binding: FragmentFavoriteTrakListBinding
-    private val viewModel : FavoriteFragmentViewModel by activityViewModel()
+    private val viewModel: FavoriteFragmentViewModel by activityViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-viewModel.controlThemeInOtherWindows()
-    }
 
+    }
 
 
     override fun onCreateView(
@@ -35,23 +31,24 @@ viewModel.controlThemeInOtherWindows()
 
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-showFavoriteTracks()
-        viewModel.getLiveData.observe(viewLifecycleOwner){ new ->
-            if(new==false) {
+        showFavoriteTracks()
+        viewModel.getLiveData.observe(viewLifecycleOwner) { new ->
+            if (new == false) {
                 binding.phNtsh.makeVisible()
                 binding.msgTxtBottom.makeVisible()
             } else {
-                with(binding){
-                    phNtsh.makeGone()
-                    msgTxtBottom.makeGone()
+                with(binding) {
+                    phNtsh.makeVisible()
+                    msgTxtBottom.makeVisible()
                 }
             }
-/*
-тут будет логика, это заготовка
- */
+            /*
+            тут будет логика, это заготовка
+             */
         }
 
     }
@@ -62,8 +59,8 @@ showFavoriteTracks()
 
     }
 
-    private fun showFavoriteTracks(){
-        with(binding){
+    private fun showFavoriteTracks() {
+        with(binding) {
             phNtsh.makeVisible()
             msgTxtBottom.makeVisible()
         }

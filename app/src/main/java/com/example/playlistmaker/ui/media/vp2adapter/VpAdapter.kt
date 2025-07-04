@@ -7,10 +7,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.playlistmaker.ui.media.fragments.FavoriteTrakListFragment
 import com.example.playlistmaker.ui.media.fragments.PlaylistFragment
 
-class PagerAdapter(fm: FragmentManager, lifecycle: Lifecycle) :
-    FragmentStateAdapter(fm, lifecycle) {
-
-
+class VpAdapter(fragment: Fragment) :
+    FragmentStateAdapter(fragment) {
 
 
     override fun getItemCount(): Int = 2 // Количество страниц

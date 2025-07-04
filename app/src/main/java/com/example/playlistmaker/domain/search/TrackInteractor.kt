@@ -12,7 +12,6 @@ interface TrackInteractor {
         fun onFailure(error: Throwable)
     }
 
-    fun getTrackIntentAndStart(track: Track, context: Context) // получим интент при нажатии на трек
 
     // ну и запустим( далее)
     fun clickDebounce(): Boolean

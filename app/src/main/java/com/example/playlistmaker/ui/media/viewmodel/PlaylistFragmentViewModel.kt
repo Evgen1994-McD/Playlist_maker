@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
 
-class PlaylistFragmentViewModel(private val switchThemeUseCase: SwitchThemeUseCase):ViewModel() {
-    fun controlThemeInOtherWindows(){
-        switchThemeUseCase.controlThemeInOtherWindows()
-    }
+class PlaylistFragmentViewModel():ViewModel() {
 
     private val favoriteTrackList = MutableLiveData(false)
 

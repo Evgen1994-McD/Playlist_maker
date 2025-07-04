@@ -12,9 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val switchThemeUseCase: SwitchThemeUseCase,
     private val trackInteractor: TrackInteractor,
-                      private val favoriteTrackInteractor: FavoriteTrackInteractor
+    private val favoriteTrackInteractor: FavoriteTrackInteractor
 ): ViewModel() {
 
 
@@ -29,38 +28,35 @@ class SearchViewModel(
     }
 
     fun getAllTracks() {
-       mutableScreenState.value = mutableScreenState.value!!.copy(history = favoriteTrackInteractor.getAllTracksFromStorage())
+        mutableScreenState.value = mutableScreenState.value!!.copy(history = favoriteTrackInteractor.getAllTracksFromStorage())
 
     }
 
     fun clearHistory(){
         favoriteTrackInteractor.clearHistory()
-       mutableScreenState.value = mutableScreenState.value!!.copy(history = null, searchResults = null)
+        mutableScreenState.value = mutableScreenState.value!!.copy(history = null, searchResults = null)
 
     }
 
-    fun controlThemeInOtherWindows(){
-        switchThemeUseCase.controlThemeInOtherWindows()
-    }
 
 
 
     fun searchTracks( txtForSearch:String){
         viewModelScope.launch(Dispatchers.IO){
             mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = true)) // при начале запроса - выставляем лоадинг в тру
-          trackInteractor.searchTracks(
-            txtForSearch,
-            object : TrackInteractor.TracksConsumer {
-                override fun consume(tracks: List<Track>) {
-                    mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = false, searchResults = tracks, errorMessage = null))
+            trackInteractor.searchTracks(
+                txtForSearch,
+                object : TrackInteractor.TracksConsumer {
+                    override fun consume(tracks: List<Track>) {
+                        mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = false, searchResults = tracks, errorMessage = null))
 
-                }
+                    }
 
-                override fun onFailure(error: Throwable) {
-                    mutableScreenState.postValue(mutableScreenState.value!!.copy(errorMessage = error.toString(), isLoading = false))
+                    override fun onFailure(error: Throwable) {
+                        mutableScreenState.postValue(mutableScreenState.value!!.copy(errorMessage = error.toString(), isLoading = false))
 
-                }
-            })
+                    }
+                })
 
         }
     }
