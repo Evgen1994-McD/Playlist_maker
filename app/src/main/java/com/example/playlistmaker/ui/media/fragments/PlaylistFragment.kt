@@ -13,12 +13,11 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class PlaylistFragment : Fragment() {
     private lateinit var binding: PlaylistFragmentBinding
-    private val viewModel : PlaylistFragmentViewModel by activityViewModel()
+    private val viewModel: PlaylistFragmentViewModel by activityViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
 
 
     override fun onCreateView(
@@ -38,12 +37,12 @@ class PlaylistFragment : Fragment() {
 
 
         showPlaylists()
-        viewModel.getLiveData.observe(viewLifecycleOwner){ new ->
-            if(new==false) {
+        viewModel.getLiveData.observe(viewLifecycleOwner) { new ->
+            if (new == false) {
                 binding.phNtsh2.makeVisible()
                 binding.msgTxtBottom.makeVisible()
             } else {
-                with(binding){
+                with(binding) {
                     phNtsh2.makeVisible()
                     msgTxtBottom.makeVisible()
                 }
@@ -61,8 +60,8 @@ class PlaylistFragment : Fragment() {
 
     }
 
-    private fun showPlaylists(){
-        with(binding){
+    private fun showPlaylists() {
+        with(binding) {
             phNtsh2.makeVisible()
             msgTxtBottom.makeVisible()
             btCreatePlaylist.makeVisible()

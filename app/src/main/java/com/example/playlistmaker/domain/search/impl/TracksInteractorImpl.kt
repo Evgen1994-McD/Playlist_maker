@@ -44,13 +44,6 @@ class TracksInteractorImpl(
 
     }
 
-    override fun getTrackIntentAndStart(
-        track: Track,
-        context: Context
-    ) {
-        TODO("Not yet implemented")
-    }
-
 
     override fun clickDebounce(): Boolean {
 

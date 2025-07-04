@@ -24,26 +24,23 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 
-class PlayerFragment : Fragment(){
+class PlayerFragment : Fragment() {
 
 
     private lateinit var binding: FragmentPlayerBinding // делаю байдинг
 
-    private  val viewModel: PlayerViewModel by viewModel { parametersOf(getTrackFromArguments()) }
+    private val viewModel: PlayerViewModel by viewModel { parametersOf(getTrackFromArguments()) }
 
-        /*
-        by ViewModel привяжет вьюмодел к циклу жизни фрагмента
-         */
+    /*
+    by ViewModel привяжет вьюмодел к циклу жизни фрагмента
+     */
 
 
     companion object { // компаньон медиаплеера
-         private const val noAlbum = "No Album"
+        private const val noAlbum = "No Album"
 
 
     }
-
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,12 +61,7 @@ class PlayerFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState != null &&
-            savedInstanceState.containsKey("isAudioPlayerVisible") &&
-            savedInstanceState.getBoolean("isAudioPlayerVisible")
-        ) {
-//            showAudioPlayerScreen()
-        }
+
 
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
@@ -93,7 +85,6 @@ class PlayerFragment : Fragment(){
         }
 
 
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) { // Сохраняем факт видимости аудиоплеера
@@ -108,18 +99,18 @@ class PlayerFragment : Fragment(){
 
     }
 
-    private fun composeTrack(){
-        viewModel.getLiveData.observe(viewLifecycleOwner){ newState ->
-            if (newState.isPlaying ==false) {
+    private fun composeTrack() {
+        viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
+            if (newState.isPlaying == false) {
                 binding.play.isEnabled
                 binding.play.makeVisible()
                 binding.pause.makeInvisible()
-            }else if (newState.isPlaying == true){
+            } else if (newState.isPlaying == true) {
                 binding.play.isEnabled = true
                 binding.play.makeInvisible()
                 binding.pause.makeVisible()
             }
-            when{
+            when {
                 !newState.trackName.isEmpty() && !newState.collectionName.contains(noAlbum) -> {
                     binding.tvGenre.text = newState.primaryGenreName
                     binding.tvCountry.text = newState.country
@@ -127,28 +118,34 @@ class PlayerFragment : Fragment(){
                     binding.tvTime.text = newState.trackTimeMillis
                     binding.tvYear.text = newState.releaseDate
                     binding.tvAlbum.makeVisible()// убираем поле альбом если нет альбома
-                    binding.tvAlbum.text = newState.collectionName// убираем поле альбом если нет альбома
+                    binding.tvAlbum.text =
+                        newState.collectionName// убираем поле альбом если нет альбома
                     binding.tvGroup.text = newState.artistName
                     binding.tvTrackName.text = newState.trackName
 
                     binding.progressTime.text = newState.progress
                     val options = RequestOptions().centerCrop()//опции для Glide
                     val radiusInDP = 8f
-                    val radiusInPX = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, radiusInDP, resources.displayMetrics)
+                    val radiusInPX = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        radiusInDP,
+                        resources.displayMetrics
+                    )
                     Glide.with(binding.imMine.context).load(newState.artworkUrl100).apply(options)
                         .placeholder(R.drawable.ph_media_312).error(R.drawable.ph_media_312)
                         .transform(RoundedCorners(radiusInPX.toInt()))
                         .into(binding.imMine)
                 }
+
                 newState.collectionName.contains(noAlbum) -> {
                     binding.tvAlbum.makeGone()// убираем поле альбом если нет альбома
                     binding.tvAlbumLeft.makeGone()// убираем поле альбом если нет альбома
                 }
-                !newState.progress.isEmpty()  -> binding.progressTime.text = newState.progress
+
+                !newState.progress.isEmpty() -> binding.progressTime.text = newState.progress
             }
         }
     }
-
 
 
     private fun View.makeGone() {
@@ -174,17 +171,13 @@ class PlayerFragment : Fragment(){
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
 
-      viewModel.reliesePlayer()
+        viewModel.reliesePlayer()
 
         viewModel.getLiveData.removeObservers(this) // отключил обсерверы от медиа
 
     }
 
 
-
-
-
-
-    }
+}
 
 

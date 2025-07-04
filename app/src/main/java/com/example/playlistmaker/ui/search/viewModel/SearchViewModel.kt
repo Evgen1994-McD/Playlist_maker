@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val switchThemeUseCase: SwitchThemeUseCase,
     private val trackInteractor: TrackInteractor,
     private val favoriteTrackInteractor: FavoriteTrackInteractor
 ): ViewModel() {
@@ -39,9 +38,6 @@ class SearchViewModel(
 
     }
 
-    fun controlThemeInOtherWindows(){
-        switchThemeUseCase.controlThemeInOtherWindows()
-    }
 
 
 

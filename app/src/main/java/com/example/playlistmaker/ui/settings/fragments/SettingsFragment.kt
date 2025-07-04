@@ -12,7 +12,6 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 class SettingsFragment : Fragment() {
 
     private var isUpdatingUI = false
-    private var currentThemeChanger = 0
 
     private lateinit var binding: FragmentSettingsBinding
     private val viewModel: SettingsViewModel by activityViewModel()
@@ -36,9 +35,6 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-
-
-
         val shareTheAppClicker = // Кликер поделиться приложением
             binding.shareApp
         shareTheAppClicker.setOnClickListener {
@@ -57,12 +53,9 @@ class SettingsFragment : Fragment() {
         val switcherTheme = binding.switchTheme
 
 
-
-
-
 // Установка обработчика изменений
 
-switcherTheme.isChecked = viewModel.getLiveData.value as Boolean
+        switcherTheme.isChecked = viewModel.getLiveData.value as Boolean
 
         switcherTheme.setOnCheckedChangeListener { _, isChecked ->
             if (!isUpdatingUI) {
@@ -77,6 +70,7 @@ switcherTheme.isChecked = viewModel.getLiveData.value as Boolean
         viewModel.shareApp()
 
     }
+
     private fun sendSuppEmail() {  // Приватный метод для письма в поддержку
         viewModel.sendSuppEmail()
     }
@@ -84,6 +78,7 @@ switcherTheme.isChecked = viewModel.getLiveData.value as Boolean
     private fun openUrlInDefaultBrowser() {
         viewModel.openUrlInDefaultBrowser()
     }
+
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
         viewModel.getLiveData.removeObservers(this)
@@ -91,6 +86,6 @@ switcherTheme.isChecked = viewModel.getLiveData.value as Boolean
     }
 
 
-    }
+}
 
 

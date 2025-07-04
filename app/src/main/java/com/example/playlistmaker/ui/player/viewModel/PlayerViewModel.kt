@@ -16,10 +16,8 @@ import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
 
-class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
-                               private val favoriteTrackInteractor: FavoriteTrackInteractor,
+class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteractor,
                                private val mediaInteractor: MediaInteractor,
-                               private val application: Application,
     private val trackFromArgs: Track
 
 ) : ViewModel(){
@@ -42,10 +40,6 @@ class PlayerViewModel(private val switchThemeUseCase: SwitchThemeUseCase,
     private val handler = Handler(Looper.getMainLooper()) // хэндлер для доступа к главному потоку
 
 
-
-    fun stopPlayerAndReset(){
-        mediaInteractor.stopPlayerAndReset()
-    }
 
 
 

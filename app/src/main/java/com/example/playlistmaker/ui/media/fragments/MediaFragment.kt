@@ -18,9 +18,6 @@ class MediaFragment : Fragment() {
     private lateinit var binding: FragmentMediaBinding
     private val mediaFragmentViewModel: MediaFragmentViewModel by activityViewModel()
     private var currentPagePosition = 0
-    private lateinit var pager: ViewPager2
-    private lateinit var tabs: TabLayout
-    private lateinit var vpAdapter: VpAdapter
     private val savedPage = "savedPage"
 
     override fun onCreateView(
@@ -34,11 +31,11 @@ class MediaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-val tabs = binding.tabLayout
+        val tabs = binding.tabLayout
         val pager = binding.viewpager
         val vpAdapter = VpAdapter(this)
 
-        if (pager.adapter== null) {
+        if (pager.adapter == null) {
             pager.adapter = vpAdapter
         } else {
             pager.adapter!!.notifyDataSetChanged()
@@ -50,7 +47,7 @@ val tabs = binding.tabLayout
             currentPagePosition = it.getInt(savedPage, 0)
         }
 
-    setupTabsAndPager(pager, tabs)
+        setupTabsAndPager(pager, tabs)
 
 
         // Следим за сменой вкладок
@@ -70,7 +67,7 @@ val tabs = binding.tabLayout
         val tabs = binding.tabLayout
         val pager = binding.viewpager
         val vpAdapter = VpAdapter(this)
-        if (pager.adapter== null) {
+        if (pager.adapter == null) {
             pager.adapter = vpAdapter
         } else {
             pager.adapter!!.notifyDataSetChanged()
@@ -80,7 +77,6 @@ val tabs = binding.tabLayout
     }
 
 
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         // Сохраняем текущее положение вкладки
@@ -88,7 +84,6 @@ val tabs = binding.tabLayout
     }
 
     private fun setupTabsAndPager(pager: ViewPager2, tabs: TabLayout) {
-
 
 
         TabLayoutMediator(tabs, pager) { tab, position ->

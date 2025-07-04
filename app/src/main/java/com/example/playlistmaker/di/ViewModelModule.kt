@@ -15,54 +15,48 @@ import org.koin.dsl.module
 val viewModelModule = module {
 
 
-
-        viewModel { // описать получение юз кейсов в интерактор модуле
-            MainViewModel(get())
-        }
     viewModel { // описать получение юз кейсов в интерактор модуле
-        FavoriteFragmentViewModel(get())
+        MainViewModel(get())
+    }
+    viewModel { // описать получение юз кейсов в интерактор модуле
+        FavoriteFragmentViewModel()
     }
 
     viewModel { // описать получение юз кейсов в интерактор модуле
-        PlaylistFragmentViewModel(get())
+        PlaylistFragmentViewModel()
     }
-
-
-
 
 
 //Ниже рефакторинг на фрагмент
 
 
-        viewModel { // описать получение юз кейсов в интерактор модуле
-            MediaFragmentViewModel(get())
-        }
-
-
-        viewModel { params ->
-            PlayerViewModel(
-                get(),
-                get(),
-                get(),
-                get(),
-                params.get()  // в качестве парамс тут интент передаю в активити
-            )
-        }
-
-
-        viewModel {
-            SearchViewModel(get(), get(), get())
-        }
-
-
-
-
-        viewModel { // описать получение юз кейсов в интерактор модуле
-            SettingsViewModel(get(), get(), get(), get())
-        }
-
-
+    viewModel { // описать получение юз кейсов в интерактор модуле
+        MediaFragmentViewModel()
     }
+
+
+    viewModel { params ->
+        PlayerViewModel(
+            get(),
+            get(),
+            params.get()  // в качестве парамс тут интент передаю в активити
+        )
+    }
+
+
+    viewModel {
+        SearchViewModel( get(), get())
+    }
+
+
+
+
+    viewModel { // описать получение юз кейсов в интерактор модуле
+        SettingsViewModel(get(), get(), get(), get())
+    }
+
+
+}
 
 
 

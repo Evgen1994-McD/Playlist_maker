@@ -12,26 +12,25 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 
+val repositoryModule = module {
 
-    val repositoryModule = module {
-
-        factory<FavoriteTrackRepository>{
-            FavoriteTrackRepositoryImpl(get(), get())
-        }
-
-        factory<TrackRepository>{
-            TrackRepositoryImpl(get())
-        }
-
-        factory<SettingsRepository>{
-            SettingsRepositoryImpl(get())
-        }
-
-        factory<MediaPlayerRepository>{
-            MediaPlayerRepositoryImpl(get())
-        }
-
-
+    factory<FavoriteTrackRepository> {
+        FavoriteTrackRepositoryImpl(get(), get())
     }
+
+    factory<TrackRepository> {
+        TrackRepositoryImpl(get())
+    }
+
+    factory<SettingsRepository> {
+        SettingsRepositoryImpl(get())
+    }
+
+    factory<MediaPlayerRepository> {
+        MediaPlayerRepositoryImpl(get())
+    }
+
+
+}
 
 

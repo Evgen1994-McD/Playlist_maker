@@ -43,7 +43,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
     private lateinit var tvMsgSearch: TextView
     private lateinit var btCleanHistory: TextView
     private lateinit var pbs: ProgressBar
-private lateinit var binding: FragmentSearchBinding
+    private lateinit var binding: FragmentSearchBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,16 +62,16 @@ private lateinit var binding: FragmentSearchBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-if (savedInstanceState?.getString(keyForWatcher)!= null) {
-    var clearEditText: EditText =  // инициализирую эдиттекст
-        binding.searchStroke
-    // Извлечение данных из Bundle
-    val savedText = savedInstanceState.getString(keyForWatcher)
-    if (savedText != null) {
-        clearEditText.setText(savedText)
-    }
+        if (savedInstanceState?.getString(keyForWatcher) != null) {
+            var clearEditText: EditText =  // инициализирую эдиттекст
+                binding.searchStroke
+            // Извлечение данных из Bundle
+            val savedText = savedInstanceState.getString(keyForWatcher)
+            if (savedText != null) {
+                clearEditText.setText(savedText)
+            }
 
-}
+        }
 
 
 
@@ -179,7 +179,6 @@ if (savedInstanceState?.getString(keyForWatcher)!= null) {
         }
 
 
-
         val inputMethodManager =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // Для того чтобы спрятать клаву
 
@@ -239,7 +238,6 @@ if (savedInstanceState?.getString(keyForWatcher)!= null) {
     }
 
 
-
     private fun logicClearIc(s: CharSequence?) {
         searchEditText =  // инициализирую эдиттекст
             binding.searchStroke
@@ -284,10 +282,6 @@ if (savedInstanceState?.getString(keyForWatcher)!= null) {
                             0
                         ) // Прячем клаву
                         // чистим эдит текст
-
-
-
-
 
 
                         recyclerView.makeInvisible() // убрали список треков при очистке эдиттекста
@@ -373,11 +367,11 @@ if (savedInstanceState?.getString(keyForWatcher)!= null) {
 
 
     fun getTrackIntentAndStart(track: Track, context: Context) {
-val bundle = Bundle().apply {
-    putSerializable("track", track)
+        val bundle = Bundle().apply {
+            putSerializable("track", track)
 
-}
-        findNavController().navigate(R.id.action_searchFragment_to_playerFragment,bundle)
+        }
+        findNavController().navigate(R.id.action_searchFragment_to_playerFragment, bundle)
 
 //
 //        val intent =

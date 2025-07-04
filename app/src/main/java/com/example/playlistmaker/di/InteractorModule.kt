@@ -24,40 +24,40 @@ import org.koin.dsl.module
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-    val interactorModule = module {
+val interactorModule = module {
 
-        factory {  // хендлер для интерактора
-            Handler(
-                Looper.getMainLooper()
-            )
-        }
-        single { Executors.newSingleThreadExecutor() } // Экзекутор для интерактора
-
-        factory<TrackInteractor>{
-            TracksInteractorImpl(get(), get(), get())
-        }
-        single<FavoriteTrackInteractor>{
-            FavoriteTrackInteractorImpl(get())
-        }
-//Settings
-        factory<SwitchThemeUseCase>{
-            SwitchThemeUseCaseImpl(get())
-        }
-        factory<OpenUrlUseCase>{
-            OpenUrlUseCaseImpl(get())
-        }
-
-        factory<SendSuppEmailUseCase>{
-            SendSuppEmailUseCaseImpl(get())
-        }
-        factory<ShareAppUseCase>{
-            ShareAppUseCaseImpl(get())
-        }
-
-        //Media
-factory<MediaInteractor>{
-    MediaInteractorImpl(get())
-}
-
+    factory {  // хендлер для интерактора
+        Handler(
+            Looper.getMainLooper()
+        )
     }
+    single { Executors.newSingleThreadExecutor() } // Экзекутор для интерактора
+
+    factory<TrackInteractor> {
+        TracksInteractorImpl(get(), get(), get())
+    }
+    single<FavoriteTrackInteractor> {
+        FavoriteTrackInteractorImpl(get())
+    }
+//Settings
+    factory<SwitchThemeUseCase> {
+        SwitchThemeUseCaseImpl(get())
+    }
+    factory<OpenUrlUseCase> {
+        OpenUrlUseCaseImpl(get())
+    }
+
+    factory<SendSuppEmailUseCase> {
+        SendSuppEmailUseCaseImpl(get())
+    }
+    factory<ShareAppUseCase> {
+        ShareAppUseCaseImpl(get())
+    }
+
+    //Media
+    factory<MediaInteractor> {
+        MediaInteractorImpl(get())
+    }
+
+}
 

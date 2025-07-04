@@ -14,11 +14,10 @@ import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
 class SettingsViewModel(
     private val switchThemeUseCase: SwitchThemeUseCase,
     private val shareAppUseCase: ShareAppUseCase,
-    private val sendToSuppUse : SendSuppEmailUseCase,
-    private val openUriUseCase : OpenUrlUseCase
-): ViewModel() {
-    companion object{
-
+    private val sendToSuppUse: SendSuppEmailUseCase,
+    private val openUriUseCase: OpenUrlUseCase
+) : ViewModel() {
+    companion object {
 
 
     }
@@ -42,9 +41,6 @@ class SettingsViewModel(
     }
 
 
-
-
-
     var currentThemeLiveData = MutableLiveData<Boolean>()
 
 
@@ -56,11 +52,8 @@ class SettingsViewModel(
 
     val getLiveData: LiveData<Boolean> get() = currentThemeLiveData
 
-    fun controlThemeInOtherWindows(){
-        switchThemeUseCase.controlThemeInOtherWindows()
-    }
 
-    fun controlTHemeBySwitcher(theme : Boolean){
+    fun controlTHemeBySwitcher(theme: Boolean) {
         switchThemeUseCase.switchThemeModeBySettings(theme)
 
     }
