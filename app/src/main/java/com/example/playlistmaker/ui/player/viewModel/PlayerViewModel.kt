@@ -16,9 +16,12 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Dispatcher
@@ -75,14 +78,15 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
     private fun onPlayComplete() { // это тоже
         Log.d("MediaPlayer", "Проигрывание завершено")
         stopUpdateProgress()
+
         mutableMediaScreen.value = mutableMediaScreen.value!!.copy(progress = default_time, isPlaying = false)
 
     }
 
     fun stopUpdateProgress() {
+        mutableMediaScreen.value = mutableMediaScreen.value!!.copy(progress = default_time, isPlaying = false)
 timerJob?.cancel()
 //        handler.removeCallbacksAndMessages(null) // функция отмены колбеков от хендлер
-
     }
 
     @SuppressLint("SuspiciousIndentation")
@@ -92,10 +96,21 @@ timerJob?.cancel()
 //        handler.postDelayed({ startUpdateProgress() }, 300) // вызывается каждые 300 мс
 
         timerJob = viewModelScope.launch {
-            while (true) {
-                delay(300L)
-                val progress = mediaInteractor.updateProgress()
-                mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(progress = progress))
+
+            try {
+
+                while (isActive && mutableMediaScreen.value.isPlaying) {
+                    delay(300L)
+                    ensureActive()
+                    val progress = mediaInteractor.updateProgress()
+                    mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(progress = progress))
+                }
+            } catch (ex: CancellationException){
+                println("Корутина была отменена")
+            }
+            if(!isActive){
+                mutableMediaScreen.value = mutableMediaScreen.value!!.copy(progress = default_time, isPlaying = false)
+
             }
         }
 
