@@ -83,7 +83,7 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPla
     }
 
     override fun updateProgress(): String {
-        if (playerState == STATE_PLAYING || playerState== STATE_PAUSED) {
+        if (playerState == STATE_PLAYING || playerState == STATE_PAUSED) {
             val formattedTime =
                 SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
             return formattedTime

@@ -81,6 +81,8 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
 
         mutableMediaScreen.value = mutableMediaScreen.value!!.copy(progress = default_time, isPlaying = false)
 
+//            mediaInteractor.preparePlayer(mutableMediaScreen.value.previewUrl)
+
     }
 
     fun stopUpdateProgress() {
@@ -118,6 +120,8 @@ timerJob?.cancel()
     fun mediaCommander(command: PlayerCommand) {
         when (command) {
             is PlayerCommand.Play -> {
+
+
                 mediaInteractor.startPlayback()
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isPlaying = true)
                 startUpdateProgress()
