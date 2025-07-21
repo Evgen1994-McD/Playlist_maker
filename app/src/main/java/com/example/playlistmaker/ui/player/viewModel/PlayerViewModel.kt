@@ -84,7 +84,6 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
     }
 
     fun stopUpdateProgress() {
-        mutableMediaScreen.value = mutableMediaScreen.value!!.copy(progress = default_time, isPlaying = false)
 timerJob?.cancel()
 //        handler.removeCallbacksAndMessages(null) // функция отмены колбеков от хендлер
     }
@@ -108,10 +107,7 @@ timerJob?.cancel()
             } catch (ex: CancellationException){
                 println("Корутина была отменена")
             }
-            if(!isActive){
-                mutableMediaScreen.value = mutableMediaScreen.value!!.copy(progress = default_time, isPlaying = false)
 
-            }
         }
 
 
