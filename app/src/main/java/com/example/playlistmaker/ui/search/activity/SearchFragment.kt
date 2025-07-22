@@ -17,6 +17,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +27,7 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
+import com.example.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SearchFragment : Fragment(), OnTrackClickListener {
@@ -44,6 +46,8 @@ class SearchFragment : Fragment(), OnTrackClickListener {
     private lateinit var btCleanHistory: TextView
     private lateinit var pbs: ProgressBar
     private lateinit var binding: FragmentSearchBinding
+
+    private lateinit var searchClickDebounce:(String)-> Unit
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +74,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
             if (savedText != null) {
                 clearEditText.setText(savedText)
             }
+
 
         }
 
@@ -195,7 +200,9 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                 0
             )  // Появление клавиатуры при нажатии на эдиттекст
         }
-
+        searchClickDebounce = debounce<String>(2000L, viewLifecycleOwner.lifecycleScope, true){ txtForSearch ->
+            viewModel.searchTracks(txtForSearch)
+        }
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 //  empty
@@ -210,7 +217,8 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeGone()
-                    viewModel.searchTracks(txtForSearch)
+                    searchClickDebounce(txtForSearch)
+//                    viewModel.searchTracks(txtForSearch)
                     phForNothingToShow.makeGone()
                     recyclerView.makeGone()
                     msgTopTxt.makeGone()
@@ -373,25 +381,6 @@ class SearchFragment : Fragment(), OnTrackClickListener {
         }
         findNavController().navigate(R.id.action_searchFragment_to_playerFragment, bundle)
 
-//
-//        val intent =
-//            Intent(context, PlayerActivity::class.java) // создали интент для перехода на активити
-//        intent.putExtra("trackName", track.trackName)
-//        if (!track.collectionName.isNullOrEmpty()) {
-//            intent.putExtra(
-//                "collectionName",
-//                track.collectionName
-//            )  // отправим альбом только если он есть
-//        }
-//        intent.putExtra("trackTimeMillis", track.trackTimeMillis)
-//        intent.putExtra("artistName", track.artistName)
-//        intent.putExtra("primaryGenreName", track.primaryGenreName)
-//        intent.putExtra("country", track.country)
-//        intent.putExtra("artworkUrl100", track.artworkUrl100)
-//        intent.putExtra("previewUrl", track.previewUrl)
-//
-//        intent.putExtra("relieseDate", track.releaseDate)
-//        context.startActivity(intent)
     }
 
 

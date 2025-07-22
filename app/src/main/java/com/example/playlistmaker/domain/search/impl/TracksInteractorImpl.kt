@@ -7,6 +7,7 @@ import android.os.Looper
 import com.example.playlistmaker.domain.search.TrackInteractor
 import com.example.playlistmaker.domain.search.TrackRepository
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.utils.debounce
 import kotlinx.coroutines.Runnable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -22,10 +23,11 @@ class TracksInteractorImpl(
     private var currentTask: Future<*>? = null
 
     override fun searchTracks(expression: String, consumer: TrackInteractor.TracksConsumer) {
-        handler.removeCallbacksAndMessages(null)
-        currentTask?.cancel(true)
-        currentTask = executor.submit(Runnable {
-            Thread.sleep(2000L)
+
+//        handler.removeCallbacksAndMessages(null)
+//        currentTask?.cancel(true)
+//        currentTask = executor.submit(Runnable {
+//            Thread.sleep(2000L)
 
             try {
                 val tracks = repository.searchTracks(expression)
@@ -39,8 +41,8 @@ class TracksInteractorImpl(
                     consumer.onFailure(ex)
                 }
             }
-        }
-        )
+//        }
+//        )
 
     }
 
