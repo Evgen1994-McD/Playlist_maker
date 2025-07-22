@@ -81,7 +81,6 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
 
         mutableMediaScreen.value = mutableMediaScreen.value!!.copy(progress = default_time, isPlaying = false)
 
-//            mediaInteractor.preparePlayer(mutableMediaScreen.value.previewUrl)
 
     }
 
