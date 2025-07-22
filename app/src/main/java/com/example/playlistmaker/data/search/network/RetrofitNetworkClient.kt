@@ -8,7 +8,7 @@ import com.example.playlistmaker.data.search.dto.TrackSearchRequest
 class RetrofitNetworkClient(private val iTunesApi: ITunesApi) : NetworkClient {
 
 
-    override fun doRequest(dto: Any): Response {
+    override suspend fun doRequest(dto: Any): Response {
         if (dto is TrackSearchRequest) {
             val response = iTunesApi.getSong(dto.expression).execute()
 
