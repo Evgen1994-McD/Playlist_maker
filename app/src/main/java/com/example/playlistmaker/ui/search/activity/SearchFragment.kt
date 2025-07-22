@@ -47,7 +47,8 @@ class SearchFragment : Fragment(), OnTrackClickListener {
     private lateinit var pbs: ProgressBar
     private lateinit var binding: FragmentSearchBinding
 
-    private lateinit var searchClickDebounce:(String)-> Unit
+    private lateinit var searchDebounce:(String)-> Unit
+    private lateinit var trackClickDebounce:(Track)-> Unit
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -200,8 +201,13 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                 0
             )  // Появление клавиатуры при нажатии на эдиттекст
         }
-        searchClickDebounce = debounce<String>(2000L, viewLifecycleOwner.lifecycleScope, true){ txtForSearch ->
+        searchDebounce = debounce<String>(2000L, viewLifecycleOwner.lifecycleScope, true){ txtForSearch ->
             viewModel.searchTracks(txtForSearch)
+        }
+
+        trackClickDebounce = debounce<Track>(100L, viewLifecycleOwner.lifecycleScope, false ){ track ->
+            viewModel.addTrackToFavorite(track)
+
         }
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -217,7 +223,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeGone()
-                    searchClickDebounce(txtForSearch)
+                    searchDebounce(txtForSearch)
 //                    viewModel.searchTracks(txtForSearch)
                     phForNothingToShow.makeGone()
                     recyclerView.makeGone()
@@ -363,8 +369,9 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек
+
         getTrackIntentAndStart(track, requireContext())
-        viewModel.addTrackToFavorite(track)
+        trackClickDebounce(track)
 
     }
 

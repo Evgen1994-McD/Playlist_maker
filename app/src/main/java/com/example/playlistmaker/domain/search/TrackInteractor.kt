@@ -14,6 +14,5 @@ interface TrackInteractor {
 
 
     // ну и запустим( далее)
-    fun clickDebounce(): Boolean
 
 }

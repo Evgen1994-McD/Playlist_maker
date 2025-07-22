@@ -22,9 +22,7 @@ class SearchViewModel(
 
 
     fun addTrackToFavorite(track: Track){
-        if (trackInteractor.clickDebounce()) {
             favoriteTrackInteractor.addTrack(track)
-        }
     }
 
     fun getAllTracks() {
