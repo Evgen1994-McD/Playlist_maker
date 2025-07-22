@@ -49,7 +49,6 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
 
     val getLiveData: LiveData<PlayerScreenState> get() = mutableMediaScreen
 
-//    private val handler = Handler(Looper.getMainLooper()) // хэндлер для доступа к главному потоку
 
 
 
@@ -66,7 +65,6 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
     fun reliesePlayer(){
         mediaInteractor.releasePlayer()
         stopUpdateProgress()
-//        handler.removeCallbacksAndMessages(null)
 
     }
 
@@ -76,27 +74,22 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
     }
 
     private fun onPlayComplete() { // это тоже
-        Log.d("MediaPlayer", "Проигрывание завершено")
+        Log.d("MyLog", "Проигрывание завершено")
         stopUpdateProgress()
 
         mutableMediaScreen.value = mutableMediaScreen.value!!.copy(progress = default_time, isPlaying = false)
-
+            addListeners()
+            intentGetExtraBind()
 
     }
 
     fun stopUpdateProgress() {
 timerJob?.cancel()
-//        handler.removeCallbacksAndMessages(null) // функция отмены колбеков от хендлер
     }
 
     @SuppressLint("SuspiciousIndentation")
     fun startUpdateProgress() {
-//        val progress = mediaInteractor.updateProgress()
-//        mutableMediaScreen.value = mutableMediaScreen.value!!.copy(progress = progress)
-//        handler.postDelayed({ startUpdateProgress() }, 300) // вызывается каждые 300 мс
-
         timerJob = viewModelScope.launch {
-
             try {
 
                 while (isActive && mutableMediaScreen.value.isPlaying) {
@@ -106,6 +99,7 @@ timerJob?.cancel()
                     mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(progress = progress))
                 }
             } catch (ex: CancellationException){
+                Log.d("MyLog", "Корутина Отменена")
                 println("Корутина была отменена")
             }
 
@@ -119,8 +113,6 @@ timerJob?.cancel()
     fun mediaCommander(command: PlayerCommand) {
         when (command) {
             is PlayerCommand.Play -> {
-
-
                 mediaInteractor.startPlayback()
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isPlaying = true)
                 startUpdateProgress()
@@ -211,7 +203,6 @@ timerJob?.cancel()
             val artworkUrl100 = track.artworkUrl100
 
             val previewUrl = track.previewUrl
-            Log.d("Mylog" , previewUrl)
             mediaInteractor.preparePlayer(previewUrl)
             mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
                 trackName = trackName,
