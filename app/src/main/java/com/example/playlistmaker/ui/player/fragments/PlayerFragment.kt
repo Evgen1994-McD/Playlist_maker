@@ -64,6 +64,8 @@ class PlayerFragment : Fragment() {
 
 
         binding.toolbar.setNavigationOnClickListener {
+
+
             findNavController().popBackStack()
         }
 

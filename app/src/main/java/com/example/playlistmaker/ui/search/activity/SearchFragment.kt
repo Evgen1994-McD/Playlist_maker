@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -18,6 +19,8 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -47,10 +50,9 @@ class SearchFragment : Fragment(), OnTrackClickListener {
     private lateinit var pbs: ProgressBar
     private lateinit var binding: FragmentSearchBinding
 
-    private lateinit var searchDebounce:(String)-> Unit
-    private lateinit var trackClickDebounce:(Track)-> Unit
-
-
+    private lateinit var searchDebounce: (String) -> Unit
+    private lateinit var trackClickDebounce: (Track) -> Unit
+    private lateinit var oldText: CharSequence
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -87,46 +89,9 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
             viewModel.getAllTracks()
+            observeTrackSearchResults(hasFocus)
             // Наблюдаем сразу за обоими источниками данных
-            viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
-                when {
-                    newState.isLoading -> pbs.makeVisible()
-                    !newState.errorMessage.isNullOrEmpty() && !newState.isLoading && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
-                        handleNoInternetConnection()
-                        pbs.makeGone()
-                    }
 
-                    newState.searchResults.isNullOrEmpty() && newState.errorMessage == null && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
-                        pbs.makeGone()
-                        handleNoResults()
-                    }
-
-                    else -> {
-                        pbs.makeGone()
-                        if (hasFocus && searchEditText.text.isNullOrEmpty()) {
-                            val tracksToDisplay = newState.history
-                            tracksToDisplay?.let { displayTracks(it) }
-                            btCleanHistory.makeVisible()
-                            if (!tracksToDisplay.isNullOrEmpty()) {
-                                btCleanHistory.makeVisible()
-                            } else btCleanHistory.makeGone()
-
-                        } else if (!searchEditText.text.isNullOrEmpty()) {
-                            val tracksToDisplay = newState.searchResults
-                            tracksToDisplay?.let { displayTracks(it) }
-                        } else {
-                            recyclerView.makeInvisible()
-                            btCleanHistory.makeGone()
-                            phForNothingToShow.makeGone()
-                            msgTopTxt.makeInvisible()
-                            msgBotTxt.makeInvisible()
-
-
-                        }
-
-                    }
-                }
-            }
         }
 
 
@@ -201,32 +166,43 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                 0
             )  // Появление клавиатуры при нажатии на эдиттекст
         }
-        searchDebounce = debounce<String>(2000L, viewLifecycleOwner.lifecycleScope, true){ txtForSearch ->
-            viewModel.searchTracks(txtForSearch)
-        }
+        searchDebounce =
+            debounce<String>(2000L, viewLifecycleOwner.lifecycleScope, true) { txtForSearch ->
+                viewModel.searchTracks(txtForSearch)
+            }
 
-        trackClickDebounce = debounce<Track>(100L, viewLifecycleOwner.lifecycleScope, false ){ track ->
-            viewModel.addTrackToFavorite(track)
+        trackClickDebounce =
+            debounce<Track>(100L, viewLifecycleOwner.lifecycleScope, false) { track ->
+                viewModel.addTrackToFavorite(track)
 
-        }
+            }
+
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                //  empty
+                oldText = p0 ?: ""
+
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 logicClearIc(p0)
-
+                val currentText = p0 ?: ""
                 if (!p0.isNullOrEmpty()) {
                     // инициализ переменную таск в текст ватчере, иначе происходит вылет
-                    txtForSearch = searchEditText.text.toString()
+                    txtForSearch = p0.toString()
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
-                    recyclerView.makeGone()
-                    searchDebounce(txtForSearch)
+                    recyclerView.makeInvisible()
+                    if (currentText == oldText) {
+                        /*
+                        C помощью текст ватчера проверяю изменился ли текст после возвращения через popBackStack()
+                        и выполняю поисковый запрос только при наличии изменений ( убрал неприятный прогресс бар при возврате на экран -
+                        - появлялся на пару секунд выполняя повторный запрос)
+                         */
+                        searchDebounce(txtForSearch)
+                    }
 //                    viewModel.searchTracks(txtForSearch)
                     phForNothingToShow.makeGone()
-                    recyclerView.makeGone()
+
                     msgTopTxt.makeGone()
                     msgBotTxt.makeGone()
                     buttonNoInternet.makeGone()
@@ -315,6 +291,48 @@ class SearchFragment : Fragment(), OnTrackClickListener {
         }
     }
 
+    private fun observeTrackSearchResults(hasFocus: Boolean) {
+        viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
+            when {
+                newState.isLoading -> pbs.makeVisible()
+                !newState.errorMessage.isNullOrEmpty() && !newState.isLoading && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
+                    handleNoInternetConnection()
+                    pbs.makeGone()
+                }
+
+                newState.searchResults.isNullOrEmpty() && newState.errorMessage == null && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
+                    pbs.makeGone()
+                    handleNoResults()
+                }
+
+                else -> {
+                    pbs.makeGone()
+                    if (hasFocus && searchEditText.text.isNullOrEmpty()) {
+                        val tracksToDisplay = newState.history
+                        tracksToDisplay?.let { displayTracks(it) }
+                        btCleanHistory.makeVisible()
+                        if (!tracksToDisplay.isNullOrEmpty()) {
+                            btCleanHistory.makeVisible()
+                        } else btCleanHistory.makeGone()
+
+                    } else if (!searchEditText.text.isNullOrEmpty()) {
+                        val tracksToDisplay = newState.searchResults
+                        tracksToDisplay?.let { displayTracks(it) }
+                    } else {
+                        recyclerView.makeInvisible()
+                        btCleanHistory.makeGone()
+                        phForNothingToShow.makeGone()
+                        msgTopTxt.makeInvisible()
+                        msgBotTxt.makeInvisible()
+
+
+                    }
+
+                }
+            }
+        }
+    }
+
 
     // Вспомогательные методы
     private fun handleNoResults() {
@@ -375,6 +393,16 @@ class SearchFragment : Fragment(), OnTrackClickListener {
         viewModel.addTrackToFavorite(track)
 
     }
+
+    override fun onResume() {
+        super.onResume()
+
+
+        observeTrackSearchResults(true)
+
+
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
