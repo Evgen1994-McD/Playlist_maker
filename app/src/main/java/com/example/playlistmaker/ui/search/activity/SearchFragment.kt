@@ -372,6 +372,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
         getTrackIntentAndStart(track, requireContext())
         trackClickDebounce(track)
+        viewModel.addTrackToFavorite(track)
 
     }
 

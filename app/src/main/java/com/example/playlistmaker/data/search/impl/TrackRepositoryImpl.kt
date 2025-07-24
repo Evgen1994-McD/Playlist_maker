@@ -1,35 +1,46 @@
 package com.example.playlistmaker.data.search.impl
 
+import com.example.playlistmaker.data.search.dto.TrackDto
 import com.example.playlistmaker.data.search.network.NetworkClient
 import com.example.playlistmaker.data.search.dto.TrackResponse
 import com.example.playlistmaker.data.search.dto.TrackSearchRequest
 import com.example.playlistmaker.domain.search.TrackRepository
 import com.example.playlistmaker.domain.models.Track
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
 
-    override fun searchTracks(expression: String): List<Track> {
+    override fun searchTracks(expression: String):Flow<List<Track>> = flow {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
-        if (response.resultCode == 200) {
-            return (response as TrackResponse).results.map {
-                Track(
-                    it.trackName,
-                    it.artistName,
-                    formatMillisecondsAsMinSec(it.trackTimeMillis.toLong()), // преобразую и пеоедам время сразу
-                    getCoverArtwork(it.artworkUrl100).toString(),
-                    it.trackId,
-                    it.collectionName,
-                    formattedYear(it.releaseDate),
-                    it.primaryGenreName,
-                    it.country,
-                    it.previewUrl,
-                )
+        when (response.resultCode) {
+            200 -> {
+                with(response as TrackResponse) {
+val data = results.map{ it ->
+    Track(   it.trackName,
+        it.artistName,
+        formatMillisecondsAsMinSec(it.trackTimeMillis.toLong()), // преобразую и пеоедам время сразу
+        getCoverArtwork(it.artworkUrl100).toString(),
+        it.trackId,
+        it.collectionName,
+        formattedYear(it.releaseDate),
+        it.primaryGenreName,
+        it.country,
+        it.previewUrl
+    )
+}
+                    emit(data)
+
+
+                }
             }
-        } else {
-            return emptyList()
+            400 -> {
+                emit(emptyList())
+            }
+            else -> emit(emptyList())
         }
     }
 

@@ -42,19 +42,15 @@ class SearchViewModel(
     fun searchTracks( txtForSearch:String){
         viewModelScope.launch(Dispatchers.IO){
             mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = true)) // при начале запроса - выставляем лоадинг в тру
-            trackInteractor.searchTracks(
-                txtForSearch,
-                object : TrackInteractor.TracksConsumer {
-                    override fun consume(tracks: List<Track>) {
-                        mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = false, searchResults = tracks, errorMessage = null))
-
+            trackInteractor.searchTracks(txtForSearch)
+                .collect{ pair->
+if(pair.first.isNullOrEmpty()){
+    mutableScreenState.postValue(mutableScreenState.value!!.copy(errorMessage = pair.second, isLoading = false))
+                    } else {
+    mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = false, searchResults = pair.first, errorMessage = null))
                     }
+                }
 
-                    override fun onFailure(error: Throwable) {
-                        mutableScreenState.postValue(mutableScreenState.value!!.copy(errorMessage = error.toString(), isLoading = false))
-
-                    }
-                })
 
         }
     }
