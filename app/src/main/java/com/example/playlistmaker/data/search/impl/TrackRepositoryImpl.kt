@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter
 
 class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
 
-    override fun searchTracks(expression: String):Flow<List<Track>> = flow {
+    override fun searchTracks(expression: String):Flow<List<Track>?> = flow {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
         when (response.resultCode) {
             200 -> {
@@ -40,7 +40,10 @@ val data = results.map{ it ->
             400 -> {
                 emit(emptyList())
             }
-            else -> emit(emptyList())
+            else -> emit(null)
+            /*
+            эмичу эмпти лист чтобы отработать ошибку отсутствия интернета
+             */
         }
     }
 
