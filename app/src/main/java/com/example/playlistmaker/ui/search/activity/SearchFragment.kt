@@ -326,25 +326,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                         }
                         tracksToDisplay?.let { displayTracks(it) }
                     }
-//                    else if (newState.searchResults.isNullOrEmpty()) {
-//                        pbs.makeGone()
-//                        handleNoResults()
-//                        recyclerView.makeInvisible()
-//                        btCleanHistory.makeGone()
-//                        phForNothingToShow.makeGone()
-//                        msgTopTxt.makeInvisible()
-//                        msgBotTxt.makeInvisible()
 
-
-//                    }
-
-//                else
-//                    {
-//                        pbs.makeGone()
-//                        handleNoResults()
-//                        recyclerView.makeInvisible()
-//
-//                    }
 
                 }
             }
@@ -415,8 +397,9 @@ class SearchFragment : Fragment(), OnTrackClickListener {
     override fun onResume() {
         super.onResume()
 
-
         observeTrackSearchResults(true)
+
+
 
 
     }
