@@ -31,7 +31,7 @@ class SearchViewModel(
     }
 
     fun clearSearchHistory(){
-        mutableScreenState.postValue(mutableScreenState.value!!.copy(searchResults = null))
+        mutableScreenState.postValue(mutableScreenState.value!!.copy(searchResults = null, errorMessage = "retry"))
     }
 
     fun clearHistory(){

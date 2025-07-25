@@ -298,12 +298,12 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
             when {
                 newState.isLoading -> pbs.makeVisible()
-                !newState.errorMessage.isNullOrEmpty() && !newState.isLoading && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
+                newState.errorMessage == "Exception" && !newState.isLoading && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
                     handleNoInternetConnection()
                     pbs.makeGone()
                 }
 
-                lastState.isNullOrEmpty() && newState.searchResults.isNullOrEmpty() == true && newState.errorMessage == null && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
+                newState.searchResults.isNullOrEmpty() == true && newState.errorMessage == null && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
                     pbs.makeGone()
                     handleNoResults()
                 }
@@ -318,28 +318,33 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                             btCleanHistory.makeVisible()
                         } else btCleanHistory.makeGone()
 
-                    } else if (!searchEditText.text.isNullOrEmpty() && lastState !=newState.searchResults) {
+
+                    } else if (!searchEditText.text.isNullOrEmpty() ) {
                         val tracksToDisplay = newState.searchResults
                         if (tracksToDisplay != null) {
                             lastState = tracksToDisplay
                         }
                         tracksToDisplay?.let { displayTracks(it) }
                     }
-                    else if (lastState.isNullOrEmpty() && newState.searchResults.isNullOrEmpty()) {
+//                    else if (newState.searchResults.isNullOrEmpty()) {
 //                        pbs.makeGone()
 //                        handleNoResults()
-                        recyclerView.makeInvisible()
-                        btCleanHistory.makeGone()
-                        phForNothingToShow.makeGone()
-                        msgTopTxt.makeInvisible()
-                        msgBotTxt.makeInvisible()
+//                        recyclerView.makeInvisible()
+//                        btCleanHistory.makeGone()
+//                        phForNothingToShow.makeGone()
+//                        msgTopTxt.makeInvisible()
+//                        msgBotTxt.makeInvisible()
 
 
-                    } else
-                    {
-                        pbs.makeGone()
-                        handleNoResults()
-                    }
+//                    }
+
+//                else
+//                    {
+//                        pbs.makeGone()
+//                        handleNoResults()
+//                        recyclerView.makeInvisible()
+//
+//                    }
 
                 }
             }
@@ -411,7 +416,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
         super.onResume()
 
 
-//        observeTrackSearchResults(true)
+        observeTrackSearchResults(true)
 
 
     }
