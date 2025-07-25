@@ -16,6 +16,12 @@ class SearchViewModel(
     private val favoriteTrackInteractor: FavoriteTrackInteractor
 ): ViewModel() {
 
+    companion object{
+
+        private const val retryStateString = "retry"
+
+    }
+
 
     private val mutableScreenState = MutableLiveData(SearchScreenState())
     val getLiveData: LiveData<SearchScreenState> get() = mutableScreenState
@@ -31,7 +37,7 @@ class SearchViewModel(
     }
 
     fun clearSearchHistory(){
-        mutableScreenState.postValue(mutableScreenState.value!!.copy(searchResults = null, errorMessage = "retry"))
+        mutableScreenState.postValue(mutableScreenState.value!!.copy(searchResults = null, errorMessage = retryStateString))
     }
 
     fun clearHistory(){

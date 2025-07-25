@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -19,8 +18,6 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -55,8 +52,15 @@ class SearchFragment : Fragment(), OnTrackClickListener {
     private lateinit var searchDebounce: (String) -> Unit
     private lateinit var trackClickDebounce: (Track) -> Unit
     private var oldText: CharSequence = ""
+
+    companion object{
+        private const val exceptionStateString = "Exception"
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
 
     }
@@ -86,10 +90,11 @@ class SearchFragment : Fragment(), OnTrackClickListener {
         searchEditText =  // инициализирую эдиттекст
             binding.searchStroke
 
-
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
             viewModel.getAllTracks()
             observeTrackSearchResults(hasFocus)
+
+
             // Наблюдаем сразу за обоими источниками данных
 
         }
@@ -191,7 +196,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeInvisible()
-                    if (oldText != txtForSearch) {
+                    if (oldText != txtForSearch && txtForSearch.isNotEmpty()) {
                         oldText = txtForSearch
                         viewModel.clearSearchHistory()
                         /*
@@ -273,6 +278,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                             0
                         ) // Прячем клаву
                         // чистим эдит текст
+                        searchEditText.clearFocus()
 
 
                         recyclerView.makeInvisible() // убрали список треков при очистке эдиттекста
@@ -283,7 +289,8 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                         buttonNoInternet.makeGone() // убрали кнопку
                         btCleanHistory.makeInvisible()
                         tvMsgSearch.makeInvisible()
-                        searchEditText.clearFocus() // убираем фокус с эдиттекста чтобы при нажатии снова появился фокус + история поиска
+                        searchEditText.clearFocus()
+                        // убираем фокус с эдиттекста чтобы при нажатии снова появился фокус + история поиска
                         return@setOnTouchListener true
                     }
                 }
@@ -298,7 +305,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
             when {
                 newState.isLoading -> pbs.makeVisible()
-                newState.errorMessage == "Exception" && !newState.isLoading && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
+                newState.errorMessage == exceptionStateString && !newState.isLoading && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
                     handleNoInternetConnection()
                     pbs.makeGone()
                 }
@@ -306,6 +313,13 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                 newState.searchResults.isNullOrEmpty() == true && newState.errorMessage == null && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
                     pbs.makeGone()
                     handleNoResults()
+                }
+
+
+               !searchEditText.text.isNullOrEmpty() && !lastState.isNullOrEmpty() && !hasFocus -> {
+                   pbs.makeGone()
+
+                    lastState?.let { displayTracks(it) }
                 }
 
                 else -> {
@@ -319,7 +333,8 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                         } else btCleanHistory.makeGone()
 
 
-                    } else if (!searchEditText.text.isNullOrEmpty() ) {
+                    }
+                    else if (!searchEditText.text.isNullOrEmpty() ) {
                         val tracksToDisplay = newState.searchResults
                         if (tracksToDisplay != null) {
                             lastState = tracksToDisplay
@@ -396,8 +411,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
     override fun onResume() {
         super.onResume()
-
-        observeTrackSearchResults(true)
+//        observeTrackSearchResults(true)
 
 
 

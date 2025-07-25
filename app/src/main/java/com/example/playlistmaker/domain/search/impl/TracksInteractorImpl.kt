@@ -11,6 +11,9 @@ class TracksInteractorImpl(
 
 ) : TrackInteractor {
 
+    companion object{
+        private const val exceptionStateString = "Exception"
+    }
 
     override fun searchTracks(expression: String): Flow<Pair<List<Track>?, String?>> {
 
@@ -19,7 +22,7 @@ class TracksInteractorImpl(
             if (results != null) {
                 Pair(results, null)
             } else {
-                Pair(null, "Exception")
+                Pair(null, exceptionStateString)
             }
         }
     }
