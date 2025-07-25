@@ -30,6 +30,10 @@ class SearchViewModel(
 
     }
 
+    fun clearSearchHistory(){
+        mutableScreenState.postValue(mutableScreenState.value!!.copy(searchResults = null))
+    }
+
     fun clearHistory(){
         favoriteTrackInteractor.clearHistory()
         mutableScreenState.value = mutableScreenState.value!!.copy(history = null, searchResults = null)

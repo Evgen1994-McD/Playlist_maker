@@ -50,9 +50,11 @@ class SearchFragment : Fragment(), OnTrackClickListener {
     private lateinit var pbs: ProgressBar
     private lateinit var binding: FragmentSearchBinding
 
+    private  var lastState: List<Track> = emptyList()
+
     private lateinit var searchDebounce: (String) -> Unit
     private lateinit var trackClickDebounce: (Track) -> Unit
-    private lateinit var oldText: CharSequence
+    private var oldText: CharSequence = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -77,8 +79,6 @@ class SearchFragment : Fragment(), OnTrackClickListener {
             if (savedText != null) {
                 clearEditText.setText(savedText)
             }
-
-
         }
 
 
@@ -176,31 +176,32 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                 viewModel.addTrackToFavorite(track)
 
             }
-
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                oldText = p0 ?: ""
+
 
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 logicClearIc(p0)
-                val currentText = p0 ?: ""
+
                 if (!p0.isNullOrEmpty()) {
                     // инициализ переменную таск в текст ватчере, иначе происходит вылет
                     txtForSearch = p0.toString()
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeInvisible()
-                    if (currentText == oldText) {
+                    if (oldText != txtForSearch) {
+                        oldText = txtForSearch
+                        viewModel.clearSearchHistory()
                         /*
                         C помощью текст ватчера проверяю изменился ли текст после возвращения через popBackStack()
                         и выполняю поисковый запрос только при наличии изменений ( убрал неприятный прогресс бар при возврате на экран -
                         - появлялся на пару секунд выполняя повторный запрос)
                          */
                         searchDebounce(txtForSearch)
+
                     }
-//                    viewModel.searchTracks(txtForSearch)
                     phForNothingToShow.makeGone()
 
                     msgTopTxt.makeGone()
@@ -293,6 +294,8 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
     private fun observeTrackSearchResults(hasFocus: Boolean) {
         viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
+
+
             when {
                 newState.isLoading -> pbs.makeVisible()
                 !newState.errorMessage.isNullOrEmpty() && !newState.isLoading && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
@@ -300,7 +303,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                     pbs.makeGone()
                 }
 
-                newState.searchResults.isNullOrEmpty() && newState.errorMessage == null && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
+                lastState.isNullOrEmpty() && newState.searchResults.isNullOrEmpty() == true && newState.errorMessage == null && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
                     pbs.makeGone()
                     handleNoResults()
                 }
@@ -315,10 +318,16 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                             btCleanHistory.makeVisible()
                         } else btCleanHistory.makeGone()
 
-                    } else if (!searchEditText.text.isNullOrEmpty()) {
+                    } else if (!searchEditText.text.isNullOrEmpty() && lastState !=newState.searchResults) {
                         val tracksToDisplay = newState.searchResults
+                        if (tracksToDisplay != null) {
+                            lastState = tracksToDisplay
+                        }
                         tracksToDisplay?.let { displayTracks(it) }
-                    } else {
+                    }
+                    else if (lastState.isNullOrEmpty() && newState.searchResults.isNullOrEmpty()) {
+//                        pbs.makeGone()
+//                        handleNoResults()
                         recyclerView.makeInvisible()
                         btCleanHistory.makeGone()
                         phForNothingToShow.makeGone()
@@ -326,6 +335,10 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                         msgBotTxt.makeInvisible()
 
 
+                    } else
+                    {
+                        pbs.makeGone()
+                        handleNoResults()
                     }
 
                 }
@@ -398,7 +411,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
         super.onResume()
 
 
-        observeTrackSearchResults(true)
+//        observeTrackSearchResults(true)
 
 
     }
