@@ -77,7 +77,9 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
         Log.d("MyLog", "Проигрывание завершено")
         stopUpdateProgress()
 
-        mutableMediaScreen.value = mutableMediaScreen.value!!.copy(progress = default_time, isPlaying = false)
+        mutableMediaScreen.value?.let {
+            mutableMediaScreen.value = it.copy(progress = default_time, isPlaying = false)
+        }
             addListeners()
             intentGetExtraBind()
 
