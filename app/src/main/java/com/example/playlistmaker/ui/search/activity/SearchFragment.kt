@@ -54,9 +54,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
     private lateinit var trackClickDebounce: (Track) -> Unit
     private var oldText: CharSequence = ""
 
-    companion object {
-        private const val exceptionStateString = "Exception"
-    }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -153,7 +151,6 @@ class SearchFragment : Fragment(), OnTrackClickListener {
             recyclerView.makeInvisible() // делаю ресайклер вью невидимым
             tvMsgSearch.makeInvisible() //делаем сообщение "Вы искали" невидимым
             btCleanHistory.makeInvisible() // делаем саму кнопку невидимой при выполнении логики
-            searchEditText.clearFocus()  // убираю фокус7
         }
 
 
@@ -428,7 +425,6 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
     override fun onResume() {
         super.onResume()
-//        observeTrackSearchResults(true)
 
 
     }

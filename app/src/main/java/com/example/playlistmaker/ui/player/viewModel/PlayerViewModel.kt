@@ -91,6 +91,7 @@ timerJob?.cancel()
 
     @SuppressLint("SuspiciousIndentation")
     fun startUpdateProgress() {
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
             try {
 
@@ -99,10 +100,10 @@ timerJob?.cancel()
                     ensureActive()
                     val progress = mediaInteractor.updateProgress()
                     mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(progress = progress))
+
                 }
             } catch (ex: CancellationException){
                 Log.d("MyLog", "Корутина Отменена")
-                println("Корутина была отменена")
             }
 
         }
