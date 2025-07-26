@@ -193,6 +193,15 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                 if (!p0.isNullOrEmpty()) {
                     // инициализ переменную таск в текст ватчере, иначе происходит вылет
                     txtForSearch = p0.toString()
+                    if (oldText == txtForSearch){
+                        searchEditText.requestFocus()
+                            /*
+                            передаю фокус на эдит текст, чтобы при возврате на экран если зашел посмотерть песню,
+                            не приходилось выбирать строку чтобы отобразить результаты поиска, а сразу перебирать
+                            уже песни в RecyclerView
+                             */
+
+                    }
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
                     recyclerView.makeInvisible()
@@ -313,13 +322,6 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                 newState.searchResults.isNullOrEmpty() == true && newState.errorMessage == null && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
                     pbs.makeGone()
                     handleNoResults()
-                }
-
-
-               !searchEditText.text.isNullOrEmpty() && !lastState.isNullOrEmpty() && !hasFocus -> {
-                   pbs.makeGone()
-
-                    lastState?.let { displayTracks(it) }
                 }
 
                 else -> {
