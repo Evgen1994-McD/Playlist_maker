@@ -23,7 +23,7 @@ class SearchViewModel(
     }
 
 
-    private val mutableScreenState = MutableLiveData(SearchScreenState())
+    private val mutableScreenState = MutableLiveData<SearchScreenState>()
     val getLiveData: LiveData<SearchScreenState> get() = mutableScreenState
 
 
@@ -32,17 +32,36 @@ class SearchViewModel(
     }
 
     fun getAllTracks() {
-        mutableScreenState.value = mutableScreenState.value!!.copy(history = favoriteTrackInteractor.getAllTracksFromStorage())
+            mutableScreenState.value = SearchScreenState.History(history = favoriteTrackInteractor.getAllTracksFromStorage())
 
     }
+
+
+//    fun getAllTracks() {
+//        mutableScreenState.value = mutableScreenState.value!!.copy(history = favoriteTrackInteractor.getAllTracksFromStorage())
+//
+//    }
+
+//    fun clearSearchHistory(){
+//        mutableScreenState.postValue(mutableScreenState.value!!.copy(searchResults = null, errorMessage = retryStateString))
+//    }
+//
 
     fun clearSearchHistory(){
-        mutableScreenState.postValue(mutableScreenState.value!!.copy(searchResults = null, errorMessage = retryStateString))
+        mutableScreenState.postValue(SearchScreenState.SearchResults(null))
+        mutableScreenState.postValue(SearchScreenState.ErrorMessage(retryStateString))
     }
+//
+//    fun clearHistory(){
+//        favoriteTrackInteractor.clearHistory()
+//        mutableScreenState.value = mutableScreenState.value!!.copy(history = null, searchResults = null)
+//
+//    }
+
 
     fun clearHistory(){
         favoriteTrackInteractor.clearHistory()
-        mutableScreenState.value = mutableScreenState.value!!.copy(history = null, searchResults = null)
+        mutableScreenState.postValue(SearchScreenState.History(null))
 
     }
 
@@ -51,13 +70,16 @@ class SearchViewModel(
 
     fun searchTracks( txtForSearch:String){
         viewModelScope.launch(Dispatchers.IO){
-            mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = true)) // при начале запроса - выставляем лоадинг в тру
+//            mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = true)) // при начале запроса - выставляем лоадинг в тру
+            mutableScreenState.postValue(SearchScreenState.Loading) // при начале запроса - выставляем лоадинг в тру
             trackInteractor.searchTracks(txtForSearch)
                 .collect{ pair->
 if(pair.first.isNullOrEmpty()){
-    mutableScreenState.postValue(mutableScreenState.value!!.copy(errorMessage = pair.second, isLoading = false))
+//    mutableScreenState.postValue(mutableScreenState.value!!.copy(errorMessage = pair.second, isLoading = false))
+    mutableScreenState.postValue(SearchScreenState.ErrorMessage(pair.second.toString()))
                     } else {
-    mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = false, searchResults = pair.first, errorMessage = null))
+//    mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = false, searchResults = pair.first, errorMessage = null))
+    mutableScreenState.postValue(SearchScreenState.SearchResults(pair.first))
                     }
                 }
 

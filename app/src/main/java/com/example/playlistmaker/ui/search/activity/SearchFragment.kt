@@ -26,6 +26,7 @@ import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
+import com.example.playlistmaker.ui.search.viewModel.SearchScreenState
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
 import com.example.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -310,6 +311,16 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
     private fun observeTrackSearchResults(hasFocus: Boolean) {
         viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
+
+            when(newState){
+                SearchScreenState.Loading -> pbs.makeVisible()
+                SearchScreenState.ErrorMessage("retry") -> pbs.makeVisible()
+                SearchScreenState.Loading -> pbs.makeVisible()
+                SearchScreenState.Loading -> pbs.makeVisible()
+
+            }
+
+
 
 
             when {
