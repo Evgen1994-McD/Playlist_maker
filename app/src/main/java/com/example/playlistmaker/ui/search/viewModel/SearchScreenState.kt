@@ -6,12 +6,9 @@ sealed class SearchScreenState {
     object Loading : SearchScreenState()
     data class SearchResults(val data: List<Track>?) : SearchScreenState()
     data class History(val history: List<Track>?) : SearchScreenState()
-    data class ErrorMessage(val message: String) : SearchScreenState()
+    data class ErrorNotFound(val message: String?) : SearchScreenState()
+    data class ErrorNoEnternet(val message: String?) : SearchScreenState()
 }
 
 
 
-
-//    val searchResults: List<Track>? = null,
-//    val history: List<Track>? = null,
-//    val errorMessage: String? = ""

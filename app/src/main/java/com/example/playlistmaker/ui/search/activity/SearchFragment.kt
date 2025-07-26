@@ -48,20 +48,19 @@ class SearchFragment : Fragment(), OnTrackClickListener {
     private lateinit var pbs: ProgressBar
     private lateinit var binding: FragmentSearchBinding
 
-    private  var lastState: List<Track> = emptyList()
+    private var lastState: List<Track> = emptyList()
 
     private lateinit var searchDebounce: (String) -> Unit
     private lateinit var trackClickDebounce: (Track) -> Unit
     private var oldText: CharSequence = ""
 
-    companion object{
+    companion object {
         private const val exceptionStateString = "Exception"
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
 
     }
@@ -92,7 +91,9 @@ class SearchFragment : Fragment(), OnTrackClickListener {
             binding.searchStroke
 
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
-            viewModel.getAllTracks()
+            if (hasFocus && searchEditText.text.isNullOrEmpty()) {
+                viewModel.getAllTracks()
+            }
             observeTrackSearchResults(hasFocus)
 
 
@@ -194,13 +195,13 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                 if (!p0.isNullOrEmpty()) {
                     // инициализ переменную таск в текст ватчере, иначе происходит вылет
                     txtForSearch = p0.toString()
-                    if (oldText == txtForSearch){
+                    if (oldText == txtForSearch) {
                         searchEditText.requestFocus()
-                            /*
-                            передаю фокус на эдит текст, чтобы при возврате на экран если зашел посмотерть песню,
-                            не приходилось выбирать строку чтобы отобразить результаты поиска, а сразу перебирать
-                            уже песни в RecyclerView
-                             */
+                        /*
+                        передаю фокус на эдит текст, чтобы при возврате на экран если зашел посмотерть песню,
+                        не приходилось выбирать строку чтобы отобразить результаты поиска, а сразу перебирать
+                        уже песни в RecyclerView
+                         */
 
                     }
                     tvMsgSearch.makeGone()
@@ -312,52 +313,55 @@ class SearchFragment : Fragment(), OnTrackClickListener {
     private fun observeTrackSearchResults(hasFocus: Boolean) {
         viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
 
-            when(newState){
-                SearchScreenState.Loading -> pbs.makeVisible()
-                SearchScreenState.ErrorMessage("retry") -> pbs.makeVisible()
-                SearchScreenState.Loading -> pbs.makeVisible()
-                SearchScreenState.Loading -> pbs.makeVisible()
-
-            }
-
-
-
-
-            when {
-                newState.isLoading -> pbs.makeVisible()
-                newState.errorMessage == exceptionStateString && !newState.isLoading && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
-                    handleNoInternetConnection()
-                    pbs.makeGone()
+            when (newState) {
+                is SearchScreenState.Loading -> {
+                    pbs.makeVisible()
                 }
 
-                newState.searchResults.isNullOrEmpty() == true && newState.errorMessage == null && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
-                    pbs.makeGone()
-                    handleNoResults()
+                is SearchScreenState.ErrorNoEnternet -> {
+                    if (newState.message == "Exception") {
+                        handleNoInternetConnection()
+                        pbs.makeGone()
+                    }
                 }
 
-                else -> {
+                is SearchScreenState.ErrorNotFound -> {
+                    if (newState.message == "retry") {
+                        pbs.makeGone()
+                        phForNothingToShow.makeGone()
+                    } else if (newState.message == null) {
+                        pbs.makeGone()
+                        handleNoResults()
+                    }
+                }
+
+                is SearchScreenState.History -> {
                     pbs.makeGone()
-                    if (hasFocus && searchEditText.text.isNullOrEmpty()) {
-                        val tracksToDisplay = newState.history
-                        tracksToDisplay?.let { displayTracks(it) }
+                    val tracksToDisplay = newState.history
+                    tracksToDisplay?.let { displayTracks(it) }
+                    btCleanHistory.makeVisible()
+                    if (!tracksToDisplay.isNullOrEmpty()) {
                         btCleanHistory.makeVisible()
-                        if (!tracksToDisplay.isNullOrEmpty()) {
-                            btCleanHistory.makeVisible()
-                        } else btCleanHistory.makeGone()
-
-
-                    }
-                    else if (!searchEditText.text.isNullOrEmpty() ) {
-                        val tracksToDisplay = newState.searchResults
-                        if (tracksToDisplay != null) {
-                            lastState = tracksToDisplay
-                        }
-                        tracksToDisplay?.let { displayTracks(it) }
-                    }
+                    } else btCleanHistory.makeGone()
 
 
                 }
+
+                is SearchScreenState.SearchResults -> {
+                    pbs.makeGone()
+                    val tracksToDisplay = newState.data
+                    if (tracksToDisplay != null) {
+                        lastState = tracksToDisplay
+                    }
+                    tracksToDisplay?.let { displayTracks(it) }
+
+                }
+
+
             }
+
+
+
         }
     }
 
@@ -425,8 +429,6 @@ class SearchFragment : Fragment(), OnTrackClickListener {
     override fun onResume() {
         super.onResume()
 //        observeTrackSearchResults(true)
-
-
 
 
     }
