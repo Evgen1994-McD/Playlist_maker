@@ -1,71 +1,41 @@
 package com.example.playlistmaker.domain.search.impl
 
-import android.content.Context
-import android.content.Intent
-import android.os.Handler
-import android.os.Looper
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.TrackInteractor
 import com.example.playlistmaker.domain.search.TrackRepository
-import com.example.playlistmaker.domain.models.Track
-import kotlinx.coroutines.Runnable
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class TracksInteractorImpl(
-    private val repository: TrackRepository,
-    private val handler: Handler = Handler(
-        Looper.getMainLooper()
-    ),
-    private val executor: ExecutorService = Executors.newSingleThreadExecutor()
-) : TrackInteractor, Runnable {
-    private var currentTask: Future<*>? = null
+    private val repository: TrackRepository
 
-    override fun searchTracks(expression: String, consumer: TrackInteractor.TracksConsumer) {
-        handler.removeCallbacksAndMessages(null)
-        currentTask?.cancel(true)
-        currentTask = executor.submit(Runnable {
-            Thread.sleep(2000L)
+) : TrackInteractor {
 
-            try {
-                val tracks = repository.searchTracks(expression)
-                handler.post {
+    companion object{
+        private const val exceptionStateString = "Exception"
+    }
 
-                    consumer.consume(tracks)
-                }
+    override fun searchTracks(expression: String): Flow<Pair<List<Track>?, String?>> {
 
-            } catch (ex: Exception) {
-                handler.post {
-                    consumer.onFailure(ex)
-                }
+
+        return repository.searchTracks(expression).map { results ->
+            if (results != null) {
+                Pair(results, null)
+            } else {
+                Pair(null, exceptionStateString)
             }
         }
-        )
-
-    }
-
-
-    override fun clickDebounce(): Boolean {
-
-        val now = System.currentTimeMillis()
-
-        // Проверяем прошло ли достаточно времени с момента последнего клика
-        if (now - lastClickTime >= debounceIntervalMillis) {
-            lastClickTime = now // Обновляем время последнего клика
-            return true // Клик разрешен
-        }
-        return false // Клик запрещен
-    }
-
-    override fun run() {
-
-    }
-
-    companion object {
-
-        private val debounceIntervalMillis = 10L // метод тут вроде Не нужен, наверное лучше убрать
-        private var lastClickTime = System.currentTimeMillis() // Хранение последнего времени клика
-
     }
 }
+
+
+
+
+
+
+
+
+
+
+
 

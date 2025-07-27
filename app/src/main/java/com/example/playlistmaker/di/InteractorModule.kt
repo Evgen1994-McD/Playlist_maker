@@ -34,7 +34,7 @@ val interactorModule = module {
     single { Executors.newSingleThreadExecutor() } // Экзекутор для интерактора
 
     factory<TrackInteractor> {
-        TracksInteractorImpl(get(), get(), get())
+        TracksInteractorImpl(get())
     }
     single<FavoriteTrackInteractor> {
         FavoriteTrackInteractorImpl(get())

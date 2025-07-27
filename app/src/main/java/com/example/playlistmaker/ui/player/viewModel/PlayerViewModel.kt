@@ -11,16 +11,27 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
 
 class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteractor,
                                private val mediaInteractor: MediaInteractor,
     private val trackFromArgs: Track
 
 ) : ViewModel(){
+    private var timerJob :Job? = null
 
     companion object { // компаньон медиаплеера
         private const val default_time = "00:00" // для прогресса
@@ -37,7 +48,7 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
 
 
     val getLiveData: LiveData<PlayerScreenState> get() = mutableMediaScreen
-    private val handler = Handler(Looper.getMainLooper()) // хэндлер для доступа к главному потоку
+
 
 
 
@@ -54,7 +65,6 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
     fun reliesePlayer(){
         mediaInteractor.releasePlayer()
         stopUpdateProgress()
-        handler.removeCallbacksAndMessages(null)
 
     }
 
@@ -64,23 +74,42 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
     }
 
     private fun onPlayComplete() { // это тоже
-        Log.d("MediaPlayer", "Проигрывание завершено")
-        mutableMediaScreen.value = mutableMediaScreen.value!!.copy(progress = default_time, isPlaying = false)
+        Log.d("MyLog", "Проигрывание завершено")
         stopUpdateProgress()
+
+        mutableMediaScreen.value?.let {
+            mutableMediaScreen.value = it.copy(progress = default_time, isPlaying = false)
+        }
+            addListeners()
+            intentGetExtraBind()
 
     }
 
     fun stopUpdateProgress() {
-
-        handler.removeCallbacksAndMessages(null) // функция отмены колбеков от хендлер
-
+timerJob?.cancel()
     }
 
     @SuppressLint("SuspiciousIndentation")
     fun startUpdateProgress() {
-        val progress = mediaInteractor.updateProgress()
-        mutableMediaScreen.value = mutableMediaScreen.value!!.copy(progress = progress)
-        handler.postDelayed({ startUpdateProgress() }, 300) // вызывается каждые 300 мс
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            try {
+
+                while (isActive && mutableMediaScreen.value.isPlaying) {
+                    delay(300L)
+                    ensureActive()
+                    val progress = mediaInteractor.updateProgress()
+                    mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(progress = progress))
+
+                }
+            } catch (ex: CancellationException){
+                Log.d("MyLog", "Корутина Отменена")
+            }
+
+        }
+
+
+
     }
 
 
@@ -177,7 +206,6 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
             val artworkUrl100 = track.artworkUrl100
 
             val previewUrl = track.previewUrl
-            Log.d("Mylog" , previewUrl)
             mediaInteractor.preparePlayer(previewUrl)
             mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
                 trackName = trackName,

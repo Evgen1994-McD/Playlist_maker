@@ -16,25 +16,37 @@ class SearchViewModel(
     private val favoriteTrackInteractor: FavoriteTrackInteractor
 ): ViewModel() {
 
+    companion object{
 
-    private val mutableScreenState = MutableLiveData(SearchScreenState())
+        private const val retryStateString = "retry"
+
+    }
+
+
+    private val mutableScreenState = MutableLiveData<SearchScreenState>()
     val getLiveData: LiveData<SearchScreenState> get() = mutableScreenState
 
 
     fun addTrackToFavorite(track: Track){
-        if (trackInteractor.clickDebounce()) {
             favoriteTrackInteractor.addTrack(track)
-        }
     }
 
     fun getAllTracks() {
-        mutableScreenState.value = mutableScreenState.value!!.copy(history = favoriteTrackInteractor.getAllTracksFromStorage())
+            mutableScreenState.value = SearchScreenState.History(history = favoriteTrackInteractor.getAllTracksFromStorage())
 
     }
 
+
+
+    fun clearSearchHistory(){
+        mutableScreenState.postValue(SearchScreenState.SearchResults(null))
+        mutableScreenState.postValue(SearchScreenState.ErrorNotFound(retryStateString))
+    }
+
+
     fun clearHistory(){
         favoriteTrackInteractor.clearHistory()
-        mutableScreenState.value = mutableScreenState.value!!.copy(history = null, searchResults = null)
+        mutableScreenState.postValue(SearchScreenState.History(null))
 
     }
 
@@ -43,20 +55,23 @@ class SearchViewModel(
 
     fun searchTracks( txtForSearch:String){
         viewModelScope.launch(Dispatchers.IO){
-            mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = true)) // при начале запроса - выставляем лоадинг в тру
-            trackInteractor.searchTracks(
-                txtForSearch,
-                object : TrackInteractor.TracksConsumer {
-                    override fun consume(tracks: List<Track>) {
-                        mutableScreenState.postValue(mutableScreenState.value!!.copy(isLoading = false, searchResults = tracks, errorMessage = null))
-
+            mutableScreenState.postValue(SearchScreenState.Loading) // при начале запроса - выставляем лоадинг в тру
+            trackInteractor.searchTracks(txtForSearch)
+                .collect{ pair->
+if(pair.first==null && pair.second == "Exception" ){
+    mutableScreenState.postValue(SearchScreenState.ErrorNoEnternet(pair.second.toString()))
+                    }
+                    if(pair.first.isNullOrEmpty() && pair.second==null){
+                        mutableScreenState.postValue(SearchScreenState.ErrorNotFound(null))
                     }
 
-                    override fun onFailure(error: Throwable) {
-                        mutableScreenState.postValue(mutableScreenState.value!!.copy(errorMessage = error.toString(), isLoading = false))
 
+
+else if (!pair.first.isNullOrEmpty()) {
+    mutableScreenState.postValue(SearchScreenState.SearchResults(pair.first))
                     }
-                })
+                }
+
 
         }
     }

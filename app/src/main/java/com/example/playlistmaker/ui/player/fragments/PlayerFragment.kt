@@ -45,7 +45,6 @@ class PlayerFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.intentGetExtraBind()
 
 
     }
@@ -64,6 +63,8 @@ class PlayerFragment : Fragment() {
 
 
         binding.toolbar.setNavigationOnClickListener {
+
+
             findNavController().popBackStack()
         }
 

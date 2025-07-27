@@ -2,9 +2,13 @@ package com.example.playlistmaker.ui.search.viewModel
 
 import com.example.playlistmaker.domain.models.Track
 
-data class SearchScreenState(
-    val isLoading: Boolean = false,
-    val searchResults: List<Track>? = null,
-    val history: List<Track>? = null,
-    val errorMessage: String? = ""
-)
+sealed class SearchScreenState {
+    object Loading : SearchScreenState()
+    data class SearchResults(val data: List<Track>?) : SearchScreenState()
+    data class History(val history: List<Track>?) : SearchScreenState()
+    data class ErrorNotFound(val message: String?) : SearchScreenState()
+    data class ErrorNoEnternet(val message: String?) : SearchScreenState()
+}
+
+
+

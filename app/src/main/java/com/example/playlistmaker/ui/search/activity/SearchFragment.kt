@@ -17,6 +17,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +26,9 @@ import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
+import com.example.playlistmaker.ui.search.viewModel.SearchScreenState
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
+import com.example.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SearchFragment : Fragment(), OnTrackClickListener {
@@ -44,6 +47,14 @@ class SearchFragment : Fragment(), OnTrackClickListener {
     private lateinit var btCleanHistory: TextView
     private lateinit var pbs: ProgressBar
     private lateinit var binding: FragmentSearchBinding
+
+    private var lastState: List<Track> = emptyList()
+
+    private lateinit var searchDebounce: (String) -> Unit
+    private lateinit var trackClickDebounce: (Track) -> Unit
+    private var oldText: CharSequence = ""
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +81,6 @@ class SearchFragment : Fragment(), OnTrackClickListener {
             if (savedText != null) {
                 clearEditText.setText(savedText)
             }
-
         }
 
 
@@ -78,49 +88,15 @@ class SearchFragment : Fragment(), OnTrackClickListener {
         searchEditText =  // инициализирую эдиттекст
             binding.searchStroke
 
-
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
-            viewModel.getAllTracks()
-            // Наблюдаем сразу за обоими источниками данных
-            viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
-                when {
-                    newState.isLoading -> pbs.makeVisible()
-                    !newState.errorMessage.isNullOrEmpty() && !newState.isLoading && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
-                        handleNoInternetConnection()
-                        pbs.makeGone()
-                    }
-
-                    newState.searchResults.isNullOrEmpty() && newState.errorMessage == null && hasFocus && searchEditText.text?.isNullOrEmpty() == false -> {
-                        pbs.makeGone()
-                        handleNoResults()
-                    }
-
-                    else -> {
-                        pbs.makeGone()
-                        if (hasFocus && searchEditText.text.isNullOrEmpty()) {
-                            val tracksToDisplay = newState.history
-                            tracksToDisplay?.let { displayTracks(it) }
-                            btCleanHistory.makeVisible()
-                            if (!tracksToDisplay.isNullOrEmpty()) {
-                                btCleanHistory.makeVisible()
-                            } else btCleanHistory.makeGone()
-
-                        } else if (!searchEditText.text.isNullOrEmpty()) {
-                            val tracksToDisplay = newState.searchResults
-                            tracksToDisplay?.let { displayTracks(it) }
-                        } else {
-                            recyclerView.makeInvisible()
-                            btCleanHistory.makeGone()
-                            phForNothingToShow.makeGone()
-                            msgTopTxt.makeInvisible()
-                            msgBotTxt.makeInvisible()
-
-
-                        }
-
-                    }
-                }
+            if (hasFocus && searchEditText.text.isNullOrEmpty()) {
+                viewModel.getAllTracks()
             }
+            observeTrackSearchResults(hasFocus)
+
+
+            // Наблюдаем сразу за обоими источниками данных
+
         }
 
 
@@ -175,7 +151,6 @@ class SearchFragment : Fragment(), OnTrackClickListener {
             recyclerView.makeInvisible() // делаю ресайклер вью невидимым
             tvMsgSearch.makeInvisible() //делаем сообщение "Вы искали" невидимым
             btCleanHistory.makeInvisible() // делаем саму кнопку невидимой при выполнении логики
-            searchEditText.clearFocus()  // убираю фокус7
         }
 
 
@@ -195,10 +170,20 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                 0
             )  // Появление клавиатуры при нажатии на эдиттекст
         }
+        searchDebounce =
+            debounce<String>(2000L, viewLifecycleOwner.lifecycleScope, true) { txtForSearch ->
+                viewModel.searchTracks(txtForSearch)
+            }
 
+        trackClickDebounce =
+            debounce<Track>(100L, viewLifecycleOwner.lifecycleScope, false) { track ->
+                viewModel.addTrackToFavorite(track)
+
+            }
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                //  empty
+
+
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -206,13 +191,32 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
                 if (!p0.isNullOrEmpty()) {
                     // инициализ переменную таск в текст ватчере, иначе происходит вылет
-                    txtForSearch = searchEditText.text.toString()
+                    txtForSearch = p0.toString()
+                    if (oldText == txtForSearch) {
+                        searchEditText.requestFocus()
+                        /*
+                        передаю фокус на эдит текст, чтобы при возврате на экран если зашел посмотерть песню,
+                        не приходилось выбирать строку чтобы отобразить результаты поиска, а сразу перебирать
+                        уже песни в RecyclerView
+                         */
+
+                    }
                     tvMsgSearch.makeGone()
                     btCleanHistory.makeGone()
-                    recyclerView.makeGone()
-                    viewModel.searchTracks(txtForSearch)
+                    recyclerView.makeInvisible()
+                    if (oldText != txtForSearch && txtForSearch.isNotEmpty()) {
+                        oldText = txtForSearch
+                        viewModel.clearSearchHistory()
+                        /*
+                        C помощью текст ватчера проверяю изменился ли текст после возвращения через popBackStack()
+                        и выполняю поисковый запрос только при наличии изменений ( убрал неприятный прогресс бар при возврате на экран -
+                        - появлялся на пару секунд выполняя повторный запрос)
+                         */
+                        searchDebounce(txtForSearch)
+
+                    }
                     phForNothingToShow.makeGone()
-                    recyclerView.makeGone()
+
                     msgTopTxt.makeGone()
                     msgBotTxt.makeGone()
                     buttonNoInternet.makeGone()
@@ -282,6 +286,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                             0
                         ) // Прячем клаву
                         // чистим эдит текст
+                        searchEditText.clearFocus()
 
 
                         recyclerView.makeInvisible() // убрали список треков при очистке эдиттекста
@@ -292,12 +297,68 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                         buttonNoInternet.makeGone() // убрали кнопку
                         btCleanHistory.makeInvisible()
                         tvMsgSearch.makeInvisible()
-                        searchEditText.clearFocus() // убираем фокус с эдиттекста чтобы при нажатии снова появился фокус + история поиска
+                        searchEditText.clearFocus()
+                        // убираем фокус с эдиттекста чтобы при нажатии снова появился фокус + история поиска
                         return@setOnTouchListener true
                     }
                 }
             }
             false
+        }
+    }
+
+    private fun observeTrackSearchResults(hasFocus: Boolean) {
+        viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
+
+            when (newState) {
+                is SearchScreenState.Loading -> {
+                    pbs.makeVisible()
+                }
+
+                is SearchScreenState.ErrorNoEnternet -> {
+                    if (newState.message == "Exception") {
+                        handleNoInternetConnection()
+                        pbs.makeGone()
+                    }
+                }
+
+                is SearchScreenState.ErrorNotFound -> {
+                    if (newState.message == "retry") {
+                        pbs.makeGone()
+                        phForNothingToShow.makeGone()
+                    } else if (newState.message == null) {
+                        pbs.makeGone()
+                        handleNoResults()
+                    }
+                }
+
+                is SearchScreenState.History -> {
+                    pbs.makeGone()
+                    val tracksToDisplay = newState.history
+                    tracksToDisplay?.let { displayTracks(it) }
+                    btCleanHistory.makeVisible()
+                    if (!tracksToDisplay.isNullOrEmpty()) {
+                        btCleanHistory.makeVisible()
+                    } else btCleanHistory.makeGone()
+
+
+                }
+
+                is SearchScreenState.SearchResults -> {
+                    pbs.makeGone()
+                    val tracksToDisplay = newState.data
+                    if (tracksToDisplay != null) {
+                        lastState = tracksToDisplay
+                    }
+                    tracksToDisplay?.let { displayTracks(it) }
+
+                }
+
+
+            }
+
+
+
         }
     }
 
@@ -355,10 +416,19 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек
+
         getTrackIntentAndStart(track, requireContext())
+        trackClickDebounce(track)
         viewModel.addTrackToFavorite(track)
 
     }
+
+    override fun onResume() {
+        super.onResume()
+
+
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -373,25 +443,6 @@ class SearchFragment : Fragment(), OnTrackClickListener {
         }
         findNavController().navigate(R.id.action_searchFragment_to_playerFragment, bundle)
 
-//
-//        val intent =
-//            Intent(context, PlayerActivity::class.java) // создали интент для перехода на активити
-//        intent.putExtra("trackName", track.trackName)
-//        if (!track.collectionName.isNullOrEmpty()) {
-//            intent.putExtra(
-//                "collectionName",
-//                track.collectionName
-//            )  // отправим альбом только если он есть
-//        }
-//        intent.putExtra("trackTimeMillis", track.trackTimeMillis)
-//        intent.putExtra("artistName", track.artistName)
-//        intent.putExtra("primaryGenreName", track.primaryGenreName)
-//        intent.putExtra("country", track.country)
-//        intent.putExtra("artworkUrl100", track.artworkUrl100)
-//        intent.putExtra("previewUrl", track.previewUrl)
-//
-//        intent.putExtra("relieseDate", track.releaseDate)
-//        context.startActivity(intent)
     }
 
 
