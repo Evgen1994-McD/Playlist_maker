@@ -19,7 +19,7 @@ val viewModelModule = module {
         MainViewModel(get())
     }
     viewModel { // описать получение юз кейсов в интерактор модуле
-        FavoriteFragmentViewModel()
+        FavoriteFragmentViewModel(get())
     }
 
     viewModel { // описать получение юз кейсов в интерактор модуле
@@ -39,7 +39,9 @@ val viewModelModule = module {
         PlayerViewModel(
             get(),
             get(),
-            params.get()  // в качестве парамс тут интент передаю в активити
+            params.get(),
+            get(),
+            get()// в качестве парамс тут интент передаю в активити
         )
     }
 

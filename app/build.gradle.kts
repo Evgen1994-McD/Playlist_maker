@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-
-    id("com.google.devtools.ksp")      // для KSP
+    id ("kotlin-kapt")
+//    id("com.google.devtools.ksp") version "2.2.0-2.0.2"  // для KSP
 
 }
 
@@ -47,9 +47,8 @@ android {
 dependencies {
 
 
-
     implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
+    kapt(libs.androidx.room.compiler)
 
     implementation(libs.androidx.room.ktx)
 

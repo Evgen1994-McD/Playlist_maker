@@ -12,6 +12,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.data.db.MainDb
+import com.example.playlistmaker.data.db.converters.TrackDbConvertor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
@@ -28,7 +30,9 @@ import okhttp3.Dispatcher
 
 class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteractor,
                                private val mediaInteractor: MediaInteractor,
-    private val trackFromArgs: Track
+    private val trackFromArgs: Track,
+    private val mainDb: MainDb,
+    private val trackDbConvertor: TrackDbConvertor
 
 ) : ViewModel(){
     private var timerJob :Job? = null
@@ -95,7 +99,7 @@ timerJob?.cancel()
         timerJob = viewModelScope.launch {
             try {
 
-                while (isActive && mutableMediaScreen.value.isPlaying) {
+                while (isActive && mutableMediaScreen.value!!.isPlaying) {
                     delay(300L)
                     ensureActive()
                     val progress = mediaInteractor.updateProgress()
@@ -218,6 +222,21 @@ timerJob?.cancel()
             )
 
         }
+    }
+
+    fun saveTrackToFavorite()= viewModelScope.launch{
+        val trackToSave = trackFromArgs
+        val trackEntiy = trackDbConvertor.map(trackToSave).copy(isLike = true)
+        mainDb.trackDao().insertTracks(trackEntiy)
+
+
+    }
+    fun deleteTrackFromFavorite()= viewModelScope.launch{
+        val trackToSave = trackFromArgs
+        val trackEntiy = trackDbConvertor.map(trackToSave).copy(isLike = false)
+        mainDb.trackDao().deleteTrackForId(trackEntiy.trackId)
+
+
     }
 
 

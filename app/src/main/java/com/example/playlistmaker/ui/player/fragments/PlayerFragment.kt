@@ -69,6 +69,8 @@ class PlayerFragment : Fragment() {
         }
 
 
+        saveAndDeleteFavoriteTrack()
+
         viewModel.addListeners() // добавил листенеры
 
         viewModel.intentGetExtraBind()
@@ -113,6 +115,9 @@ class PlayerFragment : Fragment() {
             }
             when {
                 !newState.trackName.isEmpty() && !newState.collectionName.contains(noAlbum) -> {
+
+
+
                     binding.tvGenre.text = newState.primaryGenreName
                     binding.tvCountry.text = newState.country
                     binding.tvAlbum.text = newState.collectionName
@@ -175,6 +180,25 @@ class PlayerFragment : Fragment() {
         viewModel.reliesePlayer()
 
         viewModel.getLiveData.removeObservers(this) // отключил обсерверы от медиа
+
+    }
+
+
+    private fun saveAndDeleteFavoriteTrack(){
+        binding.like.setOnClickListener {
+
+            viewModel.saveTrackToFavorite()
+            binding.like.visibility = View.INVISIBLE
+            binding.dislike.visibility = View.VISIBLE
+
+        }
+
+  binding.dislike.setOnClickListener {
+      binding.like.visibility = View.VISIBLE
+      binding.dislike.visibility = View.INVISIBLE
+      viewModel.deleteTrackFromFavorite()
+
+        }
 
     }
 

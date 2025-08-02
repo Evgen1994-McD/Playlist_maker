@@ -194,7 +194,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/guideline6"
-        app:layout_constraintEnd_toStartOf="@+id/imageView4"
+        app:layout_constraintEnd_toStartOf="@+id/like"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="@+id/guideline3"
@@ -213,13 +213,23 @@
         app:srcCompat="@drawable/ic_pause_84" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/play"
         app:layout_constraintEnd_toEndOf="@+id/imMine"
         app:layout_constraintTop_toTopOf="@+id/play"
         app:srcCompat="@drawable/ic_like_51dp" />
+
+    <ImageView
+        android:id="@+id/dislike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/play"
+        app:layout_constraintEnd_toEndOf="@+id/imMine"
+        app:layout_constraintTop_toTopOf="@+id/play"
+        app:srcCompat="@drawable/ic_like_red_51dp" />
 
     <TextView
         style="@style/media_tv_left"
