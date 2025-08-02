@@ -20,16 +20,18 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
             200 -> {
                 with(response as TrackResponse) {
 val data = results.map{ it ->
-    Track(   it.trackName,
+    Track(
+        it.trackId,
+        it.trackName,
         it.artistName,
         formatMillisecondsAsMinSec(it.trackTimeMillis.toLong()), // преобразую и пеоедам время сразу
         getCoverArtwork(it.artworkUrl100).toString(),
-        it.trackId,
         it.collectionName,
         formattedYear(it.releaseDate),
         it.primaryGenreName,
         it.country,
-        it.previewUrl
+        it.previewUrl,
+        it.isLike
     )
 }
                     emit(data)
