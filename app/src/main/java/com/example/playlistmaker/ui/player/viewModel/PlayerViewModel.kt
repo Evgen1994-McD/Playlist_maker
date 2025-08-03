@@ -27,6 +27,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Dispatcher
+import okhttp3.internal.isSensitiveHeader
 
 class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteractor,
                                private val mediaInteractor: MediaInteractor,
@@ -36,6 +37,7 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
 
 ) : ViewModel(){
     private var timerJob :Job? = null
+    private var isLike :Boolean = false
 
     companion object { // компаньон медиаплеера
         private const val default_time = "00:00" // для прогресса
@@ -43,6 +45,10 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
 
     }
 
+
+    init {
+        controlIsLike(trackFromArgs)
+    }
 
 
 
@@ -149,6 +155,7 @@ timerJob?.cancel()
             val country = trackFromArgs.country
             val relieseDate = trackFromArgs.releaseDate
             val artworkUrl100 = trackFromArgs.artworkUrl100
+            val isLike:Boolean = isLike
 
             if (trackFromArgs.collectionName
                     ?.isNullOrEmpty() == true || trackFromArgs.collectionName
@@ -172,7 +179,8 @@ timerJob?.cancel()
                     trackTimeMillis = trackTimeMillis,
                     artworkUrl100 = artworkUrl100,
                     releaseDate = relieseDate,
-                    country = country
+                    country = country,
+                    isLike = isLike
                 )
 
 
@@ -192,6 +200,7 @@ timerJob?.cancel()
         val myTracks = favoriteTrackInteractor.getAllTracksFromStorage()
         if (!myTracks.isNullOrEmpty()) {
             val track = myTracks[0] // если myTracks не пуст, возьмем свежий трек для плеера
+            controlIsLike(track)
             val trackName = track.trackName// убираем поле альбом если нет альбома
             if (track.collectionName?.isNullOrEmpty() == true || track.collectionName?.contains("No Album") == true) {
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(collectionName = noAlbum)
@@ -210,6 +219,7 @@ timerJob?.cancel()
             val artworkUrl100 = track.artworkUrl100
 
             val previewUrl = track.previewUrl
+            val isLike = isLike
             mediaInteractor.preparePlayer(previewUrl)
             mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
                 trackName = trackName,
@@ -218,7 +228,8 @@ timerJob?.cancel()
                 primaryGenreName = primaryGenreName,
                 country = country,
                 releaseDate = relieseDate,
-                artworkUrl100 = artworkUrl100
+                artworkUrl100 = artworkUrl100,
+                isLike = isLike
             )
 
         }
@@ -227,7 +238,7 @@ timerJob?.cancel()
     fun saveTrackToFavorite()= viewModelScope.launch{
         val trackToSave = trackFromArgs
         val trackEntiy = trackDbConvertor.map(trackToSave).copy(isLike = true)
-        mainDb.trackDao().insertTracks(trackEntiy)
+        mainDb.trackDao().insertTracks(trackEntiy.copy(isLike = true))
 
 
     }
@@ -239,7 +250,16 @@ timerJob?.cancel()
 
     }
 
+     fun controlIsLike(track: Track)= viewModelScope.launch {
+        val foundTracks = mainDb.trackDao().selectTrackForId(track.trackId)
+        if (foundTracks.isNotEmpty()) {
+            isLike = true
 
+
+        }
+
+
+    }
 
 }
 

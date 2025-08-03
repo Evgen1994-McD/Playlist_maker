@@ -69,7 +69,6 @@ class PlayerFragment : Fragment() {
         }
 
 
-        saveAndDeleteFavoriteTrack()
 
         viewModel.addListeners() // добавил листенеры
 
@@ -115,6 +114,9 @@ class PlayerFragment : Fragment() {
             }
             when {
                 !newState.trackName.isEmpty() && !newState.collectionName.contains(noAlbum) -> {
+
+
+                    saveAndDeleteFavoriteTrack(newState.isLike)
 
 
 
@@ -184,7 +186,19 @@ class PlayerFragment : Fragment() {
     }
 
 
-    private fun saveAndDeleteFavoriteTrack(){
+    private fun saveAndDeleteFavoriteTrack(isLike:Boolean){
+        if (isLike) {
+            binding.dislike.visibility = View.VISIBLE
+            binding.like.visibility = View.INVISIBLE
+
+        } else
+        {
+            binding.dislike.visibility = View.INVISIBLE
+            binding.like.visibility = View.VISIBLE
+        }
+
+
+
         binding.like.setOnClickListener {
 
             viewModel.saveTrackToFavorite()
@@ -201,6 +215,8 @@ class PlayerFragment : Fragment() {
         }
 
     }
+
+
 
 
 }
