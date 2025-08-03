@@ -197,7 +197,6 @@ controlIsLike(trackFromArgs)
             val artworkUrl100 = track.artworkUrl100
 
             val previewUrl = track.previewUrl
-//            val isLike = isLike
             mediaInteractor.preparePlayer(previewUrl)
             mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
                 trackName = trackName,

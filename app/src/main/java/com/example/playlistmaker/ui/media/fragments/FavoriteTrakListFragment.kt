@@ -46,20 +46,6 @@ class FavoriteTrakListFragment : Fragment(), OnTrackClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         showFavoriteTracks()
-//        viewModel.getLiveData.observe(viewLifecycleOwner) { new ->
-//            if (new == false) {
-//                binding.phNtsh.makeVisible()
-//                binding.msgTxtBottom.makeVisible()
-//            } else {
-//                with(binding) {
-//                    phNtsh.makeVisible()
-//                    msgTxtBottom.makeVisible()
-//                }
-//            }
-//            /*
-//            тут будет логика, это заготовка
-//             */
-//        }
 
         observeFavoriteTracks()
         viewModel.favoriteTracks

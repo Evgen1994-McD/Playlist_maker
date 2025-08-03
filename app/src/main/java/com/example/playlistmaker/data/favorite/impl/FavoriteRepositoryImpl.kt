@@ -1,6 +1,5 @@
 package com.example.playlistmaker.data.favorite.impl
 
-import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.data.db.MainDb
 import com.example.playlistmaker.data.db.converters.TrackDbConvertor
 import com.example.playlistmaker.data.db.entity.TrackEntity
@@ -8,7 +7,6 @@ import com.example.playlistmaker.domain.db.FavoriteRepository
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 
 class FavoriteRepositoryImpl(
     private val mainDb: MainDb,
