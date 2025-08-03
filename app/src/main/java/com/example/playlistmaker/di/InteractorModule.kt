@@ -61,7 +61,7 @@ val interactorModule = module {
         MediaInteractorImpl(get())
     }
 
-single {
+single<FavoriteInteractor> {
     FavoriteInteractorImpl(get())
 }
 

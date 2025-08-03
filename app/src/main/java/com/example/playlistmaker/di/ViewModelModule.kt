@@ -40,7 +40,6 @@ val viewModelModule = module {
             get(),
             get(),
             params.get(),
-            get(),
             get()// в качестве парамс тут интент передаю в активити
         )
     }

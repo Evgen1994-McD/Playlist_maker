@@ -1,53 +1,33 @@
 package com.example.playlistmaker.ui.player.viewModel
 
 import android.annotation.SuppressLint
-import android.app.Application
-import android.content.Intent
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.data.db.MainDb
-import com.example.playlistmaker.data.db.converters.TrackDbConvertor
+import com.example.playlistmaker.domain.db.FavoriteInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
-import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.Dispatcher
-import okhttp3.internal.isSensitiveHeader
 
 class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteractor,
                                private val mediaInteractor: MediaInteractor,
     private val trackFromArgs: Track,
-    private val mainDb: MainDb,
-    private val trackDbConvertor: TrackDbConvertor
-
+    private val myLikedTracksInteractor:FavoriteInteractor
 ) : ViewModel(){
     private var timerJob :Job? = null
-    private var isLike :Boolean = false
 
     companion object { // компаньон медиаплеера
         private const val default_time = "00:00" // для прогресса
         private const val noAlbum = "No Album"
 
-    }
-
-
-    init {
-        controlIsLike(trackFromArgs)
     }
 
 
@@ -145,7 +125,7 @@ timerJob?.cancel()
 
         if (!trackFromArgs?.trackName
                 .isNullOrEmpty()) {
-
+controlIsLike(trackFromArgs)
             val trackName = trackFromArgs.trackName
             val previewUrl = trackFromArgs.previewUrl
 
@@ -155,7 +135,6 @@ timerJob?.cancel()
             val country = trackFromArgs.country
             val relieseDate = trackFromArgs.releaseDate
             val artworkUrl100 = trackFromArgs.artworkUrl100
-            val isLike:Boolean = isLike
 
             if (trackFromArgs.collectionName
                     ?.isNullOrEmpty() == true || trackFromArgs.collectionName
@@ -180,7 +159,6 @@ timerJob?.cancel()
                     artworkUrl100 = artworkUrl100,
                     releaseDate = relieseDate,
                     country = country,
-                    isLike = isLike
                 )
 
 
@@ -219,7 +197,7 @@ timerJob?.cancel()
             val artworkUrl100 = track.artworkUrl100
 
             val previewUrl = track.previewUrl
-            val isLike = isLike
+//            val isLike = isLike
             mediaInteractor.preparePlayer(previewUrl)
             mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
                 trackName = trackName,
@@ -229,36 +207,26 @@ timerJob?.cancel()
                 country = country,
                 releaseDate = relieseDate,
                 artworkUrl100 = artworkUrl100,
-                isLike = isLike
             )
 
         }
     }
 
     fun saveTrackToFavorite()= viewModelScope.launch{
-        val trackToSave = trackFromArgs
-        val trackEntiy = trackDbConvertor.map(trackToSave).copy(isLike = true)
-        mainDb.trackDao().insertTracks(trackEntiy.copy(isLike = true))
-
+  myLikedTracksInteractor.saveTrackToFavorite(trackFromArgs)
 
     }
     fun deleteTrackFromFavorite()= viewModelScope.launch{
-        val trackToSave = trackFromArgs
-        val trackEntiy = trackDbConvertor.map(trackToSave).copy(isLike = false)
-        mainDb.trackDao().deleteTrackForId(trackEntiy.trackId)
-
+        myLikedTracksInteractor.deleteTrackFromFavorite(trackFromArgs)
 
     }
 
-     fun controlIsLike(track: Track)= viewModelScope.launch {
-        val foundTracks = mainDb.trackDao().selectTrackForId(track.trackId)
-        if (foundTracks.isNotEmpty()) {
-            isLike = true
-
-
+    fun controlIsLike(track: Track) = viewModelScope.launch {
+        if (myLikedTracksInteractor.controlIsLike(track)) {
+            mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isLike = true)
+        } else {
+            mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isLike = false)
         }
-
-
     }
 
 }
