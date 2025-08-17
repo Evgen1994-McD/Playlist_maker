@@ -1,35 +1,26 @@
 package com.example.playlistmaker.ui.player.viewModel
 
 import android.annotation.SuppressLint
-import android.app.Application
-import android.content.Intent
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.db.FavoriteInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
-import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.Dispatcher
 
 class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteractor,
                                private val mediaInteractor: MediaInteractor,
-    private val trackFromArgs: Track
-
+    private val trackFromArgs: Track,
+    private val myLikedTracksInteractor:FavoriteInteractor
 ) : ViewModel(){
     private var timerJob :Job? = null
 
@@ -38,7 +29,6 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
         private const val noAlbum = "No Album"
 
     }
-
 
 
 
@@ -95,7 +85,7 @@ timerJob?.cancel()
         timerJob = viewModelScope.launch {
             try {
 
-                while (isActive && mutableMediaScreen.value.isPlaying) {
+                while (isActive && mutableMediaScreen.value!!.isPlaying) {
                     delay(300L)
                     ensureActive()
                     val progress = mediaInteractor.updateProgress()
@@ -135,7 +125,7 @@ timerJob?.cancel()
 
         if (!trackFromArgs?.trackName
                 .isNullOrEmpty()) {
-
+controlIsLike(trackFromArgs)
             val trackName = trackFromArgs.trackName
             val previewUrl = trackFromArgs.previewUrl
 
@@ -168,7 +158,7 @@ timerJob?.cancel()
                     trackTimeMillis = trackTimeMillis,
                     artworkUrl100 = artworkUrl100,
                     releaseDate = relieseDate,
-                    country = country
+                    country = country,
                 )
 
 
@@ -188,6 +178,7 @@ timerJob?.cancel()
         val myTracks = favoriteTrackInteractor.getAllTracksFromStorage()
         if (!myTracks.isNullOrEmpty()) {
             val track = myTracks[0] // если myTracks не пуст, возьмем свежий трек для плеера
+            controlIsLike(track)
             val trackName = track.trackName// убираем поле альбом если нет альбома
             if (track.collectionName?.isNullOrEmpty() == true || track.collectionName?.contains("No Album") == true) {
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(collectionName = noAlbum)
@@ -214,13 +205,28 @@ timerJob?.cancel()
                 primaryGenreName = primaryGenreName,
                 country = country,
                 releaseDate = relieseDate,
-                artworkUrl100 = artworkUrl100
+                artworkUrl100 = artworkUrl100,
             )
 
         }
     }
 
+    fun saveTrackToFavorite()= viewModelScope.launch{
+  myLikedTracksInteractor.saveTrackToFavorite(trackFromArgs)
 
+    }
+    fun deleteTrackFromFavorite()= viewModelScope.launch{
+        myLikedTracksInteractor.deleteTrackFromFavorite(trackFromArgs)
+
+    }
+
+    fun controlIsLike(track: Track) = viewModelScope.launch {
+        if (myLikedTracksInteractor.controlIsLike(track)) {
+            mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isLike = true)
+        } else {
+            mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isLike = false)
+        }
+    }
 
 }
 

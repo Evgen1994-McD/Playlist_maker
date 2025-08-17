@@ -44,7 +44,8 @@ class FavoriteTrackRepositoryImpl(private val prefs: SharedPreferences,
                 releaseDate = track.releaseDate,
                 primaryGenreName = track.primaryGenreName,
                 country = track.country,
-                previewUrl = track.previewUrl
+                previewUrl = track.previewUrl,
+                isLike = track.isLike
             )
             )
         } else {
@@ -62,7 +63,8 @@ class FavoriteTrackRepositoryImpl(private val prefs: SharedPreferences,
                 releaseDate = track.releaseDate,
                 primaryGenreName = track.primaryGenreName,
                 country = track.country,
-                previewUrl = track.previewUrl
+                previewUrl = track.previewUrl,
+                isLike = track.isLike
             )
             ) // Добавляем новый трек в начало
         }
@@ -88,7 +90,8 @@ class FavoriteTrackRepositoryImpl(private val prefs: SharedPreferences,
                 releaseDate = it.releaseDate,
                 primaryGenreName = it.primaryGenreName,
                 country = it.country,
-                previewUrl = it.previewUrl
+                previewUrl = it.previewUrl,
+                isLike = it.isLike
 
             )
         }

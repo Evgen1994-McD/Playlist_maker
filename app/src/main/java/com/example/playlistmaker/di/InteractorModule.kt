@@ -4,6 +4,8 @@ import android.os.Handler
 import android.os.Looper
 import com.example.playlistmaker.data.search.impl.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TrackRepositoryImpl
+import com.example.playlistmaker.domain.db.FavoriteInteractor
+import com.example.playlistmaker.domain.db.impl.FavoriteInteractorImpl
 import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.player.impl.MediaInteractorImpl
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
@@ -58,6 +60,11 @@ val interactorModule = module {
     factory<MediaInteractor> {
         MediaInteractorImpl(get())
     }
+
+single<FavoriteInteractor> {
+    FavoriteInteractorImpl(get())
+}
+
 
 }
 

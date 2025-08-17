@@ -1,18 +1,28 @@
 package com.example.playlistmaker.ui.media.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoriteTrakListBinding
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.media.viewmodel.FavoriteFragmentViewModel
+import com.example.playlistmaker.ui.search.adapters.TrackAdapter
+import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
+import com.example.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
-class FavoriteTrakListFragment : Fragment() {
+class FavoriteTrakListFragment : Fragment(), OnTrackClickListener {
     private lateinit var binding: FragmentFavoriteTrakListBinding
     private val viewModel: FavoriteFragmentViewModel by activityViewModel()
+    private lateinit var trackClickDebounce: (Track) -> Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,21 +46,14 @@ class FavoriteTrakListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         showFavoriteTracks()
-        viewModel.getLiveData.observe(viewLifecycleOwner) { new ->
-            if (new == false) {
-                binding.phNtsh.makeVisible()
-                binding.msgTxtBottom.makeVisible()
-            } else {
-                with(binding) {
-                    phNtsh.makeVisible()
-                    msgTxtBottom.makeVisible()
-                }
-            }
-            /*
-            тут будет логика, это заготовка
-             */
-        }
 
+        observeFavoriteTracks()
+        viewModel.favoriteTracks
+
+        trackClickDebounce =
+            debounce<Track>(100L, viewLifecycleOwner.lifecycleScope, false) { track ->
+
+            }
     }
 
     companion object {
@@ -78,6 +81,50 @@ class FavoriteTrakListFragment : Fragment() {
 
     private fun View.makeInvisible() {
         this.visibility = View.INVISIBLE // функция для вью инвизибл
+    }
+
+
+    private fun displayTracks(tracks: List<Track>) = with(binding) {
+
+        rcView.layoutManager = LinearLayoutManager(requireContext())
+        rcView.adapter = TrackAdapter(tracks, this@FavoriteTrakListFragment)
+        rcView.makeVisible()
+        phNtsh.makeInvisible()
+        msgTxtBottom.makeInvisible()
+    }
+
+    private fun displayPlaceholders() = with(binding) {
+
+
+        rcView.makeInvisible()
+        phNtsh.makeVisible()
+        msgTxtBottom.makeVisible()
+    }
+
+    override fun onTrackClicked(track: Track) {
+        getTrackIntentAndStart(track, requireContext())
+        trackClickDebounce(track)
+    }
+
+    fun getTrackIntentAndStart(track: Track, context: Context) {
+        val bundle = Bundle().apply {
+            putSerializable("track", track)
+
+        }
+        findNavController().navigate(R.id.playerFragment, bundle)
+
+    }
+
+
+    private fun observeFavoriteTracks() {
+        viewModel.favoriteTracks.observe(viewLifecycleOwner) { tracks ->
+            if (!tracks.isNullOrEmpty()) {
+                displayTracks(tracks)
+
+            } else displayPlaceholders()
+
+        }
+
     }
 
 }
