@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.fragment.findNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistFragmentBinding
 import com.example.playlistmaker.ui.media.viewmodel.PlaylistFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -50,6 +52,10 @@ class PlaylistFragment : Fragment() {
             /*
             тут будет логика, это заготовка
              */
+        }
+
+        binding.btCreatePlaylist.setOnClickListener {
+            findNavController().navigate(R.id.action_mediaFragment_to_addPlayListFragment)
         }
 
     }
