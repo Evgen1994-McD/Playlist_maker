@@ -7,27 +7,47 @@
     tools:context=".ui.playlists.AddPlayListFragment">
 
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/Search_Toolbar_style"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        app:title="Новый плейлист"
+        app:layout_constraintBottom_toTopOf="@id/im_mine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:navigationIcon="@drawable/ic_backblack_16">
+
+    </androidx.appcompat.widget.Toolbar>
+
+
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/im_mine"
         android:layout_width="312dp"
         android:layout_height="312dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="26dp"
         android:layout_marginEnd="32dp"
+        android:scaleType="centerCrop"
+
         android:background="@drawable/shape_add_playlist"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <ImageView
         android:id="@+id/ph"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_ph_newplaylist_80"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView" />
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@+id/im_mine"
+        app:layout_constraintEnd_toEndOf="@+id/im_mine"
+        app:layout_constraintStart_toStartOf="@+id/im_mine"
+        app:layout_constraintTop_toTopOf="@+id/im_mine" />
 
     <EditText
         android:id="@+id/ed_playlist_name"
@@ -46,7 +66,7 @@
         android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/im_mine" />
 
     <EditText
         android:id="@+id/ed_about_playlist"

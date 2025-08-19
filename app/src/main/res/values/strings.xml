@@ -41,6 +41,13 @@
     <string name="tab2txt" translatable="false">Плейлисты</string>
 
 
+<!--    Кнопки диалога создания плейлистов-->
+
+
+    <string name="title" translatable="false">Завершить создание плейлиста?</string>
+    <string name="text" translatable="false">Все несохраненные данные будут потеряны</string>
+    <string name="positive" translatable="false">Завершить</string>
+    <string name="negative" translatable="false">Отмена</string>
 
 
 </resources>
