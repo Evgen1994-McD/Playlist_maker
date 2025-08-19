@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAddPlayListBinding
 import com.example.playlistmaker.utils.DialogManager
+import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.io.FileOutputStream
 
@@ -75,6 +76,11 @@ if (ur1 != null || title != null || text != null){
 pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
+        binding.button.setOnClickListener {
+            snackBar()
+            findNavController().popBackStack()
+        }
+
 
     }
 
@@ -126,6 +132,10 @@ pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualM
             }
 
         })
+    }
+
+    private fun snackBar(){
+Snackbar.make(requireView(), "Плейлист [$title] cоздан", Snackbar.LENGTH_SHORT).show()
     }
 
     private fun watcherForBody(){

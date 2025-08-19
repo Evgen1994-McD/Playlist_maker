@@ -3,10 +3,12 @@ package com.example.playlistmaker.ui.main.activity
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
@@ -33,16 +35,18 @@ class MainActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets }
+            insets
+        }
 
 
-viewModelMain.controlThemeInOtherWindows()
+        viewModelMain.controlThemeInOtherWindows()
 
- navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
- navController =  navHostFragment.navController
-bottomNavigationView = binding.bottomNavigationView
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        navController = navHostFragment.navController
+        bottomNavigationView = binding.bottomNavigationView
         bottomNavigationView.setupWithNavController(navController)
-/*
+        /*
 
 Настройка боттом навигации в активити
 1.  Используем supportFragmentManager, чтобы найти NavHostFragment.
@@ -51,15 +55,21 @@ bottomNavigationView = binding.bottomNavigationView
  */
 
         bottomNavigationView.setOnItemSelectedListener { item ->
-            when(item.itemId) {
+            when (item.itemId) {
                 R.id.searchFragment -> navigateAndClearOldFragments(R.id.searchFragment)
                 R.id.mediaFragment -> navigateAndClearOldFragments(R.id.mediaFragment)
                 R.id.settingsFragment -> navigateAndClearOldFragments(R.id.settingsFragment)
                 else -> false
             }
         }
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+R.id.addPlayListFragment -> bottomNavigationView.isVisible = false
+                else-> bottomNavigationView.isVisible = true
+            }
 
 
+        }
     }
 
 //
