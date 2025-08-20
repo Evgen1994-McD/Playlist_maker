@@ -125,6 +125,7 @@ timerJob?.cancel()
 
         if (!trackFromArgs?.trackName
                 .isNullOrEmpty()) {
+
 controlIsLike(trackFromArgs)
             val trackName = trackFromArgs.trackName
             val previewUrl = trackFromArgs.previewUrl

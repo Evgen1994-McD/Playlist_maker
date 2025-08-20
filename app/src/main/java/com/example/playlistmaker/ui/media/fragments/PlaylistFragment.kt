@@ -6,13 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistFragmentBinding
+import com.example.playlistmaker.domain.models.PlayList
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.media.PlayListAdapter
+import com.example.playlistmaker.ui.media.fragments.FavoriteTrakListFragment
+import com.example.playlistmaker.ui.media.onPlaylistClickListener
 import com.example.playlistmaker.ui.media.viewmodel.PlaylistFragmentViewModel
+import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
-class PlaylistFragment : Fragment() {
+class PlaylistFragment : Fragment(), onPlaylistClickListener {
     private lateinit var binding: PlaylistFragmentBinding
     private val viewModel: PlaylistFragmentViewModel by activityViewModel()
 
@@ -33,25 +41,14 @@ class PlaylistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+observeForPlayLists()
+
+        viewModel.getAllPlaylists()
 
 
 
 
-        showPlaylists()
-        viewModel.getLiveData.observe(viewLifecycleOwner) { new ->
-            if (new.isNullOrEmpty()) {
-                binding.phNtsh2.makeVisible()
-                binding.msgTxtBottom.makeVisible()
-            } else {
-                with(binding) {
-                    phNtsh2.makeInvisible()
-                    msgTxtBottom.makeInvisible()
-                }
-            }
-            /*
-            тут будет логика, это заготовка
-             */
-        }
+
 
         binding.btCreatePlaylist.setOnClickListener {
             findNavController().navigate(R.id.action_mediaFragment_to_addPlayListFragment)
@@ -65,13 +62,34 @@ class PlaylistFragment : Fragment() {
 
     }
 
-    private fun showPlaylists() {
+    private fun showPlaylists(playLists: List<PlayList>) {
         with(binding) {
-            phNtsh2.makeVisible()
-            msgTxtBottom.makeVisible()
-            btCreatePlaylist.makeVisible()
+
+                rcView.layoutManager = GridLayoutManager(requireContext(), 2)
+                rcView.adapter = PlayListAdapter(playLists, this@PlaylistFragment)
+                rcView.makeVisible()
+            phNtsh2.makeInvisible()
+            msgTxtBottom.makeInvisible()
+            rcView.makeVisible()
+
         }
 
+    }
+
+    private fun observeForPlayLists(){
+        viewModel.getLiveData.observe(viewLifecycleOwner) { playlists ->
+            if (playlists.isNullOrEmpty()) {
+                binding.phNtsh2.makeVisible()
+                binding.msgTxtBottom.makeVisible()
+            } else {
+                with(binding) {
+                   showPlaylists(playlists)
+                }
+            }
+            /*
+            тут будет логика, это заготовка
+             */
+        }
     }
 
 
@@ -85,6 +103,10 @@ class PlaylistFragment : Fragment() {
 
     private fun View.makeInvisible() {
         this.visibility = View.INVISIBLE // функция для вью инвизибл
+    }
+
+    override fun onPlaylistClicked(playList: PlayList) {
+        TODO("Not yet implemented")
     }
 
 }
