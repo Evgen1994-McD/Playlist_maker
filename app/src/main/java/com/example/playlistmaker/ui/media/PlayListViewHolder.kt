@@ -1,10 +1,12 @@
 package com.example.playlistmaker.ui.media
 
 import android.annotation.SuppressLint
+import android.os.Environment
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -13,6 +15,8 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
+import com.example.playlistmaker.utils.Constants
+import java.io.File
 
 
 class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
@@ -41,7 +45,7 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
 
 
         Glide.with(itemView.context)
-            .load(playList.image)  //У меня там просто имя.jpg - это не ссылка, переделать
+            .load(playList.image?.toUri())  //У меня там просто имя.jpg - это не ссылка, переделать
             .transform(RoundedCorners(radiusInPX.toInt()))
             .apply(options)
             .placeholder(R.drawable.ic_placeholder_45)
@@ -50,5 +54,6 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
 
 
     }
+
 
 }

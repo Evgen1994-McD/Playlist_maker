@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
@@ -90,7 +91,7 @@ pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualM
 
 
     private fun savePlayList(){
-        val playList = PlayList(null, title.toString(), text.toString(), "$title.jpg","", 0
+        val playList = PlayList(null, title.toString(), text.toString(), ur1.toString(),"", 0
         )
         viewModel.savePlayList(playList)
     }
@@ -105,6 +106,7 @@ pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualM
         }
         //создаём экземпляр класса File, который указывает на файл внутри каталога
         val file = File(filePath, "$title.jpg")
+        ur1 = file.toUri()
         // создаём входящий поток байтов из выбранной картинки
         val inputStream = requireActivity().contentResolver.openInputStream(uri)
         // создаём исходящий поток байтов в созданный выше файл
