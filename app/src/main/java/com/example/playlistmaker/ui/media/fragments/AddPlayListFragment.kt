@@ -3,7 +3,6 @@ package com.example.playlistmaker.ui.media.fragments
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
@@ -20,6 +19,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAddPlayListBinding
 import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.ui.media.viewmodel.AddPlayListViewModel
+import com.example.playlistmaker.utils.Constants
 import com.example.playlistmaker.utils.DialogManager
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -90,7 +90,7 @@ pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualM
 
 
     private fun savePlayList(){
-        val playList = PlayList(null, title.toString(), text.toString(), 1,"", 0
+        val playList = PlayList(null, title.toString(), text.toString(), "$title.jpg","", 0
         )
         viewModel.savePlayList(playList)
     }
@@ -98,13 +98,13 @@ pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualM
 
     private fun saveImageToPrivateStorage(uri: Uri) {
         //создаём экземпляр класса File, который указывает на нужный каталог
-        val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum")
+        val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), Constants.playlistAlbum)
         //создаем каталог, если он не создан
         if (!filePath.exists()){
             filePath.mkdirs()
         }
         //создаём экземпляр класса File, который указывает на файл внутри каталога
-        val file = File(filePath, "first_cover.jpg")
+        val file = File(filePath, "$title.jpg")
         // создаём входящий поток байтов из выбранной картинки
         val inputStream = requireActivity().contentResolver.openInputStream(uri)
         // создаём исходящий поток байтов в созданный выше файл
