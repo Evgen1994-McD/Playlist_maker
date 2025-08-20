@@ -3,17 +3,19 @@ package com.example.playlistmaker.ui.media.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
+import com.example.playlistmaker.domain.models.PlayList
+import com.example.playlistmaker.domain.playlists.PlaylistInteractor
 
-class PlaylistFragmentViewModel():ViewModel() {
+class PlaylistFragmentViewModel(private val playlistInteractor: PlaylistInteractor):ViewModel() {
 
-    private val favoriteTrackList = MutableLiveData(false)
+    private val allPlayListsData = MutableLiveData<List<PlayList>>()
 
-    val getLiveData : LiveData<Boolean> get() = favoriteTrackList
-    /*
-    Это временная лайв дата чтобы отобразить плейсхолдеры, потом переделаю
-    при появлении задания на реализацию логики.
-     */
+    val getLiveData : LiveData<List<PlayList>> get() = allPlayListsData
+
+
+    suspend fun getAllPlaylists(){
+     allPlayListsData.value =  playlistInteractor.getAllPlayList()
+    }
 
 
 }

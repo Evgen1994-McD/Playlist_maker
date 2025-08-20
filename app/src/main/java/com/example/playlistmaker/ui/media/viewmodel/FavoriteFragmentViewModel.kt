@@ -34,10 +34,7 @@ class FavoriteFragmentViewModel(
                     )
                 }
             }.asLiveData()
-/*
-Это временная лайв дата чтобы отобразить плейсхолдеры, потом переделаю
-при появлении задания на реализацию логики.
- */
+
 
     fun getCoverArtwork(artworkUrl100: String) =
         artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")

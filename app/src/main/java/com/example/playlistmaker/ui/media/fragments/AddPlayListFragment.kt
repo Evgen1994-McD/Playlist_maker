@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.playlists
+package com.example.playlistmaker.ui.media.fragments
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -18,19 +18,22 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAddPlayListBinding
+import com.example.playlistmaker.domain.models.PlayList
+import com.example.playlistmaker.ui.media.viewmodel.AddPlayListViewModel
 import com.example.playlistmaker.utils.DialogManager
 import com.google.android.material.snackbar.Snackbar
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.io.File
 import java.io.FileOutputStream
 
 class AddPlayListFragment : Fragment() {
 private lateinit var binding: FragmentAddPlayListBinding
 private var ur1: Uri? = null
-    private var title: CharSequence? = null
-    private var text: CharSequence? = null
+    private var title: CharSequence? = ""
+    private var text: CharSequence? = ""
 
 
-    private val viewModel: AddPlayListViewModel by viewModels()
+    private val viewModel: AddPlayListViewModel by activityViewModel()
 
 
 
@@ -51,7 +54,7 @@ watcherForBody()
 
 
         binding.toolbar.setNavigationOnClickListener {
-if (ur1 != null || title != null || text != null){
+if (ur1 != null || title != "" || text != ""){
     showDialog()
 } else findNavController().popBackStack()
 
@@ -76,12 +79,20 @@ if (ur1 != null || title != null || text != null){
 pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-        binding.button.setOnClickListener {
+        binding.btSave.setOnClickListener {
             snackBar()
+            savePlayList()
             findNavController().popBackStack()
         }
 
 
+    }
+
+
+    private fun savePlayList(){
+        val playList = PlayList(null, title.toString(), text.toString(), 1,"", 0
+        )
+        viewModel.savePlayList(playList)
     }
 
 
@@ -107,6 +118,7 @@ pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualM
     private fun showDialog(){
         DialogManager.showDialog(requireContext(), R.string.title, R.string.text, R.string.positive, R.string.negative, object :DialogManager.Listener{
             override fun onClick() {
+
                 findNavController().popBackStack()
             }
 
@@ -122,8 +134,8 @@ pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualM
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (p0.isNullOrEmpty()){
-                    binding.button.isEnabled=false
-                } else binding.button.isEnabled = true
+                    binding.btSave.isEnabled=false
+                } else binding.btSave.isEnabled = true
                 title = p0.toString()
 
             }

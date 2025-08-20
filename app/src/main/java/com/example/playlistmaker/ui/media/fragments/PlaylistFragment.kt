@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistFragmentBinding
@@ -40,13 +39,13 @@ class PlaylistFragment : Fragment() {
 
         showPlaylists()
         viewModel.getLiveData.observe(viewLifecycleOwner) { new ->
-            if (new == false) {
+            if (new.isNullOrEmpty()) {
                 binding.phNtsh2.makeVisible()
                 binding.msgTxtBottom.makeVisible()
             } else {
                 with(binding) {
-                    phNtsh2.makeVisible()
-                    msgTxtBottom.makeVisible()
+                    phNtsh2.makeInvisible()
+                    msgTxtBottom.makeInvisible()
                 }
             }
             /*

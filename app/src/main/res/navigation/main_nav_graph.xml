@@ -66,7 +66,7 @@
         />
     <fragment
         android:id="@+id/addPlayListFragment"
-        android:name="com.example.playlistmaker.ui.playlists.AddPlayListFragment"
+        android:name="com.example.playlistmaker.ui.media.fragments.AddPlayListFragment"
         android:label="fragment_add_play_list"
         tools:layout="@layout/fragment_add_play_list" />
 </navigation>
