@@ -10,6 +10,7 @@ import com.example.playlistmaker.domain.db.FavoriteInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
+import com.example.playlistmaker.domain.playlists.PlaylistInteractor
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -20,7 +21,8 @@ import kotlinx.coroutines.launch
 class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteractor,
                                private val mediaInteractor: MediaInteractor,
     private val trackFromArgs: Track,
-    private val myLikedTracksInteractor:FavoriteInteractor
+    private val myLikedTracksInteractor:FavoriteInteractor,
+    private val playlistInteractor: PlaylistInteractor
 ) : ViewModel(){
     private var timerJob :Job? = null
 

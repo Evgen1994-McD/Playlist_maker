@@ -5,6 +5,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -16,6 +17,7 @@ import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.ui.player.viewModel.PlayerCommand
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import com.example.playlistmaker.utils.getTrackFromArguments
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.android.scope.createScope
 import org.koin.android.scope.getOrCreateScope
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -67,6 +69,38 @@ class PlayerFragment : Fragment() {
 
             findNavController().popBackStack()
         }
+val bottomSheetContainer =requireActivity().findViewById<View>(R.id.bottom_sheet)
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
+            state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+
+        binding.addOnPlaylist.setOnClickListener {
+            binding.bottomSheet.isVisible = true
+         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // newState — новое состояние BottomSheet
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        // загружаем рекламный баннер
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        // останавливаем трейлер
+                    }
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        // возобновляем трейлер
+                    }
+                    else -> {
+                        // Остальные состояния не обрабатываем
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
 
 
 
