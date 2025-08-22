@@ -82,7 +82,16 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                 clearEditText.setText(savedText)
             }
         }
+        searchDebounce =
+            debounce(2000L, viewLifecycleOwner.lifecycleScope, true) { txtForSearch ->
+                viewModel.searchTracks(txtForSearch)
+            }
 
+        trackClickDebounce =
+            debounce(100L, viewLifecycleOwner.lifecycleScope, false) { track ->
+                viewModel.addTrackToFavorite(track)
+
+            }
 
 
         searchEditText =  // инициализирую эдиттекст
@@ -170,16 +179,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                 0
             )  // Появление клавиатуры при нажатии на эдиттекст
         }
-        searchDebounce =
-            debounce<String>(2000L, viewLifecycleOwner.lifecycleScope, true) { txtForSearch ->
-                viewModel.searchTracks(txtForSearch)
-            }
 
-        trackClickDebounce =
-            debounce<Track>(100L, viewLifecycleOwner.lifecycleScope, false) { track ->
-                viewModel.addTrackToFavorite(track)
-
-            }
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 

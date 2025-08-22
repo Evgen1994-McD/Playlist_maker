@@ -44,16 +44,16 @@ class FavoriteTrakListFragment : Fragment(), OnTrackClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        showFavoriteTracks()
+        trackClickDebounce =
+            debounce(100L, viewLifecycleOwner.lifecycleScope, false){ track ->
+                getTrackIntentAndStart(track, requireContext())
+            }
+//        showFavoriteTracks()
 
         observeFavoriteTracks()
         viewModel.favoriteTracks
 
-        trackClickDebounce =
-            debounce<Track>(100L, viewLifecycleOwner.lifecycleScope, false) { track ->
 
-            }
     }
 
     companion object {
@@ -62,13 +62,7 @@ class FavoriteTrakListFragment : Fragment(), OnTrackClickListener {
 
     }
 
-    private fun showFavoriteTracks() {
-        with(binding) {
-            phNtsh.makeVisible()
-            msgTxtBottom.makeVisible()
-        }
 
-    }
 
 
     private fun View.makeGone() {
@@ -86,9 +80,9 @@ class FavoriteTrakListFragment : Fragment(), OnTrackClickListener {
 
     private fun displayTracks(tracks: List<Track>) = with(binding) {
 
-        rcView.layoutManager = LinearLayoutManager(requireContext())
-        rcView.adapter = TrackAdapter(tracks, this@FavoriteTrakListFragment)
-        rcView.makeVisible()
+        rcView1.layoutManager = LinearLayoutManager(requireContext())
+        rcView1.adapter = TrackAdapter(tracks, this@FavoriteTrakListFragment)
+        rcView1.makeVisible()
         phNtsh.makeInvisible()
         msgTxtBottom.makeInvisible()
     }
@@ -96,13 +90,13 @@ class FavoriteTrakListFragment : Fragment(), OnTrackClickListener {
     private fun displayPlaceholders() = with(binding) {
 
 
-        rcView.makeInvisible()
+        rcView1.makeInvisible()
         phNtsh.makeVisible()
         msgTxtBottom.makeVisible()
     }
 
     override fun onTrackClicked(track: Track) {
-        getTrackIntentAndStart(track, requireContext())
+
         trackClickDebounce(track)
     }
 

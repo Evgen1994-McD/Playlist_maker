@@ -81,10 +81,11 @@ observeForPlayLists()
             if (playlists.isNullOrEmpty()) {
                 binding.phNtsh2.makeVisible()
                 binding.msgTxtBottom.makeVisible()
+                binding.rcView.makeInvisible()
             } else {
-                with(binding) {
+
                    showPlaylists(playlists)
-                }
+
             }
             /*
             тут будет логика, это заготовка
@@ -109,4 +110,8 @@ observeForPlayLists()
         TODO("Not yet implemented")
     }
 
+    override fun onResume() {
+        super.onResume()
+        observeForPlayLists()
+    }
 }
