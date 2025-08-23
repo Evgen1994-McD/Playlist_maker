@@ -77,7 +77,7 @@ class PlayerFragment : Fragment() {
 
         binding.addOnPlaylist.setOnClickListener {
             binding.bottomSheet.isVisible = true
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
 
 //        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
