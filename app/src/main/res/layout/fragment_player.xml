@@ -307,18 +307,39 @@ android:layout_marginBottom="8dp"
         app:layout_constraintGuide_percent="0.09203143" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <View android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
+        />
+
 
     <LinearLayout
         android:id="@+id/bottom_sheet"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        app:behavior_hideable="true"
-        app:behavior_peekHeight="100dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/bottom_sheet_shape"
         android:orientation="vertical"
         android:visibility="gone"
-android:background="@color/yp_grey"
-        tools:visibility="gone">
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="200dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        tools:visibility="visible"
+        style="@style/baseDayAndNightTextStyle"
+        >
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:layout_marginTop="8dp"
+
+            app:srcCompat="@drawable/ic_bottom_rectangle" />
 
         <TextView
             android:id="@+id/textView"
@@ -327,10 +348,12 @@ android:background="@color/yp_grey"
             android:layout_marginTop="12dp"
             android:gravity="center"
             android:text="Добавить в плейлист"
-            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:paddingVertical="12dp"
+            style="@style/baseDayAndNightTextStyle"
             />
+
         <ImageView
             android:id="@+id/bt_new_playlist"
             android:layout_width="wrap_content"

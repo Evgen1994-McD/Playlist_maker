@@ -4,7 +4,6 @@ import com.example.playlistmaker.ui.media.onPlaylistClickListener
 
 
 import android.annotation.SuppressLint
-import android.os.Environment
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -23,7 +22,7 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
 
     private val playListName: TextView = itemView.findViewById(R.id.album_name)
     private val playListSize: TextView = itemView.findViewById(R.id.album_info)
-    private val playListImage: ImageView = itemView.findViewById(R.id.album_Image)
+    private val playListImage: ImageView = itemView.findViewById(R.id.album_image)
     private val options = RequestOptions().centerCrop()
     private val radiusInDP = 2f
     private val densityMultiplier = TypedValue.applyDimension(

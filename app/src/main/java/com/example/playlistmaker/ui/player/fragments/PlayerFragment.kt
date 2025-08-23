@@ -10,15 +10,20 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
+import com.example.playlistmaker.domain.models.PlayList
+import com.example.playlistmaker.ui.media.onPlaylistClickListener
 import com.example.playlistmaker.ui.player.viewModel.PlayerCommand
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import com.example.playlistmaker.utils.getTrackFromArguments
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.withContext
 import org.koin.android.scope.createScope
 import org.koin.android.scope.getOrCreateScope
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -27,7 +32,7 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 
-class PlayerFragment : Fragment() {
+class PlayerFragment : Fragment(), onPlaylistClickListener {
 
 
     private lateinit var binding: FragmentPlayerBinding // делаю байдинг
@@ -64,12 +69,15 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+val bottomView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         binding.toolbar.setNavigationOnClickListener {
-
-
             findNavController().popBackStack()
         }
+
+        playListObserver()
+        viewModel.getAllPlaylist()
+
+
 
       val  bottomSheetContainer = view.findViewById<LinearLayout>(R.id.bottom_sheet)
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
@@ -77,31 +85,38 @@ class PlayerFragment : Fragment() {
 
         binding.addOnPlaylist.setOnClickListener {
             binding.bottomSheet.isVisible = true
+            binding.overlay.isVisible = true
+            bottomView.isVisible = false
+
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
 
-//        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-//            override fun onStateChanged(bottomSheet: View, newState: Int) {
-//                // newState — новое состояние BottomSheet
-//                when (newState) {
-//                    BottomSheetBehavior.STATE_EXPANDED -> {
-//                        // загружаем рекламный баннер
-//                    }
-//                    BottomSheetBehavior.STATE_COLLAPSED -> {
-//                        // останавливаем трейлер
-//                    }
-//                    BottomSheetBehavior.STATE_HIDDEN -> {
-//                        // возобновляем трейлер
-//                    }
-//                    else -> {
-//                        // Остальные состояния не обрабатываем
-//                    }
-//                }
-//            }
-//
-//            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-//        })
-//
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // newState — новое состояние BottomSheet
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+
+                        // загружаем рекламный баннер
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        // останавливаем трейлер
+                    }
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.isVisible = false
+                        bottomView.isVisible = true
+
+                        // возобновляем трейлер
+                    }
+                    else -> {
+                        // Остальные состояния не обрабатываем
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
 
 
         viewModel.addListeners() // добавил листенеры
@@ -250,7 +265,24 @@ class PlayerFragment : Fragment() {
 
     }
 
+    private fun displayPlayLists(list: List<PlayList>)=with(binding){
+        rcView.layoutManager = LinearLayoutManager(requireContext())
+        rcView.adapter = PlayListAdapter(list, this@PlayerFragment)
+        rcView.makeVisible()
 
+    }
+
+    private fun playListObserver(){
+        viewModel.getPlaylistsLiveData.observe(viewLifecycleOwner) { playlists ->
+            displayPlayLists(playlists)
+
+
+        }
+    }
+
+    override fun onPlaylistClicked(playList: PlayList) {
+        TODO("Not yet implemented")
+    }
 
 
 }

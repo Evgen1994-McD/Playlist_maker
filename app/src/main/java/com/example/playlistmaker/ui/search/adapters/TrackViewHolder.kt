@@ -17,10 +17,10 @@ import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
 class TrackViewHolder(itemView: View, listener: OnTrackClickListener) :
     RecyclerView.ViewHolder(itemView) { // Добавили листенер в конструктор класса
 
-    private val trackName: TextView = itemView.findViewById(R.id.album_name)
-    private val artistName: TextView = itemView.findViewById(R.id.album_info)
+    private val trackName: TextView = itemView.findViewById(R.id.track_name)
+    private val artistName: TextView = itemView.findViewById(R.id.track_info)
     private val trackTime: TextView = itemView.findViewById(R.id.track_time)
-    private val trackImage: ImageView = itemView.findViewById(R.id.album_Image)
+    private val trackImage: ImageView = itemView.findViewById(R.id.track_image)
     private val options = RequestOptions().centerCrop()
     private val radiusInDP = 2f
     private val densityMultiplier = TypedValue.applyDimension(

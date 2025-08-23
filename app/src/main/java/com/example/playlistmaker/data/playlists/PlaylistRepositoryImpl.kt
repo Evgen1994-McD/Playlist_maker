@@ -2,15 +2,21 @@ package com.example.playlistmaker.data.playlists
 
 import com.example.playlistmaker.data.db.MainDb
 import com.example.playlistmaker.data.db.converters.PlayListDbConvertor
+import com.example.playlistmaker.data.db.converters.PlaylistTracksDbConvertor
 import com.example.playlistmaker.data.db.entity.PlayListEntity
+import com.example.playlistmaker.data.db.entity.PlayListTracksEntity
 import com.example.playlistmaker.data.db.entity.TrackEntity
 import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.playlists.PlaylistRepository
 
 class PlaylistRepositoryImpl(private val mainDb: MainDb,
-    private val playListDbConvertor: PlayListDbConvertor):PlaylistRepository {
+    private val playListDbConvertor: PlayListDbConvertor,
+    private val tracksDbConvertor: PlaylistTracksDbConvertor):PlaylistRepository {
 
+    override suspend fun insertTrackInPlaylistTable(track: Track){
+        mainDb.playListTracksDao().insertTracks(convertTrackEntityFromTrack(track))
+    }
 
     override suspend fun insertPlayList(playList: PlayList) {
         mainDb.playListDao().insertPlayList(convertEntityFromPlaylist(playList))
@@ -36,6 +42,15 @@ class PlaylistRepositoryImpl(private val mainDb: MainDb,
 
     private fun convertEntityFromPlaylist(playList: PlayList): PlayListEntity{
         return playListDbConvertor.map(playList)
+    }
+
+    private fun convertTrackFromTrackEntity(track: PlayListTracksEntity): Track{
+        tracksDbConvertor.map(track)
+
+    }
+
+    private fun convertTrackEntityFromTrack(track: Track): PlayListTracksEntity{
+        return tracksDbConvertor.map(track)
     }
 
 

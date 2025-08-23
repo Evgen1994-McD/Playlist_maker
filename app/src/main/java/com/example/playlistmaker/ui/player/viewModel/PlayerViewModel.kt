@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.FavoriteInteractor
+import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
@@ -34,12 +35,21 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
 
 
 
+private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
+
+    val getPlaylistsLiveData : LiveData<List<PlayList>> get() = mutablePlaylistLiveData
+
     private val mutableMediaScreen = MutableLiveData(
         PlayerScreenState()
     )
 
 
     val getLiveData: LiveData<PlayerScreenState> get() = mutableMediaScreen
+
+
+    fun getAllPlaylist()=viewModelScope.launch{
+     mutablePlaylistLiveData.value =   playlistInteractor.getAllPlayList()
+    }
 
 
 

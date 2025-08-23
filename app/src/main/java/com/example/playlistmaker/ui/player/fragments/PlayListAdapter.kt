@@ -15,7 +15,7 @@ class PlayListAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayListViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.play_list_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.playlist_item_on_player, parent, false)
         return PlayListViewHolder(view, listener)
     }
 
