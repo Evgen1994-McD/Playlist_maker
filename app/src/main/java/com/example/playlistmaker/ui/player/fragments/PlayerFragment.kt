@@ -5,6 +5,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -69,39 +70,38 @@ class PlayerFragment : Fragment() {
 
             findNavController().popBackStack()
         }
-val bottomSheetContainer =requireActivity().findViewById<View>(R.id.bottom_sheet)
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
-            state = BottomSheetBehavior.STATE_COLLAPSED
-        }
+
+      val  bottomSheetContainer = view.findViewById<LinearLayout>(R.id.bottom_sheet)
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
 
 
         binding.addOnPlaylist.setOnClickListener {
             binding.bottomSheet.isVisible = true
-         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                // newState — новое состояние BottomSheet
-                when (newState) {
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-                        // загружаем рекламный баннер
-                    }
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                        // останавливаем трейлер
-                    }
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                        // возобновляем трейлер
-                    }
-                    else -> {
-                        // Остальные состояния не обрабатываем
-                    }
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-        })
-
+//        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+//            override fun onStateChanged(bottomSheet: View, newState: Int) {
+//                // newState — новое состояние BottomSheet
+//                when (newState) {
+//                    BottomSheetBehavior.STATE_EXPANDED -> {
+//                        // загружаем рекламный баннер
+//                    }
+//                    BottomSheetBehavior.STATE_COLLAPSED -> {
+//                        // останавливаем трейлер
+//                    }
+//                    BottomSheetBehavior.STATE_HIDDEN -> {
+//                        // возобновляем трейлер
+//                    }
+//                    else -> {
+//                        // Остальные состояния не обрабатываем
+//                    }
+//                }
+//            }
+//
+//            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+//        })
+//
 
 
         viewModel.addListeners() // добавил листенеры
