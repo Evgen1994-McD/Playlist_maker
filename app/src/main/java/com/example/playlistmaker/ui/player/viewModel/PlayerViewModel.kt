@@ -54,6 +54,20 @@ private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
 
 
 
+    fun compareTracksIds(playList: PlayList): Boolean{
+        val playlistIds = playList.tracksId.split(",")
+        val currentTrackId = trackFromArgs.trackId
+        return playlistIds.contains(currentTrackId)
+
+    }
+
+    fun insertTrackInPlaylistsTable(playList: PlayList)=viewModelScope.launch{
+        playlistInteractor.insertTrackInTrackTable(trackFromArgs)
+        playlistInteractor.insertPlayList(playList.copy(tracksId = "${playList.tracksId},${trackFromArgs.trackId}"))
+   playlistInteractor.getAllPlayList()
+        mutablePlaylistLiveData.postValue(playlistInteractor.getAllPlayList())
+
+    }
 
 
     fun addListeners() {

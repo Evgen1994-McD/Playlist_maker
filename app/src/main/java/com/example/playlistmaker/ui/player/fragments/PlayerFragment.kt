@@ -23,6 +23,7 @@ import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import com.example.playlistmaker.utils.getTrackFromArguments
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.withContext
 import org.koin.android.scope.createScope
 import org.koin.android.scope.getOrCreateScope
@@ -32,8 +33,8 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 
-class PlayerFragment : Fragment(), onPlaylistClickListener {
-
+class PlayerFragment : Fragment() {
+private lateinit var adapter: PlayListAdapter
 
     private lateinit var binding: FragmentPlayerBinding // делаю байдинг
 
@@ -53,7 +54,6 @@ class PlayerFragment : Fragment(), onPlaylistClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
     }
 
@@ -267,22 +267,34 @@ val bottomView = requireActivity().findViewById<BottomNavigationView>(R.id.botto
 
     private fun displayPlayLists(list: List<PlayList>)=with(binding){
         rcView.layoutManager = LinearLayoutManager(requireContext())
-        rcView.adapter = PlayListAdapter(list, this@PlayerFragment)
+        adapter = PlayListAdapter(listener = object:onPlaylistClickListener{
+            override fun onPlaylistClicked(playList: PlayList) {
+                if (viewModel.compareTracksIds(playList))  // проверим, есть ли трек который на экране, в плейлисте
+                {
+                    Snackbar.make(requireView(), "Трек уже есть в плейлисте ${playList.name}", Snackbar.LENGTH_SHORT).show()
+                } else {
+                    viewModel.insertTrackInPlaylistsTable(playList)
+
+
+                }
+            }
+
+        }, PlaylistDiffCallback())
+        rcView.adapter = adapter
         rcView.makeVisible()
+
 
     }
 
     private fun playListObserver(){
         viewModel.getPlaylistsLiveData.observe(viewLifecycleOwner) { playlists ->
             displayPlayLists(playlists)
+            adapter.submitNewList(playlists)
 
 
         }
     }
 
-    override fun onPlaylistClicked(playList: PlayList) {
-        TODO("Not yet implemented")
-    }
 
 
 }

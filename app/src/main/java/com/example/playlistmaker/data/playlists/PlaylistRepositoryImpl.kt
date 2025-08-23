@@ -12,7 +12,7 @@ import com.example.playlistmaker.domain.playlists.PlaylistRepository
 
 class PlaylistRepositoryImpl(private val mainDb: MainDb,
     private val playListDbConvertor: PlayListDbConvertor,
-    private val tracksDbConvertor: PlaylistTracksDbConvertor):PlaylistRepository {
+    private val playlistTracksDbConvertor: PlaylistTracksDbConvertor):PlaylistRepository {
 
     override suspend fun insertTrackInPlaylistTable(track: Track){
         mainDb.playListTracksDao().insertTracks(convertTrackEntityFromTrack(track))
@@ -25,6 +25,7 @@ class PlaylistRepositoryImpl(private val mainDb: MainDb,
 
     override suspend fun deletePlayListForId(listId:String){
         mainDb.playListDao().deletePlayListForId(listId)
+
     }
 
 
@@ -45,12 +46,12 @@ class PlaylistRepositoryImpl(private val mainDb: MainDb,
     }
 
     private fun convertTrackFromTrackEntity(track: PlayListTracksEntity): Track{
-        tracksDbConvertor.map(track)
+       return playlistTracksDbConvertor.map(track)
 
     }
 
     private fun convertTrackEntityFromTrack(track: Track): PlayListTracksEntity{
-        return tracksDbConvertor.map(track)
+        return playlistTracksDbConvertor.map(track)
     }
 
 
