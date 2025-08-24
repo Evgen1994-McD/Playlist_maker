@@ -1,5 +1,6 @@
 package com.example.playlistmaker.data.playlists
 
+import android.util.Log
 import com.example.playlistmaker.data.db.MainDb
 import com.example.playlistmaker.data.db.converters.PlayListDbConvertor
 import com.example.playlistmaker.data.db.converters.PlaylistTracksDbConvertor
@@ -16,6 +17,26 @@ class PlaylistRepositoryImpl(private val mainDb: MainDb,
 
     override suspend fun insertTrackInPlaylistTable(track: Track){
         mainDb.playListTracksDao().insertTracks(convertTrackEntityFromTrack(track))
+    }
+    override suspend fun getTracksOfPlaylistById(ids: String) : List<Track>{
+        val soloTrackId = ids.split(",")
+        Log.d("playlist", "$ids")
+
+        Log.d("playlist", "$soloTrackId")
+        val tempTrackEntityList = ArrayList<PlayListTracksEntity>()
+
+            soloTrackId.forEach { trackId ->
+               val tempTrackEntity = mainDb.playListTracksDao().getTrackById(trackId)
+                if (tempTrackEntity != null) {
+                    tempTrackEntityList.add((tempTrackEntity))
+                }
+        }
+
+            return tempTrackEntityList.map {
+                    trackEntity ->
+                playlistTracksDbConvertor.map(trackEntity)
+        }
+
     }
 
     override suspend fun insertPlayList(playList: PlayList) {

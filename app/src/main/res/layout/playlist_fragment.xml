@@ -6,6 +6,19 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/bt_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="22dp"
+        android:visibility="gone"
+android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/bt_empty"
+        tools:visibility="visible" />
+
+    <ImageView
         android:id="@+id/ph_ntsh_2"
         android:layout_width="120dp"
         android:layout_height="120dp"
@@ -50,7 +63,8 @@
         android:id="@+id/rc_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/bt_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bt_create_playlist" />
@@ -61,4 +75,33 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.08080808" />
+
+    <TextView
+        android:id="@+id/tv_playlist_name"
+        style="@style/baseDayAndNightTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="Плейлист"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/rc_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bt_create_playlist"
+        tools:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/textView4"
+        style="@style/reversedBaseDayAndNightTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Назад"
+        android:textStyle="bold"
+        android:textSize="@dimen/button_nts_txtsize_14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_back"
+        app:layout_constraintEnd_toEndOf="@+id/bt_back"
+        app:layout_constraintStart_toStartOf="@+id/bt_back"
+        app:layout_constraintTop_toTopOf="@+id/bt_back" />
 </androidx.constraintlayout.widget.ConstraintLayout>

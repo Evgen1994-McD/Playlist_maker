@@ -69,14 +69,15 @@ private lateinit var adapter: PlayListAdapter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
 val bottomView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
 
-        playListObserver()
         viewModel.getAllPlaylist()
-
+displayPlayLists()
 
 
       val  bottomSheetContainer = view.findViewById<LinearLayout>(R.id.bottom_sheet)
@@ -229,7 +230,7 @@ val bottomView = requireActivity().findViewById<BottomNavigationView>(R.id.botto
         super.onDestroy()
 
         viewModel.reliesePlayer()
-
+viewModel.getPlaylistsLiveData.removeObservers(this)
         viewModel.getLiveData.removeObservers(this) // отключил обсерверы от медиа
 
     }
@@ -265,7 +266,7 @@ val bottomView = requireActivity().findViewById<BottomNavigationView>(R.id.botto
 
     }
 
-    private fun displayPlayLists(list: List<PlayList>)=with(binding){
+    private fun displayPlayLists()=with(binding){
         rcView.layoutManager = LinearLayoutManager(requireContext())
         adapter = PlayListAdapter(listener = object:onPlaylistClickListener{
             override fun onPlaylistClicked(playList: PlayList) {
@@ -273,6 +274,8 @@ val bottomView = requireActivity().findViewById<BottomNavigationView>(R.id.botto
                 {
                     Snackbar.make(requireView(), "Трек уже есть в плейлисте ${playList.name}", Snackbar.LENGTH_SHORT).show()
                 } else {
+                    Snackbar.make(requireView(), "Трек успешно добавлен в плейлист ${playList.name}", Snackbar.LENGTH_SHORT).show()
+
                     viewModel.insertTrackInPlaylistsTable(playList)
 
 
@@ -282,21 +285,18 @@ val bottomView = requireActivity().findViewById<BottomNavigationView>(R.id.botto
         }, PlaylistDiffCallback())
         rcView.adapter = adapter
         rcView.makeVisible()
-
-
-    }
-
-    private fun playListObserver(){
         viewModel.getPlaylistsLiveData.observe(viewLifecycleOwner) { playlists ->
-            displayPlayLists(playlists)
             adapter.submitNewList(playlists)
 
 
         }
+
+    }
+
     }
 
 
 
-}
+
 
 

@@ -14,6 +14,10 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
         playlistRepository.insertTrackInPlaylistTable(track)
     }
 
+    override suspend fun getTrackOfPlaylistById(ids: String): List<Track> {
+      return playlistRepository.getTracksOfPlaylistById(ids)
+    }
+
     override suspend fun deletePlayListForId(listId:String){
        playlistRepository.deletePlayListForId(listId)
     }

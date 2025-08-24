@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.media.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,13 +18,14 @@ import com.example.playlistmaker.ui.media.fragments.FavoriteTrakListFragment
 import com.example.playlistmaker.ui.media.onPlaylistClickListener
 import com.example.playlistmaker.ui.media.viewmodel.PlaylistFragmentViewModel
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
+import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
 class PlaylistFragment : Fragment(), onPlaylistClickListener {
     private lateinit var binding: PlaylistFragmentBinding
     private val viewModel: PlaylistFragmentViewModel by activityViewModel()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -76,6 +78,43 @@ observeForPlayLists()
 
     }
 
+    private fun observeForPlaylistTracks(){
+        viewModel.getPlaylistTracksLiveData.observe(viewLifecycleOwner){ tracks ->
+            showTracks(tracks)
+
+        }
+    }
+
+
+    private fun showTracks(tracks: List<Track>) {
+        with(binding) {
+
+            rcView.layoutManager = LinearLayoutManager(requireContext())
+            rcView.adapter = TrackAdapter(tracks, object :OnTrackClickListener{
+                override fun onTrackClicked(track: Track) {
+                    TODO("Not yet implemented")
+                }
+            })
+            rcView.makeVisible()
+            phNtsh2.makeInvisible()
+            msgTxtBottom.makeInvisible()
+            rcView.makeVisible()
+            btCreatePlaylist.makeInvisible()
+            tvPlaylistName.makeVisible()
+            btBack.makeVisible()
+            btBack.setOnClickListener {
+             observeForPlayLists()
+                btBack.makeGone()
+
+            }
+
+
+
+        }
+
+    }
+
+
     private fun observeForPlayLists(){
         viewModel.getLiveData.observe(viewLifecycleOwner) { playlists ->
             if (playlists.isNullOrEmpty()) {
@@ -107,7 +146,13 @@ observeForPlayLists()
     }
 
     override fun onPlaylistClicked(playList: PlayList) {
-        TODO("Not yet implemented")
+       try {
+           viewModel.getTracksOfPlaylist(playList.tracksId)
+           binding.tvPlaylistName.text = "Содержание плейлиста [ ${playList.name}] "
+       } catch(e: Exception){
+           Log.d("playlist", "Не получилось")
+       }
+      observeForPlaylistTracks()
     }
 
     override fun onResume() {
