@@ -50,4 +50,19 @@
     <string name="negative" translatable="false">Отмена</string>
 
 
+<!--    Добавление трека в плейлист-->
+    <string name="add_in" translatable="false">Добавлено в плейлист</string>
+    <string name="add_not" translatable="false"> Трек уже добавлен в плейлист</string>
+
+
+<!--    PlaylistFragment-->
+    <string name="playlist_content_title" translatable="false">Содержание плейлиста</string>
+    <string name="playlist_size" translatable="false"> треков</string>
+
+<!--    PlayerFragment(music)-->
+    <string name="tv_add_in_playlist" translatable="false">Добавить в плейлист</string>
+
+
+
+
 </resources>

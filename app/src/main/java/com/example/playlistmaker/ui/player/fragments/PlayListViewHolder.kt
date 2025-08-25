@@ -20,17 +20,18 @@ import com.example.playlistmaker.domain.models.PlayList
 class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
     RecyclerView.ViewHolder(itemView) { // Добавили листенер в конструктор класса
 
+
     private val playListName: TextView = itemView.findViewById(R.id.album_name)
     private val playListSize: TextView = itemView.findViewById(R.id.album_info)
     private val playListImage: ImageView = itemView.findViewById(R.id.album_image)
     private val options = RequestOptions().centerCrop()
-    private val radiusInDP = 2f
-    private val densityMultiplier = TypedValue.applyDimension(
+    private val radiusInDP = 8f
+    private val radiusInPX = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
-        1f,
+        radiusInDP,
         itemView.context.resources.displayMetrics
     )
-    private val radiusInPX = radiusInDP * densityMultiplier
+//    private val radiusInPX = radiusInDP * densityMultiplier
 
 
 
@@ -39,7 +40,7 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
     @SuppressLint("CheckResult")
     fun bind(playList: PlayList) {
         playListName.text = playList.name
-        playListSize.text = playList.size.toString()
+        playListSize.text = playList.size.toString() + " треков"
 
 
         Glide.with(itemView.context)
@@ -50,8 +51,23 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
             .error(R.drawable.ic_placeholder_45)
             .into(playListImage)
 
-
     }
-
-
+//    val options = RequestOptions().centerCrop()//опции для Glide
+//    val radiusInDP = 8f
+//    val radiusInPX = TypedValue.applyDimension(
+//        TypedValue.COMPLEX_UNIT_DIP,
+//        radiusInDP,
+//        resources.displayMetrics
+//    )
+//    Glide.with(binding.imMine.context)
+//    .load(newState.artworkUrl100)
+//    .apply(options)
+//    .placeholder(R.drawable.ph_media_312).error(R.drawable.ph_media_312)
+//    .transform(RoundedCorners(radiusInPX.toInt()))
+//    .into(binding.imMine)
 }
+
+
+
+
+

@@ -5,9 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.PlayList
-import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.search.adapters.TrackViewHolder
-import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
+
 
 class PlayListAdapter(
     private var playLists: List<PlayList>?,

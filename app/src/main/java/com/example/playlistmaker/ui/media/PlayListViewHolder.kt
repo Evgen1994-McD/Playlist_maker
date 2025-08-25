@@ -26,13 +26,13 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
    private val playListSize: TextView = itemView.findViewById(R.id.tv_size)
    private val playListImage: ImageView = itemView.findViewById(R.id.im_playlist_image)
     private val options = RequestOptions().centerCrop()
-    private val radiusInDP = 2f
-    private val densityMultiplier = TypedValue.applyDimension(
+    private val radiusInDP = 650f
+    private val radiusInPX = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
-        1f,
+        radiusInDP,
         itemView.context.resources.displayMetrics
     )
-    private val radiusInPX = radiusInDP * densityMultiplier
+//    private val radiusInPX = radiusInDP * densityMultiplier
 
 
 
@@ -41,16 +41,16 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
     @SuppressLint("CheckResult")
     fun bind(playList: PlayList) {
         playListName.text = playList.name
-        playListSize.text = playList.size.toString()
+        playListSize.text = playList.size.toString()+" треков"
 
 
-        Glide.with(itemView.context)
-            .load(playList.image?.toUri())  //У меня там просто имя.jpg - это не ссылка, переделать
-            .transform(RoundedCorners(radiusInPX.toInt()))
-            .apply(options)
-            .placeholder(R.drawable.ic_placeholder_45)
-            .error(R.drawable.ic_placeholder_45)
-            .into(playListImage)
+    Glide.with(itemView.context)
+        .load(playList.image?.toUri())  //У меня там просто имя.jpg - это не ссылка, переделать
+        .transform(RoundedCorners(600))
+        .apply(options)
+        .placeholder(R.drawable.ic_placeholder_45)
+        .error(R.drawable.ic_placeholder_45)
+        .into(playListImage)
 
 
     }

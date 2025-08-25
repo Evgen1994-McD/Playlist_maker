@@ -8,13 +8,15 @@
     <ImageView
         android:id="@+id/im_playlist_image"
         android:layout_width="160dp"
-        android:layout_height="190dp"
+        android:layout_height="160dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintDimensionRatio="W,1:1"
+
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
@@ -23,8 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Best songs"
-        android:textColor="@color/black"
+        style="@style/baseDayAndNightTextStyle"
         android:textSize="16sp"
+
         app:layout_constraintEnd_toEndOf="@+id/im_playlist_image"
         app:layout_constraintStart_toStartOf="@+id/im_playlist_image"
         app:layout_constraintTop_toBottomOf="@+id/im_playlist_image" />
@@ -34,7 +37,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="98 треков"
-        android:textColor="@color/black"
+        style="@style/baseDayAndNightTextStyle"
+
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/im_playlist_image"
         app:layout_constraintStart_toStartOf="@+id/im_playlist_image"

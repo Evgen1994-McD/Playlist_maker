@@ -242,6 +242,7 @@
 
     <style name="baseDayAndNightTextStyle">
         <item name="android:textColor"> @color/white</item>
+        <item name="hintTextColor">@color/white</item>
 
     </style>
 

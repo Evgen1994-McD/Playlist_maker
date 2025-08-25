@@ -235,7 +235,7 @@
 
     <style name="baseDayAndNightTextStyle">
         <item name="android:textColor"> @color/black</item>
-
+<item name="hintTextColor">@color/black</item>
     </style>
 
 

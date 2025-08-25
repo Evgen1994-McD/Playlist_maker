@@ -34,8 +34,6 @@ class FavoriteTrakListFragment : Fragment(), OnTrackClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_favorite_trak_list, container, false)
         binding = FragmentFavoriteTrakListBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -48,7 +46,6 @@ class FavoriteTrakListFragment : Fragment(), OnTrackClickListener {
             debounce(100L, viewLifecycleOwner.lifecycleScope, false){ track ->
                 getTrackIntentAndStart(track, requireContext())
             }
-//        showFavoriteTracks()
 
         observeFavoriteTracks()
         viewModel.favoriteTracks

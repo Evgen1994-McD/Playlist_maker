@@ -1,5 +1,7 @@
 package com.example.playlistmaker.ui.media.fragments
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -92,7 +94,7 @@ observeForPlayLists()
             rcView.layoutManager = LinearLayoutManager(requireContext())
             rcView.adapter = TrackAdapter(tracks, object :OnTrackClickListener{
                 override fun onTrackClicked(track: Track) {
-                    TODO("Not yet implemented")
+               getTrackIntentAndStart(track, requireContext())
                 }
             })
             rcView.makeVisible()
@@ -105,6 +107,8 @@ observeForPlayLists()
             btBack.setOnClickListener {
              observeForPlayLists()
                 btBack.makeGone()
+                tvPlaylistName.makeInvisible()
+                btCreatePlaylist.makeVisible()
 
             }
 
@@ -145,14 +149,23 @@ observeForPlayLists()
         this.visibility = View.INVISIBLE // функция для вью инвизибл
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onPlaylistClicked(playList: PlayList) {
        try {
            viewModel.getTracksOfPlaylist(playList.tracksId)
-           binding.tvPlaylistName.text = "Содержание плейлиста [ ${playList.name}] "
+           binding.tvPlaylistName.text = getString(R.string.playlist_content_title)+ "[ ${playList.name}] "
        } catch(e: Exception){
-           Log.d("playlist", "Не получилось")
        }
       observeForPlaylistTracks()
+    }
+
+    private fun getTrackIntentAndStart(track: Track, context: Context) {
+        val bundle = Bundle().apply {
+            putSerializable("track", track)
+
+        }
+        findNavController().navigate(R.id.playerFragment, bundle)
+
     }
 
     override fun onResume() {

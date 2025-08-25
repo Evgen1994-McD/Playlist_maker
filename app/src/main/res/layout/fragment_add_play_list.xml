@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    style="@style/Settings_Day_night_style"
     tools:context=".ui.media.fragments.AddPlayListFragment">
 
 
@@ -19,24 +20,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:navigationIcon="@drawable/ic_backblack_16">
+        app:navigationIcon="@drawable/ic_backblack_16"
+        >
 
     </androidx.appcompat.widget.Toolbar>
 
 
     <ImageView
         android:id="@+id/im_mine"
-        android:layout_width="312dp"
-        android:layout_height="312dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="26dp"
         android:layout_marginEnd="32dp"
-        android:scaleType="centerCrop"
-
         android:background="@drawable/shape_add_playlist"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@+id/guideline13"
+
+        app:layout_constraintDimensionRatio="W,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
+<!--    android:background="@drawable/shape_add_playlist"-->
 
     <ImageView
         android:id="@+id/ph"
@@ -62,8 +67,7 @@
         android:inputType="text"
         android:paddingHorizontal="16dp"
         android:paddingVertical="18dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
+      style="@style/baseDayAndNightTextStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/im_mine" />
@@ -82,8 +86,8 @@
 
         android:paddingHorizontal="16dp"
         android:paddingVertical="18dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
+        style="@style/baseDayAndNightTextStyle"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
@@ -103,4 +107,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.44107744" />
 </androidx.constraintlayout.widget.ConstraintLayout>

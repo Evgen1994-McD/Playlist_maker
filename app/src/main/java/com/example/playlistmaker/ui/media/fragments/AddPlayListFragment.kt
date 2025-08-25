@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.media.fragments
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -7,15 +8,21 @@ import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAddPlayListBinding
 import com.example.playlistmaker.domain.models.PlayList
@@ -32,11 +39,14 @@ private lateinit var binding: FragmentAddPlayListBinding
 private var ur1: Uri? = null
     private var title: CharSequence? = ""
     private var text: CharSequence? = ""
-
-
+private  var trackId =""
     private val viewModel: AddPlayListViewModel by activityViewModel()
 
-
+companion object{
+    private const val playListName = "NAME"
+    private const val playListBody = "BODY"
+    private const val playListImage = "IMAGE"
+}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +54,14 @@ private var ur1: Uri? = null
     ): View {
         binding = FragmentAddPlayListBinding.inflate(layoutInflater, container, false)
         return binding.root
+
+    savedInstanceState?.let {
+        binding.edPlaylistName.setText(it.getString(playListName))
+        binding.edAboutPlaylist.setText(it.getString(playListBody))
+        binding.imMine.setImageURI((it.getString(playListImage))?.toUri())
+    }
+
+
     }
 
 
@@ -51,6 +69,16 @@ private var ur1: Uri? = null
         super.onViewCreated(view, savedInstanceState)
 watcherForTitle()
 watcherForBody()
+        trackId = arguments?.getString("track_id").toString()
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        binding.edPlaylistName.setOnClickListener {
+            imm.showSoftInput(binding.edPlaylistName, InputMethodManager.SHOW_IMPLICIT)
+        }
+
+        binding.edAboutPlaylist.setOnClickListener {
+            imm.showSoftInput(binding.edAboutPlaylist, InputMethodManager.SHOW_IMPLICIT)
+        }
 
 
 
@@ -66,7 +94,19 @@ if (ur1 != null || title != "" || text != ""){
         val pickMediaPhoto =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()){ uri ->
                 if (uri != null){
-                    binding.imMine.setImageURI(uri)
+                    val options = RequestOptions().centerCrop()//опции для Glide
+                    val radiusInDP = 8f
+                    val radiusInPX = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        radiusInDP,
+                        resources.displayMetrics
+                    )
+                    Glide.with(binding.imMine.context)
+                        .load(uri)
+                        .apply(options)
+                        .transform(RoundedCorners(radiusInPX.toInt()))
+                        .into(binding.imMine)
+//                    binding.imMine.setImageURI(uri)
                     saveImageToPrivateStorage(uri)
                     binding.ph.isVisible = false
                     ur1 = uri
@@ -91,8 +131,12 @@ pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualM
 
 
     private fun savePlayList(){
-        val playList = PlayList(null, title.toString(), text.toString(), ur1.toString(),"", 0
-        )
+        var size = 0
+        if (trackId.isNotEmpty()){
+            size = 1
+        }
+        val playList = PlayList(null, title.toString(), text.toString(), ur1.toString(),trackId, size)
+
         viewModel.savePlayList(playList)
     }
 
@@ -167,6 +211,19 @@ Snackbar.make(requireView(), "Плейлист [$title] cоздан", Snackbar.L
 
         })
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(playListName, title.toString())
+        outState.putString(playListBody, text.toString())
+        outState.putString(playListImage, ur1.toString())
+    }
+
+
+
+
+
+
 
 
 }

@@ -329,6 +329,8 @@ android:layout_marginBottom="8dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         tools:visibility="visible"
         style="@style/baseDayAndNightTextStyle"
+        android:clickable="true"
+        android:focusable="true"
         >
 
         <ImageView
@@ -343,16 +345,15 @@ android:layout_marginBottom="8dp"
 
         <TextView
             android:id="@+id/textView"
+            style="@style/baseDayAndNightTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:gravity="center"
-            android:text="Добавить в плейлист"
-            android:textSize="18sp"
-            android:textStyle="bold"
             android:paddingVertical="12dp"
-            style="@style/baseDayAndNightTextStyle"
-            />
+            android:text="@string/tv_add_in_playlist"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/bt_new_playlist"
@@ -361,7 +362,6 @@ android:layout_marginBottom="8dp"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
             android:src="@drawable/bt_new_playlist"
-            android:text="Button"
 
 
             />

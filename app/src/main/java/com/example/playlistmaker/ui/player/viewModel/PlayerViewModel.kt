@@ -63,9 +63,14 @@ private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
 
     fun insertTrackInPlaylistsTable(playList: PlayList)=viewModelScope.launch{
         playlistInteractor.insertTrackInTrackTable(trackFromArgs)
-        playlistInteractor.insertPlayList(playList.copy(tracksId = "${playList.tracksId},${trackFromArgs.trackId}"))
+        playlistInteractor.insertPlayList(playList.copy(tracksId = "${playList.tracksId},${trackFromArgs.trackId}", size = playList.size+1))
    playlistInteractor.getAllPlayList()
         mutablePlaylistLiveData.postValue(playlistInteractor.getAllPlayList())
+
+    }
+
+    fun insertTrackToNewPlaylist()=viewModelScope.launch {
+        playlistInteractor.insertTrackInTrackTable(trackFromArgs)
 
     }
 
@@ -162,6 +167,7 @@ controlIsLike(trackFromArgs)
             val country = trackFromArgs.country
             val relieseDate = trackFromArgs.releaseDate
             val artworkUrl100 = trackFromArgs.artworkUrl100
+            val trackId = trackFromArgs.trackId
 
             if (trackFromArgs.collectionName
                     ?.isNullOrEmpty() == true || trackFromArgs.collectionName
@@ -186,6 +192,7 @@ controlIsLike(trackFromArgs)
                     artworkUrl100 = artworkUrl100,
                     releaseDate = relieseDate,
                     country = country,
+                    trackId = trackId
                 )
 
 
@@ -222,6 +229,7 @@ controlIsLike(trackFromArgs)
             val country = track.country
             val relieseDate = track.releaseDate
             val artworkUrl100 = track.artworkUrl100
+            val trackId = track.trackId
 
             val previewUrl = track.previewUrl
             mediaInteractor.preparePlayer(previewUrl)
@@ -233,6 +241,7 @@ controlIsLike(trackFromArgs)
                 country = country,
                 releaseDate = relieseDate,
                 artworkUrl100 = artworkUrl100,
+                trackId = trackId
             )
 
         }

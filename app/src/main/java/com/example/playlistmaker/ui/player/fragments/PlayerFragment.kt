@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.player.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -24,18 +24,12 @@ import com.example.playlistmaker.utils.getTrackFromArguments
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.withContext
-import org.koin.android.scope.createScope
-import org.koin.android.scope.getOrCreateScope
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.named
-import org.koin.core.scope.Scope
 
 class PlayerFragment : Fragment() {
 private lateinit var adapter: PlayListAdapter
-
+private lateinit var currentTrackId: String
     private lateinit var binding: FragmentPlayerBinding // делаю байдинг
 
     private val viewModel: PlayerViewModel by viewModel { parametersOf(getTrackFromArguments()) }
@@ -71,6 +65,9 @@ private lateinit var adapter: PlayListAdapter
 
 
 
+
+
+
 val bottomView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
@@ -91,6 +88,24 @@ displayPlayLists()
 
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
+
+        binding.overlay.setOnClickListener {
+bottomSheetBehavior.state= BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        binding.btNewPlaylist.setOnClickListener {
+viewModel.insertTrackToNewPlaylist()
+            currentTrackId = viewModel.getLiveData.value?.trackId.toString()
+            Log.d("player", currentTrackId)
+            val bundle = Bundle().apply {
+                putString("track_id", currentTrackId )
+            }
+            findNavController().navigate(R.id.addPlayListFragment, bundle)
+        }
+        /*
+        Сохраняю трек в таблицу треков, далее бандлом отправляю Id на фрагмент создания плейлиста,
+        Там запишу этот Id в результате создания нового плейлиста
+         */
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -165,7 +180,6 @@ displayPlayLists()
             when {
                 !newState.trackName.isEmpty() && !newState.collectionName.contains(noAlbum) -> {
 
-
                     saveAndDeleteFavoriteTrack(newState.isLike)
 
 
@@ -189,7 +203,9 @@ displayPlayLists()
                         radiusInDP,
                         resources.displayMetrics
                     )
-                    Glide.with(binding.imMine.context).load(newState.artworkUrl100).apply(options)
+                    Glide.with(binding.imMine.context)
+                        .load(newState.artworkUrl100)
+                        .apply(options)
                         .placeholder(R.drawable.ph_media_312).error(R.drawable.ph_media_312)
                         .transform(RoundedCorners(radiusInPX.toInt()))
                         .into(binding.imMine)
@@ -272,9 +288,9 @@ viewModel.getPlaylistsLiveData.removeObservers(this)
             override fun onPlaylistClicked(playList: PlayList) {
                 if (viewModel.compareTracksIds(playList))  // проверим, есть ли трек который на экране, в плейлисте
                 {
-                    Snackbar.make(requireView(), "Трек уже есть в плейлисте ${playList.name}", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(requireView(), (getString(R.string.add_not)) +" ${playList.name}", Snackbar.LENGTH_SHORT).show()
                 } else {
-                    Snackbar.make(requireView(), "Трек успешно добавлен в плейлист ${playList.name}", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(requireView(), getString(R.string.add_in)+" ${playList.name}", Snackbar.LENGTH_SHORT).show()
 
                     viewModel.insertTrackInPlaylistsTable(playList)
 
