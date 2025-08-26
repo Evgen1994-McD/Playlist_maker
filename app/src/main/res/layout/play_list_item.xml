@@ -16,6 +16,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintDimensionRatio="W,1:1"
+        android:scaleType="fitXY"
+
 
         tools:srcCompat="@tools:sample/avatars" />
 

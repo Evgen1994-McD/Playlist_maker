@@ -25,13 +25,17 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
    private val playListName: TextView = itemView.findViewById(R.id.tv_name)
    private val playListSize: TextView = itemView.findViewById(R.id.tv_size)
    private val playListImage: ImageView = itemView.findViewById(R.id.im_playlist_image)
-    private val options = RequestOptions().centerCrop()
-    private val radiusInDP = 650f
+    private val radiusInDP = 8f
     private val radiusInPX = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         radiusInDP,
         itemView.context.resources.displayMetrics
     )
+    private val options = RequestOptions()
+        .centerCrop()
+        .transform(RoundedCorners(radiusInPX.toInt()))
+
+
 //    private val radiusInPX = radiusInDP * densityMultiplier
 
 
@@ -46,7 +50,6 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
 
     Glide.with(itemView.context)
         .load(playList.image?.toUri())  //У меня там просто имя.jpg - это не ссылка, переделать
-        .transform(RoundedCorners(600))
         .apply(options)
         .placeholder(R.drawable.ic_placeholder_45)
         .error(R.drawable.ic_placeholder_45)

@@ -101,7 +101,7 @@ if (ur1 != null || title != "" || text != ""){
                         radiusInDP,
                         resources.displayMetrics
                     )
-                    Glide.with(binding.imMines.context)
+                    Glide.with(requireView())
                         .load(uri)
                         .apply(options)
 
