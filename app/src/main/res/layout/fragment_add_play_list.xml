@@ -14,7 +14,7 @@
         android:layout_width="0dp"
         android:layout_height="56dp"
         app:title="Новый плейлист"
-        app:layout_constraintBottom_toTopOf="@id/im_mine"
+        app:layout_constraintBottom_toTopOf="@id/im_mines"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,20 +27,24 @@
 
 
     <ImageView
-        android:id="@+id/im_mine"
+        android:id="@+id/im_mines"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="26dp"
         android:layout_marginEnd="32dp"
-        android:background="@drawable/shape_add_playlist"
-        android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@+id/guideline13"
-
         app:layout_constraintDimensionRatio="W,1:1"
+        android:scaleType="centerCrop"
+
+        android:background="@drawable/shape_add_playlist"
+
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+
+        />
 <!--    android:background="@drawable/shape_add_playlist"-->
 
     <ImageView
@@ -49,10 +53,10 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_ph_newplaylist_80"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="@+id/im_mine"
-        app:layout_constraintEnd_toEndOf="@+id/im_mine"
-        app:layout_constraintStart_toStartOf="@+id/im_mine"
-        app:layout_constraintTop_toTopOf="@+id/im_mine" />
+        app:layout_constraintBottom_toBottomOf="@+id/im_mines"
+        app:layout_constraintEnd_toEndOf="@+id/im_mines"
+        app:layout_constraintStart_toStartOf="@+id/im_mines"
+        app:layout_constraintTop_toTopOf="@+id/im_mines" />
 
     <EditText
         android:id="@+id/ed_playlist_name"
@@ -70,7 +74,7 @@
       style="@style/baseDayAndNightTextStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/im_mine" />
+        app:layout_constraintTop_toBottomOf="@+id/im_mines" />
 
     <EditText
         android:id="@+id/ed_about_playlist"

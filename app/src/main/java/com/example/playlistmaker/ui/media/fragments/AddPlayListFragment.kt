@@ -58,7 +58,7 @@ companion object{
     savedInstanceState?.let {
         binding.edPlaylistName.setText(it.getString(playListName))
         binding.edAboutPlaylist.setText(it.getString(playListBody))
-        binding.imMine.setImageURI((it.getString(playListImage))?.toUri())
+        binding.imMines.setImageURI((it.getString(playListImage))?.toUri())
     }
 
 
@@ -101,12 +101,12 @@ if (ur1 != null || title != "" || text != ""){
                         radiusInDP,
                         resources.displayMetrics
                     )
-                    Glide.with(binding.imMine.context)
+                    Glide.with(binding.imMines.context)
                         .load(uri)
                         .apply(options)
+
                         .transform(RoundedCorners(radiusInPX.toInt()))
-                        .into(binding.imMine)
-//                    binding.imMine.setImageURI(uri)
+                        .into(binding.imMines)
                     saveImageToPrivateStorage(uri)
                     binding.ph.isVisible = false
                     ur1 = uri
@@ -116,7 +116,7 @@ if (ur1 != null || title != "" || text != ""){
                 }
 
             }
-        binding.imMine.setOnClickListener {
+        binding.imMines.setOnClickListener {
 pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
