@@ -53,7 +53,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
 
 
-
+// Или для Coroutine Flows
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

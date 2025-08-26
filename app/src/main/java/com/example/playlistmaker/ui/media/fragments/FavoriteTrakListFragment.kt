@@ -1,4 +1,5 @@
 package com.example.playlistmaker.ui.media.fragments
+import com.example.playlistmaker.utils.debounce
 
 import android.content.Context
 import android.os.Bundle
@@ -15,7 +16,6 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.media.viewmodel.FavoriteFragmentViewModel
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
-import com.example.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
