@@ -15,6 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.PlayList
+import java.io.File
 
 
 class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
@@ -43,8 +44,9 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
         playListSize.text = playList.size.toString() + " треков"
 
 
+
         Glide.with(itemView.context)
-            .load(playList.image?.toUri())  //У меня там просто имя.jpg - это не ссылка, переделать
+            .load(playList.image?.toUri())
             .transform(RoundedCorners(radiusInPX.toInt()))
             .apply(options)
             .placeholder(R.drawable.ic_placeholder_45)

@@ -33,13 +33,14 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.io.File
 import java.io.FileOutputStream
+import java.util.UUID
 
 class AddPlayListFragment : Fragment() {
 private lateinit var binding: FragmentAddPlayListBinding
 private var ur1: Uri? = null
     private var title: CharSequence? = ""
     private var text: CharSequence? = ""
-private  var trackId =""
+private  var trackId: String = ""
     private val viewModel: AddPlayListViewModel by activityViewModel()
 
 companion object{
@@ -109,7 +110,7 @@ if (ur1 != null || title != "" || text != ""){
                         .into(binding.imMines)
                     saveImageToPrivateStorage(uri)
                     binding.ph.isVisible = false
-                    ur1 = uri
+
                 } else {
                     binding.ph.isVisible = false
 
@@ -132,11 +133,11 @@ pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualM
 
     private fun savePlayList(){
         var size = 0
-        if (trackId.isNotEmpty()){
+        if (!trackId.contains("")){
             size = 1
         }
         val playList = PlayList(null, title.toString(), text.toString(), ur1.toString(),trackId, size)
-
+size=0
         viewModel.savePlayList(playList)
     }
 
@@ -149,7 +150,7 @@ pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualM
             filePath.mkdirs()
         }
         //создаём экземпляр класса File, который указывает на файл внутри каталога
-        val file = File(filePath, "$title.jpg")
+        val file = File(filePath,  "${UUID.randomUUID()}.jpg")
         ur1 = file.toUri()
         // создаём входящий поток байтов из выбранной картинки
         val inputStream = requireActivity().contentResolver.openInputStream(uri)
