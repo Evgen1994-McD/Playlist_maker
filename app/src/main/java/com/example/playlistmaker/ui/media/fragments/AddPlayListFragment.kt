@@ -78,7 +78,9 @@ watcherForBody()
         }
 
 
-        trackId = arguments?.getString("track_id").toString()
+        trackId = arguments?.getString("track_id").toString()  ?: ""
+        Log.d("id", trackId)
+
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         binding.edPlaylistName.setOnClickListener {
@@ -140,17 +142,15 @@ pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualM
 
 
     private fun savePlayList(){
-        var size = 0
-        if (!trackId.isNullOrEmpty()){
-            size = 1
-            val playList = PlayList(null, title.toString(), text.toString(), ur1.toString(),trackId, size)
+        if (trackId.isNotBlank()&& trackId!="null"){
+            Log.d("id", trackId)
+            val playList = PlayList(null, title.toString(), text.toString(), ur1.toString(),trackId, 1)
             viewModel.savePlayList(playList)
 
         } else {
             val playList =
-                PlayList(null, title.toString(), text.toString(), ur1.toString(), trackId, size)
+                PlayList(null, title.toString(), text.toString(), ur1.toString(), trackId, 0)
             viewModel.savePlayList(playList)
-            size = 0
         }
     }
 
