@@ -6,8 +6,8 @@ import com.example.playlistmaker.domain.playlists.PlaylistInteractor
 import com.example.playlistmaker.domain.playlists.PlaylistRepository
 
 class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository):PlaylistInteractor {
-    override suspend fun insertPlayList(playList: PlayList){
-        playlistRepository.insertPlayList(playList)
+    override suspend fun insertPlayList(playList: PlayList): Long{
+       return playlistRepository.insertPlayList(playList)
     }
 
     override suspend fun insertTrackInTrackTable(track: Track): Long{

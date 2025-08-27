@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -283,32 +284,43 @@ viewModel.getPlaylistsLiveData.removeObservers(this)
 
     }
 
-    private fun displayPlayLists()=with(binding){
+    private fun displayPlayLists() = with(binding) {
         rcView.layoutManager = LinearLayoutManager(requireContext())
-        adapter = PlayListAdapter(listener = object:onPlaylistClickListener{
+        adapter = PlayListAdapter(listener = object : onPlaylistClickListener {
             override fun onPlaylistClicked(playList: PlayList) {
-                if (viewModel.compareTracksIds(playList))  // проверим, есть ли трек который на экране, в плейлисте
-                {
-                    Snackbar.make(requireView(), (getString(R.string.add_not)) +" ${playList.name}", Snackbar.LENGTH_SHORT).show()
+                if (viewModel.compareTracksIds(playList)) {
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.add_not) + " ${playList.name}",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 } else {
-                    Snackbar.make(requireView(), getString(R.string.add_in)+" ${playList.name}", Snackbar.LENGTH_SHORT).show()
-
                     viewModel.insertTrackInPlaylistsTable(playList)
-                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
+                    // Подождите обновления состояния и отобразите SnackBar
+
+                        viewModel.getLiveData.observe(viewLifecycleOwner) { state ->
+                            if (state.isSuccess) {
+                                Snackbar.make(
+                                    requireView(),
+                                    getString(R.string.add_in) + " ${playList.name}",
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
+
+                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                            }
+                        }
 
                 }
             }
-
         }, PlaylistDiffCallback())
+
         rcView.adapter = adapter
         rcView.makeVisible()
+
         viewModel.getPlaylistsLiveData.observe(viewLifecycleOwner) { playlists ->
             adapter.submitNewList(playlists)
-
-
         }
-
     }
 
     }

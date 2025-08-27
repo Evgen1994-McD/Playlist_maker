@@ -90,9 +90,9 @@ observeForPlayLists()
 
     private fun showTracks(tracks: List<Track>) {
         with(binding) {
-
+val reversedTracks = tracks.reversed()
             rcView.layoutManager = LinearLayoutManager(requireContext())
-            rcView.adapter = TrackAdapter(tracks, object :OnTrackClickListener{
+            rcView.adapter = TrackAdapter(reversedTracks, object :OnTrackClickListener{
                 override fun onTrackClicked(track: Track) {
                getTrackIntentAndStart(track, requireContext())
                 }

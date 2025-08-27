@@ -39,8 +39,8 @@ class PlaylistRepositoryImpl(private val mainDb: MainDb,
 
     }
 
-    override suspend fun insertPlayList(playList: PlayList) {
-        mainDb.playListDao().insertPlayList(convertEntityFromPlaylist(playList))
+    override suspend fun insertPlayList(playList: PlayList): Long{
+       return mainDb.playListDao().insertPlayList(convertEntityFromPlaylist(playList))
 
     }
 

@@ -14,6 +14,7 @@ import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.playlists.PlaylistInteractor
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
@@ -62,18 +63,20 @@ private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
 
     }
 
-    fun insertTrackInPlaylistsTable(playList: PlayList)=viewModelScope.launch{
-       if (playlistInteractor.insertTrackInTrackTable(trackFromArgs)>0) {
-           playlistInteractor.insertPlayList(playList.copy(tracksId = "${playList.tracksId},${trackFromArgs.trackId}", size = playList.size+1))
-           mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isSuccess = true)
-       } else{
-           mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isSuccess = false)
+    fun insertTrackInPlaylistsTable(playList: PlayList) = viewModelScope.launch {
+       playlistInteractor.insertTrackInTrackTable(trackFromArgs)
+        val updatedPlaylist = playList.copy(tracksId = "${playList.tracksId},${trackFromArgs.trackId}", size = playList.size + 1)
+        val playlistForSave = playlistInteractor.insertPlayList(updatedPlaylist)
 
-       }
+        val allPlaylists = playlistInteractor.getAllPlayList()
+        mutablePlaylistLiveData.postValue(allPlaylists)
 
-   playlistInteractor.getAllPlayList()
-        mutablePlaylistLiveData.postValue(playlistInteractor.getAllPlayList())
+        if (playlistForSave >= 0) {
+         mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(isSuccess = true))
+        } else {
+            mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(isSuccess = false))
 
+        }
     }
 
     fun insertTrackToNewPlaylist()=viewModelScope.launch {

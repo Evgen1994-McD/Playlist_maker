@@ -9,7 +9,7 @@ import com.example.playlistmaker.data.db.entity.PlayListEntity
 @Dao
 interface PlayListDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlayList(playListEntity: PlayListEntity)
+    suspend fun insertPlayList(playListEntity: PlayListEntity): Long
 
 
     @Query("DELETE FROM playlist_table WHERE listId =:listId")
