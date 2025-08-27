@@ -17,8 +17,12 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStore
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -30,7 +34,9 @@ import com.example.playlistmaker.ui.media.viewmodel.AddPlayListViewModel
 import com.example.playlistmaker.utils.Constants
 import com.example.playlistmaker.utils.DialogManager
 import com.google.android.material.snackbar.Snackbar
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
@@ -41,7 +47,7 @@ private var ur1: Uri? = null
     private var title: CharSequence? = ""
     private var text: CharSequence? = ""
 private  var trackId: String = ""
-    private val viewModel: AddPlayListViewModel by activityViewModel()
+    private val viewModel: AddPlayListViewModel by viewModel()
 
 companion object{
     private const val playListName = "NAME"
@@ -56,11 +62,6 @@ companion object{
         binding = FragmentAddPlayListBinding.inflate(layoutInflater, container, false)
         return binding.root
 
-    savedInstanceState?.let {
-        binding.edPlaylistName.setText(it.getString(playListName))
-        binding.edAboutPlaylist.setText(it.getString(playListBody))
-        binding.imMines.setImageURI((it.getString(playListImage))?.toUri())
-    }
 
 
     }
@@ -70,6 +71,13 @@ companion object{
         super.onViewCreated(view, savedInstanceState)
 watcherForTitle()
 watcherForBody()
+        savedInstanceState?.let {
+            binding.edPlaylistName.setText(it.getString(playListName))
+            binding.edAboutPlaylist.setText(it.getString(playListBody))
+            binding.imMines.setImageURI((it.getString(playListImage))?.toUri())
+        }
+
+
         trackId = arguments?.getString("track_id").toString()
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
@@ -112,7 +120,7 @@ if (ur1 != null || title != "" || text != ""){
                     binding.ph.isVisible = false
 
                 } else {
-                    binding.ph.isVisible = false
+                    binding.ph.isVisible = true
 
                 }
 
@@ -133,12 +141,17 @@ pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualM
 
     private fun savePlayList(){
         var size = 0
-        if (!trackId.contains("")){
+        if (!trackId.isNullOrEmpty()){
             size = 1
+            val playList = PlayList(null, title.toString(), text.toString(), ur1.toString(),trackId, size)
+            viewModel.savePlayList(playList)
+
+        } else {
+            val playList =
+                PlayList(null, title.toString(), text.toString(), ur1.toString(), trackId, size)
+            viewModel.savePlayList(playList)
+            size = 0
         }
-        val playList = PlayList(null, title.toString(), text.toString(), ur1.toString(),trackId, size)
-size=0
-        viewModel.savePlayList(playList)
     }
 
 
@@ -194,7 +207,11 @@ size=0
     }
 
     private fun snackBar(){
-Snackbar.make(requireView(), "Плейлист [$title] cоздан", Snackbar.LENGTH_SHORT).show()
+Snackbar.make(requireView(), "Плейлист $title cоздан", Snackbar.LENGTH_SHORT)
+
+    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.reverse_primary_background))
+    .setTextColor(ContextCompat.getColor(requireContext(), R.color.primary_background))
+    .show()
     }
 
     private fun watcherForBody(){

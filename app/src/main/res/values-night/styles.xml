@@ -249,8 +249,11 @@
 
     <style name="reversedBaseDayAndNightTextStyle">
         <item name="android:textColor"> @color/black</item>
-
     </style>
+
+
+
+
 
 </resources>
 

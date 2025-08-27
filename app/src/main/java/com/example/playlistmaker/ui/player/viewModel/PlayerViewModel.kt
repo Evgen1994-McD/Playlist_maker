@@ -248,11 +248,14 @@ controlIsLike(trackFromArgs)
     }
 
     fun saveTrackToFavorite()= viewModelScope.launch{
+        mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isLike = true)
+
   myLikedTracksInteractor.saveTrackToFavorite(trackFromArgs)
 
     }
     fun deleteTrackFromFavorite()= viewModelScope.launch{
         myLikedTracksInteractor.deleteTrackFromFavorite(trackFromArgs)
+        mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isLike = false)
 
     }
 

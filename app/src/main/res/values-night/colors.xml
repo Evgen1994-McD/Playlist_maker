@@ -4,5 +4,6 @@
     <color name="primary_text_color">@color/blue</color> <!-- Чёрный цвет для обычного режима -->
     <color name="secondary_text_color">@color/white</color> <!-- Темно-серый цвет для обычного режима -->
     <color name="primary_background">@color/black</color> <!-- Чёрный цвет для обычного режима -->
+    <color name="reverse_primary_background">@color/white</color> <!-- Чёрный цвет для обычного режима -->
 
 </resources>

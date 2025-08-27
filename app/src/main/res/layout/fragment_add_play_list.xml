@@ -26,6 +26,9 @@
     </androidx.appcompat.widget.Toolbar>
 
 
+
+
+
     <ImageView
         android:id="@+id/im_mines"
         android:layout_width="0dp"
@@ -58,44 +61,68 @@
         app:layout_constraintStart_toStartOf="@+id/im_mines"
         app:layout_constraintTop_toTopOf="@+id/im_mines" />
 
-    <EditText
-        android:id="@+id/ed_playlist_name"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="16dp"
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:id="@+id/textInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/shape_edit_text_line"
-        android:ems="10"
-        android:hint="Название*"
-        android:inputType="text"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="18dp"
-      style="@style/baseDayAndNightTextStyle"
+        app:boxStrokeColor="@drawable/add_playlist_color_selector"
+        app:boxStrokeWidth="1dp"
+        app:cursorColor="@color/blue"
+        app:hintTextColor="@color/blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/im_mines" />
+        app:layout_constraintTop_toTopOf="@+id/guideline13">
 
-    <EditText
-        android:id="@+id/ed_about_playlist"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/shape_edit_text_line"
-        android:ems="10"
-        android:hint="Описание"
-        android:inputType="text"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_playlist_name"
+            style="@style/baseDayAndNightTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
 
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="18dp"
-        style="@style/baseDayAndNightTextStyle"
+            android:ems="10"
+            android:hint="Название*"
+            android:inputType="text"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="17dp"
+        app:boxStrokeColor="@drawable/add_playlist_color_selector"
+        app:boxStrokeWidth="1dp"
+
+        app:cursorColor="@color/blue"
+        app:hintTextColor="@color/blue"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ed_playlist_name" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        >
+
+
+        <com.google.android.material.textfield.TextInputEditText
+
+            android:id="@+id/ed_about_playlist"
+            style="@style/baseDayAndNightTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:ems="10"
+
+            android:hint="Описание"
+            android:inputType="text"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bt_save"

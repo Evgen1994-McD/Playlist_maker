@@ -33,7 +33,8 @@ private lateinit var currentTrackId: String
     private lateinit var binding: FragmentPlayerBinding // делаю байдинг
 
     private val viewModel: PlayerViewModel by viewModel { parametersOf(getTrackFromArguments()) }
-
+    private lateinit var bottomSheetContainer:LinearLayout
+private lateinit var bottomSheetBehavior:BottomSheetBehavior<LinearLayout>
     /*
     by ViewModel привяжет вьюмодел к циклу жизни фрагмента
      */
@@ -77,8 +78,8 @@ val bottomView = requireActivity().findViewById<BottomNavigationView>(R.id.botto
 displayPlayLists()
 
 
-      val  bottomSheetContainer = view.findViewById<LinearLayout>(R.id.bottom_sheet)
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
+      bottomSheetContainer = view.findViewById<LinearLayout>(R.id.bottom_sheet)
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
 
 
         binding.addOnPlaylist.setOnClickListener {
@@ -293,6 +294,7 @@ viewModel.getPlaylistsLiveData.removeObservers(this)
                     Snackbar.make(requireView(), getString(R.string.add_in)+" ${playList.name}", Snackbar.LENGTH_SHORT).show()
 
                     viewModel.insertTrackInPlaylistsTable(playList)
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
 
                 }

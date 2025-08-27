@@ -16,5 +16,6 @@
 
     <color name="primary_background">@color/white</color> <!-- Чёрный цвет для обычного режима -->
 
+    <color name="reverse_primary_background">@color/black</color> <!-- Чёрный цвет для обычного режима -->
 
 </resources>
