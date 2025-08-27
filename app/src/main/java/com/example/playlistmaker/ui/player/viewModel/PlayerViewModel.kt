@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.copy
 import com.example.playlistmaker.domain.db.FavoriteInteractor
 import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.domain.models.Track
@@ -62,8 +63,14 @@ private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
     }
 
     fun insertTrackInPlaylistsTable(playList: PlayList)=viewModelScope.launch{
-        playlistInteractor.insertTrackInTrackTable(trackFromArgs)
-        playlistInteractor.insertPlayList(playList.copy(tracksId = "${playList.tracksId},${trackFromArgs.trackId}", size = playList.size+1))
+       if (playlistInteractor.insertTrackInTrackTable(trackFromArgs)>0) {
+           playlistInteractor.insertPlayList(playList.copy(tracksId = "${playList.tracksId},${trackFromArgs.trackId}", size = playList.size+1))
+           mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isSuccess = true)
+       } else{
+           mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isSuccess = false)
+
+       }
+
    playlistInteractor.getAllPlayList()
         mutablePlaylistLiveData.postValue(playlistInteractor.getAllPlayList())
 

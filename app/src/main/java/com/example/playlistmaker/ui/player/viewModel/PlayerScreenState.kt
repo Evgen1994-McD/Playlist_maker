@@ -12,7 +12,8 @@ data class PlayerScreenState(val trackName: String ="", // Название ко
                              val previewUrl: String="",
                              val progress: String = "00:00",
                              val isPlaying: Boolean = false,
-                             val isLike: Boolean = false
+                             val isLike: Boolean = false,
+    val isSuccess: Boolean = false
 ){
 
 

@@ -15,8 +15,8 @@ class PlaylistRepositoryImpl(private val mainDb: MainDb,
     private val playListDbConvertor: PlayListDbConvertor,
     private val playlistTracksDbConvertor: PlaylistTracksDbConvertor):PlaylistRepository {
 
-    override suspend fun insertTrackInPlaylistTable(track: Track){
-        mainDb.playListTracksDao().insertTracks(convertTrackEntityFromTrack(track))
+    override suspend fun insertTrackInPlaylistTable(track: Track): Long{
+       return mainDb.playListTracksDao().insertTracks(convertTrackEntityFromTrack(track))
     }
     override suspend fun getTracksOfPlaylistById(ids: String) : List<Track>{
         val soloTrackId = ids.split(",")

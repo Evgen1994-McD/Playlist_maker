@@ -11,7 +11,7 @@ import com.example.playlistmaker.data.db.entity.TrackEntity
 interface PlayListTracksDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertTracks(playListTracksEntity: PlayListTracksEntity)
+    suspend fun insertTracks(playListTracksEntity: PlayListTracksEntity): Long
 
     @Query("DELETE FROM playlist_track_entity WHERE trackId =:trackId")
     suspend fun deleteTrackForId(trackId: String)
