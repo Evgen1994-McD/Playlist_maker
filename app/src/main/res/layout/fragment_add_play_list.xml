@@ -7,13 +7,12 @@
     style="@style/Settings_Day_night_style"
     tools:context=".ui.media.fragments.AddPlayListFragment">
 
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         style="@style/Search_Toolbar_style"
         android:layout_width="0dp"
         android:layout_height="56dp"
-        app:title="Новый плейлист"
+        app:title="@string/new_playlist"
         app:layout_constraintBottom_toTopOf="@id/im_mines"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -25,10 +24,6 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-
-
-
-
     <ImageView
         android:id="@+id/im_mines"
         android:layout_width="0dp"
@@ -39,16 +34,12 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline13"
         app:layout_constraintDimensionRatio="W,1:1"
         android:scaleType="fitXY"
-
         android:background="@drawable/shape_add_playlist"
-
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
 
         />
-<!--    android:background="@drawable/shape_add_playlist"-->
 
     <ImageView
         android:id="@+id/ph"
@@ -63,63 +54,47 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/my_input_layout_style"
         android:id="@+id/textInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="32dp"
-        app:boxStrokeColor="@drawable/add_playlist_color_selector"
-        app:boxStrokeWidth="1dp"
-        app:cursorColor="@color/blue"
-        app:hintTextColor="@color/blue"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline13">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ed_playlist_name"
-            style="@style/baseDayAndNightTextStyle"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:hint="@string/playlist_name_hint"
+            style="@style/input_edit_text_style"
 
-            android:ems="10"
-            android:hint="Название*"
-            android:inputType="text"
             />
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/my_input_layout_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="17dp"
-        app:boxStrokeColor="@drawable/add_playlist_color_selector"
-        app:boxStrokeWidth="1dp"
-
-        app:cursorColor="@color/blue"
-        app:hintTextColor="@color/blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
         >
-
-
         <com.google.android.material.textfield.TextInputEditText
 
             android:id="@+id/ed_about_playlist"
-            style="@style/baseDayAndNightTextStyle"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:ems="10"
-
-            android:hint="Описание"
-            android:inputType="text"
-
+    style="@style/input_edit_text_style"
+            android:hint="@string/playlist_body_hint"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -133,7 +108,7 @@
         android:layout_marginBottom="44dp"
         android:background="@drawable/bt_add_playlist"
         android:enabled="false"
-        android:text="Создать"
+        android:text="@string/playlist_bt_text"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

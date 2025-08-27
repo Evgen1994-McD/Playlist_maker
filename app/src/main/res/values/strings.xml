@@ -7,7 +7,6 @@
     <string name="share_name" translatable="false">Поделиться приложением</string>
     <string name="support_name" translatable="false">Написать в поддержку</string>
     <string name="user_assets_name" translatable="false">Пользовательское соглашение</string>
-    <string name="search_toolbar" translatable="false">Поиск</string>
 
 
     <string name="subject" translatable="false">Сообщение разработчиками и разработчицам приложения Playlist Maker</string>
@@ -62,6 +61,14 @@
 <!--    PlayerFragment(music)-->
     <string name="tv_add_in_playlist" translatable="false">Добавить в плейлист</string>
 
+<!--    addPlaylistFragment-->
+    <string name="playlist_name_hint" translatable="false">Название*</string>
+    <string name="playlist_body_hint" translatable="false">Описание</string>
+    <string name="playlist_bt_text" translatable="false">Создать</string>
+
+<!--   Toolbar-->
+    <string name="search_toolbar" translatable="false">Поиск</string>
+    <string name="new_playlist" translatable="false">Новый плейлист</string>
 
 
 
