@@ -42,18 +42,18 @@ import java.io.FileOutputStream
 import java.util.UUID
 
 class AddPlayListFragment : Fragment() {
-private lateinit var binding: FragmentAddPlayListBinding
-private var ur1: Uri? = null
+    private lateinit var binding: FragmentAddPlayListBinding
+    private var ur1: Uri? = null
     private var title: CharSequence? = ""
     private var text: CharSequence? = ""
-private  var trackId: String = ""
+    private var trackId: String = ""
     private val viewModel: AddPlayListViewModel by viewModel()
 
-companion object{
-    private const val playListName = "NAME"
-    private const val playListBody = "BODY"
-    private const val playListImage = "IMAGE"
-}
+    companion object {
+        private const val playListName = "NAME"
+        private const val playListBody = "BODY"
+        private const val playListImage = "IMAGE"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,48 +63,171 @@ companion object{
         return binding.root
 
 
-
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-watcherForTitle()
-watcherForBody()
+        watcherForTitle()
+        watcherForBody()
         savedInstanceState?.let {
             binding.edPlaylistName.setText(it.getString(playListName))
             binding.edAboutPlaylist.setText(it.getString(playListBody))
             binding.imMines.setImageURI((it.getString(playListImage))?.toUri())
         }
 
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-        trackId = arguments?.getString("track_id").toString()  ?: ""
-        Log.d("id", trackId)
 
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        clicker(imm)
+
+
+        pickImage()
+    }
+
+
+    private fun savePlayList() {
+
+            val playList =
+                PlayList(null, title.toString(), text.toString(), ur1.toString(), "", 0)
+            viewModel.savePlayList(playList)
+
+
+    }
+
+
+    private fun saveImageToPrivateStorage(uri: Uri) {
+        //создаём экземпляр класса File, который указывает на нужный каталог
+        val filePath = File(
+            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+            Constants.playlistAlbum
+        )
+        //создаем каталог, если он не создан
+        if (!filePath.exists()) {
+            filePath.mkdirs()
+        }
+        //создаём экземпляр класса File, который указывает на файл внутри каталога
+        val file = File(filePath, "${UUID.randomUUID()}.jpg")
+        ur1 = file.toUri()
+        // создаём входящий поток байтов из выбранной картинки
+        val inputStream = requireActivity().contentResolver.openInputStream(uri)
+        // создаём исходящий поток байтов в созданный выше файл
+        val outputStream = FileOutputStream(file)
+        // записываем картинку с помощью BitmapFactory
+        BitmapFactory
+            .decodeStream(inputStream)
+            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+    }
+
+    private fun showDialog() {
+        DialogManager.showDialog(
+            requireContext(),
+            R.string.title,
+            R.string.text,
+            R.string.positive,
+            R.string.negative,
+            object : DialogManager.Listener {
+                override fun onClick() {
+
+                    findNavController().popBackStack()
+                }
+
+            })
+    }
+
+
+    private fun watcherForTitle() {
+        binding.edPlaylistName.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (p0.isNullOrEmpty()) {
+                    binding.btSave.isEnabled = false
+                } else binding.btSave.isEnabled = true
+                title = p0.toString()
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+        })
+    }
+
+    private fun snackBar() {
+        Snackbar.make(
+            requireView(),
+            getString(R.string.playlist) + " $title " + getString(R.string.created),
+            Snackbar.LENGTH_SHORT
+        )
+
+            .setBackgroundTint(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.reverse_primary_background
+                )
+            )
+            .setTextColor(ContextCompat.getColor(requireContext(), R.color.primary_background))
+            .show()
+    }
+
+    private fun watcherForBody() {
+        binding.edAboutPlaylist.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                text = p0.toString()
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+        })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(playListName, title.toString())
+        outState.putString(playListBody, text.toString())
+        outState.putString(playListImage, ur1.toString())
+    }
+
+    private fun clicker(imm: InputMethodManager) {
 
         binding.edPlaylistName.setOnClickListener {
             imm.showSoftInput(binding.edPlaylistName, InputMethodManager.SHOW_IMPLICIT)
         }
-
         binding.edAboutPlaylist.setOnClickListener {
             imm.showSoftInput(binding.edAboutPlaylist, InputMethodManager.SHOW_IMPLICIT)
-        }
 
+
+        }
+        binding.btSave.setOnClickListener {
+            snackBar()
+            savePlayList()
+            findNavController().popBackStack()
+        }
 
 
         binding.toolbar.setNavigationOnClickListener {
-if (ur1 != null || title != "" || text != ""){
-    showDialog()
-} else findNavController().popBackStack()
-
+            if (ur1 != null || title != "" || text != "") {
+                showDialog()
+            } else findNavController().popBackStack()
 
         }
 
+    }
+
+
+    private fun pickImage() {
 
         val pickMediaPhoto =
-            registerForActivityResult(ActivityResultContracts.PickVisualMedia()){ uri ->
-                if (uri != null){
+            registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                if (uri != null) {
                     val options = RequestOptions().centerCrop()//опции для Glide
                     val radiusInDP = 8f
                     val radiusInPX = TypedValue.applyDimension(
@@ -128,120 +251,10 @@ if (ur1 != null || title != "" || text != ""){
 
             }
         binding.imMines.setOnClickListener {
-pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            pickMediaPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-        binding.btSave.setOnClickListener {
-            snackBar()
-            savePlayList()
-            findNavController().popBackStack()
-        }
-
-
     }
-
-
-    private fun savePlayList(){
-        if (trackId.isNotBlank()&& trackId!="null"){
-            Log.d("id", trackId)
-            val playList = PlayList(null, title.toString(), text.toString(), ur1.toString(),trackId, 1)
-            viewModel.savePlayList(playList)
-
-        } else {
-            val playList =
-                PlayList(null, title.toString(), text.toString(), ur1.toString(), trackId, 0)
-            viewModel.savePlayList(playList)
-        }
-    }
-
-
-    private fun saveImageToPrivateStorage(uri: Uri) {
-        //создаём экземпляр класса File, который указывает на нужный каталог
-        val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), Constants.playlistAlbum)
-        //создаем каталог, если он не создан
-        if (!filePath.exists()){
-            filePath.mkdirs()
-        }
-        //создаём экземпляр класса File, который указывает на файл внутри каталога
-        val file = File(filePath,  "${UUID.randomUUID()}.jpg")
-        ur1 = file.toUri()
-        // создаём входящий поток байтов из выбранной картинки
-        val inputStream = requireActivity().contentResolver.openInputStream(uri)
-        // создаём исходящий поток байтов в созданный выше файл
-        val outputStream = FileOutputStream(file)
-        // записываем картинку с помощью BitmapFactory
-        BitmapFactory
-            .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
-    }
-
-    private fun showDialog(){
-        DialogManager.showDialog(requireContext(), R.string.title, R.string.text, R.string.positive, R.string.negative, object :DialogManager.Listener{
-            override fun onClick() {
-
-                findNavController().popBackStack()
-            }
-
-        })
-    }
-
-
-
-    private fun watcherForTitle(){
-        binding.edPlaylistName.addTextChangedListener(object: TextWatcher{
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (p0.isNullOrEmpty()){
-                    binding.btSave.isEnabled=false
-                } else binding.btSave.isEnabled = true
-                title = p0.toString()
-
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
-    }
-
-    private fun snackBar(){
-Snackbar.make(requireView(), "Плейлист $title cоздан", Snackbar.LENGTH_SHORT)
-
-    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.reverse_primary_background))
-    .setTextColor(ContextCompat.getColor(requireContext(), R.color.primary_background))
-    .show()
-    }
-
-    private fun watcherForBody(){
-        binding.edAboutPlaylist.addTextChangedListener(object: TextWatcher{
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-    text = p0.toString()
-
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(playListName, title.toString())
-        outState.putString(playListBody, text.toString())
-        outState.putString(playListImage, ur1.toString())
-    }
-
-
-
-
-
-
 
 
 }

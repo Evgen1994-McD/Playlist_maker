@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.media
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Environment
 import android.util.TypedValue
 import android.view.View
@@ -12,19 +13,21 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.PlayListItemBinding
 import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
 import com.example.playlistmaker.utils.Constants
+import com.example.playlistmaker.utils.declineNoun
 import java.io.File
 
 
-class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
-    RecyclerView.ViewHolder(itemView) { // Добавили листенер в конструктор класса
+class PlayListViewHolder(private val binding: PlayListItemBinding, listener: onPlaylistClickListener) :
+    RecyclerView.ViewHolder(binding.root) { // Добавили листенер в конструктор класса
 
-   private val playListName: TextView = itemView.findViewById(R.id.tv_name)
-   private val playListSize: TextView = itemView.findViewById(R.id.tv_size)
-   private val playListImage: ImageView = itemView.findViewById(R.id.im_playlist_image)
+   private val playListName = binding.tvName
+   private val playListSize = binding.tvSize
+   private val playListImage=binding.imPlaylistImage
     private val radiusInDP = 8f
     private val radiusInPX = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
@@ -36,7 +39,6 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
         .transform(RoundedCorners(radiusInPX.toInt()))
 
 
-//    private val radiusInPX = radiusInDP * densityMultiplier
 
 
 
@@ -45,11 +47,19 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
     @SuppressLint("CheckResult")
     fun bind(playList: PlayList) {
         playListName.text = playList.name
-        playListSize.text = playList.size.toString()+" треков"
+
+        val oneForm = binding.tvSize.context.getString(R.string.track1)
+        val twoForm = binding.tvSize.context.getString(R.string.track3)
+        val fiveAndMoreForm = binding.tvSize.context.getString(R.string.track2)
+
+        playListSize.text = declineNoun(playList.size, oneForm, twoForm, fiveAndMoreForm)
 
 
-    Glide.with(itemView.context)
-        .load(playList.image?.toUri())  //У меня там просто имя.jpg - это не ссылка, переделать
+
+
+
+    Glide.with(playListImage.context)
+        .load(playList.image?.toUri())
         .apply(options)
         .placeholder(R.drawable.ic_placeholder_45)
         .error(R.drawable.ic_placeholder_45)

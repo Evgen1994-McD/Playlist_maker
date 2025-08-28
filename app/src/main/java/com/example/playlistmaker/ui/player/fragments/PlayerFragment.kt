@@ -29,13 +29,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class PlayerFragment : Fragment() {
-private lateinit var adapter: PlayListAdapter
-private lateinit var currentTrackId: String
+    private lateinit var adapter: PlayListAdapter
+    private lateinit var currentTrackId: String
     private lateinit var binding: FragmentPlayerBinding // делаю байдинг
 
     private val viewModel: PlayerViewModel by viewModel { parametersOf(getTrackFromArguments()) }
-    private lateinit var bottomSheetContainer:LinearLayout
-private lateinit var bottomSheetBehavior:BottomSheetBehavior<LinearLayout>
+    private lateinit var bottomSheetContainer: LinearLayout
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     /*
     by ViewModel привяжет вьюмодел к циклу жизни фрагмента
      */
@@ -65,75 +65,17 @@ private lateinit var bottomSheetBehavior:BottomSheetBehavior<LinearLayout>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
-
-
-
-val bottomView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        binding.toolbar.setNavigationOnClickListener {
-            findNavController().popBackStack()
-        }
+        clicker()
 
         viewModel.getAllPlaylist()
-displayPlayLists()
+        displayPlayLists()
 
 
-      bottomSheetContainer = view.findViewById<LinearLayout>(R.id.bottom_sheet)
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
-
-
-        binding.addOnPlaylist.setOnClickListener {
-            binding.bottomSheet.isVisible = true
-            binding.overlay.isVisible = true
-            bottomView.isVisible = false
-
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-        }
-
-        binding.overlay.setOnClickListener {
-bottomSheetBehavior.state= BottomSheetBehavior.STATE_HIDDEN
-        }
-
-        binding.btNewPlaylist.setOnClickListener {
-viewModel.insertTrackToNewPlaylist()
-            currentTrackId = viewModel.getLiveData.value?.trackId.toString()
-            Log.d("player", currentTrackId)
-            val bundle = Bundle().apply {
-                putString("track_id", currentTrackId )
-            }
-            findNavController().navigate(R.id.addPlayListFragment, bundle)
-        }
         /*
         Сохраняю трек в таблицу треков, далее бандлом отправляю Id на фрагмент создания плейлиста,
         Там запишу этот Id в результате создания нового плейлиста
          */
 
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                // newState — новое состояние BottomSheet
-                when (newState) {
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-
-                        // загружаем рекламный баннер
-                    }
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                        // останавливаем трейлер
-                    }
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                        binding.overlay.isVisible = false
-                        bottomView.isVisible = true
-
-                        // возобновляем трейлер
-                    }
-                    else -> {
-                        // Остальные состояния не обрабатываем
-                    }
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-        })
 
 
 
@@ -142,16 +84,6 @@ viewModel.insertTrackToNewPlaylist()
         viewModel.intentGetExtraBind()
 
         composeTrack()
-
-
-        binding.play.setOnClickListener {
-            viewModel.mediaCommander(PlayerCommand.Play)
-            viewModel.startUpdateProgress()
-        }
-        binding.pause.setOnClickListener {
-            viewModel.mediaCommander(PlayerCommand.Pause)
-            viewModel.stopUpdateProgress()
-        }
 
 
     }
@@ -223,6 +155,82 @@ viewModel.insertTrackToNewPlaylist()
         }
     }
 
+    private fun clicker() {
+
+
+        val bottomView =
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+
+
+        binding.addOnPlaylist.setOnClickListener {
+            binding.bottomSheet.isVisible = true
+            binding.overlay.isVisible = true
+            bottomView.isVisible = false
+
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        }
+
+        binding.overlay.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        binding.btNewPlaylist.setOnClickListener {
+            currentTrackId = viewModel.getLiveData.value?.trackId.toString()
+
+            findNavController().navigate(R.id.addPlayListFragment)
+        }
+
+        binding.play.setOnClickListener {
+            viewModel.mediaCommander(PlayerCommand.Play)
+            viewModel.startUpdateProgress()
+        }
+        binding.pause.setOnClickListener {
+            viewModel.mediaCommander(PlayerCommand.Pause)
+            viewModel.stopUpdateProgress()
+        }
+
+
+        bottomSheetContainer = binding.bottomSheet
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
+
+
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // newState — новое состояние BottomSheet
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+
+                        // загружаем рекламный баннер
+                    }
+
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        // останавливаем трейлер
+                    }
+
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.isVisible = false
+                        bottomView.isVisible = true
+
+                        // возобновляем трейлер
+                    }
+
+                    else -> {
+                        // Остальные состояния не обрабатываем
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+
+    }
+
 
     private fun View.makeGone() {
         this.visibility = View.GONE // функция для вью гон
@@ -248,19 +256,18 @@ viewModel.insertTrackToNewPlaylist()
         super.onDestroy()
 
         viewModel.reliesePlayer()
-viewModel.getPlaylistsLiveData.removeObservers(this)
+        viewModel.getPlaylistsLiveData.removeObservers(this)
         viewModel.getLiveData.removeObservers(this) // отключил обсерверы от медиа
 
     }
 
 
-    private fun saveAndDeleteFavoriteTrack(isLike:Boolean){
+    private fun saveAndDeleteFavoriteTrack(isLike: Boolean) {
         if (isLike) {
             binding.dislike.visibility = View.VISIBLE
             binding.like.visibility = View.INVISIBLE
 
-        } else
-        {
+        } else {
             binding.dislike.visibility = View.INVISIBLE
             binding.like.visibility = View.VISIBLE
         }
@@ -275,10 +282,10 @@ viewModel.getPlaylistsLiveData.removeObservers(this)
 
         }
 
-  binding.dislike.setOnClickListener {
-      binding.like.visibility = View.VISIBLE
-      binding.dislike.visibility = View.INVISIBLE
-      viewModel.deleteTrackFromFavorite()
+        binding.dislike.setOnClickListener {
+            binding.like.visibility = View.VISIBLE
+            binding.dislike.visibility = View.INVISIBLE
+            viewModel.deleteTrackFromFavorite()
 
         }
 
@@ -299,17 +306,17 @@ viewModel.getPlaylistsLiveData.removeObservers(this)
 
                     // Подождите обновления состояния и отобразите SnackBar
 
-                        viewModel.getLiveData.observe(viewLifecycleOwner) { state ->
-                            if (state.isSuccess) {
-                                Snackbar.make(
-                                    requireView(),
-                                    getString(R.string.add_in) + " ${playList.name}",
-                                    Snackbar.LENGTH_SHORT
-                                ).show()
+                    viewModel.getLiveData.observe(viewLifecycleOwner) { state ->
+                        if (state.isSuccess) {
+                            Snackbar.make(
+                                requireView(),
+                                getString(R.string.add_in) + " ${playList.name}",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
 
-                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                            }
+                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                         }
+                    }
 
                 }
             }
@@ -323,7 +330,7 @@ viewModel.getPlaylistsLiveData.removeObservers(this)
         }
     }
 
-    }
+}
 
 
 

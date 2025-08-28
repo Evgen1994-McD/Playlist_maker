@@ -79,10 +79,7 @@ private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
         }
     }
 
-    fun insertTrackToNewPlaylist()=viewModelScope.launch {
-        playlistInteractor.insertTrackInTrackTable(trackFromArgs)
 
-    }
 
 
     fun addListeners() {

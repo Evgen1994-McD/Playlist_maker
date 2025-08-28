@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.PlayListItemBinding
 import com.example.playlistmaker.domain.models.PlayList
 
 
@@ -15,16 +16,19 @@ class PlayListAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayListViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.play_list_item, parent, false)
-        return PlayListViewHolder(view, listener)
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = PlayListItemBinding.inflate(inflater, parent, false)
+
+        return PlayListViewHolder(binding, listener)
     }
 
     override fun onBindViewHolder(holder: PlayListViewHolder, position: Int) {
         holder.itemView.setOnClickListener {
-            listener.onPlaylistClicked(playLists!![position])
+            val playlist = playLists?.get(position)
+            playlist?.let { listener.onPlaylistClicked(it) }
         }
-
-        holder.bind(playLists!![position])
+        val playlist = playLists?.get(position)
+playlist?.let { holder.bind(it) }
     }
 
     override fun getItemCount(): Int {

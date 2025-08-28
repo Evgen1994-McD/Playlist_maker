@@ -65,6 +65,8 @@
     <string name="playlist_name_hint" translatable="false">Название*</string>
     <string name="playlist_body_hint" translatable="false">Описание</string>
     <string name="playlist_bt_text" translatable="false">Создать</string>
+    <string name="playlist" translatable="false">Плейлист</string>
+    <string name="created" translatable="false">создан</string>
 
 <!--   Toolbar-->
     <string name="search_toolbar" translatable="false">Поиск</string>
@@ -72,4 +74,8 @@
 
 
 
+<!--    Склонение трека-->
+    <string name="track1" translatable="false">трек</string>
+    <string name="track2" translatable="false">треков</string>
+    <string name="track3" translatable="false">трека</string>
 </resources>

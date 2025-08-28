@@ -15,6 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.PlayList
+import com.example.playlistmaker.utils.declineNoun
 import java.io.File
 
 
@@ -32,7 +33,6 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
         radiusInDP,
         itemView.context.resources.displayMetrics
     )
-//    private val radiusInPX = radiusInDP * densityMultiplier
 
 
 
@@ -40,8 +40,13 @@ class PlayListViewHolder(itemView: View, listener: onPlaylistClickListener) :
 
     @SuppressLint("CheckResult")
     fun bind(playList: PlayList) {
+        val oneForm = itemView.context.getString(R.string.track1)
+        val twoForm = itemView.context.getString(R.string.track3)
+        val fiveAndMoreForm =itemView.context.getString(R.string.track2)
+
+        playListSize.text = declineNoun(playList.size, oneForm, twoForm, fiveAndMoreForm)
         playListName.text = playList.name
-        playListSize.text = playList.size.toString() + " треков"
+
 
 
 
