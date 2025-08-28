@@ -233,6 +233,39 @@
 
 
 
+    <style name="baseDayAndNightTextStyle">
+        <item name="android:textColor"> @color/black</item>
+<item name="hintTextColor">@color/black</item>
+    </style>
+
+
+    <style name="reversedBaseDayAndNightTextStyle">
+        <item name="android:textColor"> @color/white</item>
+
+    </style>
+
+
+    <style name="input_edit_text_style">
+        <item name="android:ems">10</item>
+        <item name="maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:inputType">text</item>
+        <item name="android:textColor">@color/reverse_primary_background</item>
+
+    </style>
+
+    <style name="my_input_layout_style" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+<item name="boxStrokeColor">@drawable/add_playlist_color_selector</item>
+<item name="cursorColor">@drawable/add_playlist_text_color</item>
+<item name="hintTextColor">@drawable/add_playlist_text_color</item>
+<item name="android:textColorHint">@drawable/add_playlist_text_color</item>
+<item name="boxStrokeWidth">1dp</item>
+
+
+    </style>
+
+
+
 </resources>
 
 

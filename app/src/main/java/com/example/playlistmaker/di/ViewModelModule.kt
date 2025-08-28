@@ -1,7 +1,7 @@
 package com.example.playlistmaker.di
 
 import com.example.playlistmaker.ui.main.viewModel.MainViewModel
-import com.example.playlistmaker.ui.media.fragments.PlaylistFragment
+import com.example.playlistmaker.ui.media.viewmodel.AddPlayListViewModel
 import com.example.playlistmaker.ui.media.viewmodel.FavoriteFragmentViewModel
 import com.example.playlistmaker.ui.media.viewmodel.MediaFragmentViewModel
 import com.example.playlistmaker.ui.media.viewmodel.PlaylistFragmentViewModel
@@ -22,9 +22,6 @@ val viewModelModule = module {
         FavoriteFragmentViewModel(get())
     }
 
-    viewModel { // описать получение юз кейсов в интерактор модуле
-        PlaylistFragmentViewModel()
-    }
 
 
 //Ниже рефакторинг на фрагмент
@@ -40,8 +37,9 @@ val viewModelModule = module {
             get(),
             get(),
             params.get(),
-            get()// в качестве парамс тут интент передаю в активити
-        )
+            get(),// в качестве парамс тут интент передаю в активити
+        get()
+            )
     }
 
 
@@ -56,6 +54,14 @@ val viewModelModule = module {
         SettingsViewModel(get(), get(), get(), get())
     }
 
+
+    viewModel {
+        PlaylistFragmentViewModel( get())
+    }
+
+    viewModel {
+        AddPlayListViewModel( get())
+    }
 
 }
 

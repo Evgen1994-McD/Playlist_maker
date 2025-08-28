@@ -20,7 +20,7 @@ class TrackViewHolder(itemView: View, listener: OnTrackClickListener) :
     private val trackName: TextView = itemView.findViewById(R.id.track_name)
     private val artistName: TextView = itemView.findViewById(R.id.track_info)
     private val trackTime: TextView = itemView.findViewById(R.id.track_time)
-    private val trackImage: ImageView = itemView.findViewById(R.id.trackImage)
+    private val trackImage: ImageView = itemView.findViewById(R.id.track_image)
     private val options = RequestOptions().centerCrop()
     private val radiusInDP = 2f
     private val densityMultiplier = TypedValue.applyDimension(

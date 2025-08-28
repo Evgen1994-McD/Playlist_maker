@@ -6,11 +6,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.copy
 import com.example.playlistmaker.domain.db.FavoriteInteractor
+import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.player.MediaInteractor
+import com.example.playlistmaker.domain.playlists.PlaylistInteractor
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
@@ -20,7 +24,8 @@ import kotlinx.coroutines.launch
 class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteractor,
                                private val mediaInteractor: MediaInteractor,
     private val trackFromArgs: Track,
-    private val myLikedTracksInteractor:FavoriteInteractor
+    private val myLikedTracksInteractor:FavoriteInteractor,
+    private val playlistInteractor: PlaylistInteractor
 ) : ViewModel(){
     private var timerJob :Job? = null
 
@@ -32,6 +37,10 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
 
 
 
+private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
+
+    val getPlaylistsLiveData : LiveData<List<PlayList>> get() = mutablePlaylistLiveData
+
     private val mutableMediaScreen = MutableLiveData(
         PlayerScreenState()
     )
@@ -40,6 +49,35 @@ class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteract
     val getLiveData: LiveData<PlayerScreenState> get() = mutableMediaScreen
 
 
+    fun getAllPlaylist()=viewModelScope.launch{
+     mutablePlaylistLiveData.value =   playlistInteractor.getAllPlayList()
+    }
+
+
+
+
+    fun compareTracksIds(playList: PlayList): Boolean{
+        val playlistIds = playList.tracksId.split(",")
+        val currentTrackId = trackFromArgs.trackId
+        return playlistIds.contains(currentTrackId)
+
+    }
+
+    fun insertTrackInPlaylistsTable(playList: PlayList) = viewModelScope.launch {
+       playlistInteractor.insertTrackInTrackTable(trackFromArgs)
+        val updatedPlaylist = playList.copy(tracksId = "${playList.tracksId},${trackFromArgs.trackId}", size = playList.size + 1)
+        val playlistForSave = playlistInteractor.insertPlayList(updatedPlaylist)
+
+        val allPlaylists = playlistInteractor.getAllPlayList()
+        mutablePlaylistLiveData.postValue(allPlaylists)
+
+        if (playlistForSave >= 0) {
+         mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(isSuccess = true))
+        } else {
+            mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(isSuccess = false))
+
+        }
+    }
 
 
 
@@ -125,6 +163,7 @@ timerJob?.cancel()
 
         if (!trackFromArgs?.trackName
                 .isNullOrEmpty()) {
+
 controlIsLike(trackFromArgs)
             val trackName = trackFromArgs.trackName
             val previewUrl = trackFromArgs.previewUrl
@@ -135,6 +174,7 @@ controlIsLike(trackFromArgs)
             val country = trackFromArgs.country
             val relieseDate = trackFromArgs.releaseDate
             val artworkUrl100 = trackFromArgs.artworkUrl100
+            val trackId = trackFromArgs.trackId
 
             if (trackFromArgs.collectionName
                     ?.isNullOrEmpty() == true || trackFromArgs.collectionName
@@ -159,6 +199,7 @@ controlIsLike(trackFromArgs)
                     artworkUrl100 = artworkUrl100,
                     releaseDate = relieseDate,
                     country = country,
+                    trackId = trackId
                 )
 
 
@@ -195,6 +236,7 @@ controlIsLike(trackFromArgs)
             val country = track.country
             val relieseDate = track.releaseDate
             val artworkUrl100 = track.artworkUrl100
+            val trackId = track.trackId
 
             val previewUrl = track.previewUrl
             mediaInteractor.preparePlayer(previewUrl)
@@ -206,17 +248,21 @@ controlIsLike(trackFromArgs)
                 country = country,
                 releaseDate = relieseDate,
                 artworkUrl100 = artworkUrl100,
+                trackId = trackId
             )
 
         }
     }
 
     fun saveTrackToFavorite()= viewModelScope.launch{
+        mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isLike = true)
+
   myLikedTracksInteractor.saveTrackToFavorite(trackFromArgs)
 
     }
     fun deleteTrackFromFavorite()= viewModelScope.launch{
         myLikedTracksInteractor.deleteTrackFromFavorite(trackFromArgs)
+        mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isLike = false)
 
     }
 

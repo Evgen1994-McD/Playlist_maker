@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_mediaFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_mediaFragment_to_addPlayListFragment"
+            app:destination="@id/addPlayListFragment" />
     </fragment>
     <fragment
         android:id="@+id/playerFragment"
@@ -61,4 +64,9 @@
         tools:layout="@layout/fragment_settings"
 
         />
+    <fragment
+        android:id="@+id/addPlayListFragment"
+        android:name="com.example.playlistmaker.ui.media.fragments.AddPlayListFragment"
+        android:label="fragment_add_play_list"
+        tools:layout="@layout/fragment_add_play_list" />
 </navigation>

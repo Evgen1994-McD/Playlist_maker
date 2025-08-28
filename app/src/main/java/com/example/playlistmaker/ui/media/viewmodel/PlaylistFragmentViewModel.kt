@@ -3,17 +3,29 @@ package com.example.playlistmaker.ui.media.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.domain.settings.SwitchThemeUseCase
+import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.models.PlayList
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.playlists.PlaylistInteractor
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class PlaylistFragmentViewModel():ViewModel() {
+class PlaylistFragmentViewModel(private val playlistInteractor: PlaylistInteractor):ViewModel() {
 
-    private val favoriteTrackList = MutableLiveData(false)
+    private val allPlayListsData = MutableLiveData<List<PlayList>>()
+    private val playListTracksLiveData = MutableLiveData<List<Track>>()
 
-    val getLiveData : LiveData<Boolean> get() = favoriteTrackList
-    /*
-    Это временная лайв дата чтобы отобразить плейсхолдеры, потом переделаю
-    при появлении задания на реализацию логики.
-     */
+    val getLiveData : LiveData<List<PlayList>> get() = allPlayListsData
+    val getPlaylistTracksLiveData : LiveData<List<Track>> get() = playListTracksLiveData
+
+
+     fun getAllPlaylists() = viewModelScope.launch{
+     allPlayListsData.value =  playlistInteractor.getAllPlayList()
+    }
+
+    fun getTracksOfPlaylist(ids: String)=viewModelScope.launch{
+        playListTracksLiveData.value = playlistInteractor.getTrackOfPlaylistById(ids)
+    }
 
 
 }

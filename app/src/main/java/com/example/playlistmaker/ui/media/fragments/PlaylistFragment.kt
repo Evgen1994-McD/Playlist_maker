@@ -1,20 +1,33 @@
 package com.example.playlistmaker.ui.media.fragments
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistFragmentBinding
+import com.example.playlistmaker.domain.models.PlayList
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.media.PlayListAdapter
+import com.example.playlistmaker.ui.media.fragments.FavoriteTrakListFragment
+import com.example.playlistmaker.ui.media.onPlaylistClickListener
 import com.example.playlistmaker.ui.media.viewmodel.PlaylistFragmentViewModel
+import com.example.playlistmaker.ui.search.adapters.TrackAdapter
+import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
-class PlaylistFragment : Fragment() {
+class PlaylistFragment : Fragment(), onPlaylistClickListener {
     private lateinit var binding: PlaylistFragmentBinding
     private val viewModel: PlaylistFragmentViewModel by activityViewModel()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -32,24 +45,17 @@ class PlaylistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+observeForPlayLists()
+
+        viewModel.getAllPlaylists()
 
 
 
 
-        showPlaylists()
-        viewModel.getLiveData.observe(viewLifecycleOwner) { new ->
-            if (new == false) {
-                binding.phNtsh2.makeVisible()
-                binding.msgTxtBottom.makeVisible()
-            } else {
-                with(binding) {
-                    phNtsh2.makeVisible()
-                    msgTxtBottom.makeVisible()
-                }
-            }
-            /*
-            тут будет логика, это заготовка
-             */
+
+
+        binding.btCreatePlaylist.setOnClickListener {
+            findNavController().navigate(R.id.action_mediaFragment_to_addPlayListFragment)
         }
 
     }
@@ -60,13 +66,74 @@ class PlaylistFragment : Fragment() {
 
     }
 
-    private fun showPlaylists() {
+    private fun showPlaylists(playLists: List<PlayList>) {
         with(binding) {
-            phNtsh2.makeVisible()
-            msgTxtBottom.makeVisible()
-            btCreatePlaylist.makeVisible()
+
+                rcView.layoutManager = GridLayoutManager(requireContext(), 2)
+                rcView.adapter = PlayListAdapter(playLists, this@PlaylistFragment)
+                rcView.makeVisible()
+            phNtsh2.makeInvisible()
+            msgTxtBottom.makeInvisible()
+            rcView.makeVisible()
+
         }
 
+    }
+
+    private fun observeForPlaylistTracks(){
+        viewModel.getPlaylistTracksLiveData.observe(viewLifecycleOwner){ tracks ->
+            showTracks(tracks)
+
+        }
+    }
+
+
+    private fun showTracks(tracks: List<Track>) {
+        with(binding) {
+val reversedTracks = tracks.reversed()
+            rcView.layoutManager = LinearLayoutManager(requireContext())
+            rcView.adapter = TrackAdapter(reversedTracks, object :OnTrackClickListener{
+                override fun onTrackClicked(track: Track) {
+               getTrackIntentAndStart(track, requireContext())
+                }
+            })
+            rcView.makeVisible()
+            phNtsh2.makeInvisible()
+            msgTxtBottom.makeInvisible()
+            rcView.makeVisible()
+            btCreatePlaylist.makeInvisible()
+            tvPlaylistName.makeVisible()
+            btBack.makeVisible()
+            btBack.setOnClickListener {
+             observeForPlayLists()
+                btBack.makeGone()
+                tvPlaylistName.makeInvisible()
+                btCreatePlaylist.makeVisible()
+
+            }
+
+
+
+        }
+
+    }
+
+
+    private fun observeForPlayLists(){
+        viewModel.getLiveData.observe(viewLifecycleOwner) { playlists ->
+            if (playlists.isNullOrEmpty()) {
+                binding.phNtsh2.makeVisible()
+                binding.msgTxtBottom.makeVisible()
+                binding.rcView.makeInvisible()
+            } else {
+
+                   showPlaylists(playlists)
+
+            }
+            /*
+            тут будет логика, это заготовка
+             */
+        }
     }
 
 
@@ -82,4 +149,27 @@ class PlaylistFragment : Fragment() {
         this.visibility = View.INVISIBLE // функция для вью инвизибл
     }
 
+    @SuppressLint("SetTextI18n")
+    override fun onPlaylistClicked(playList: PlayList) {
+       try {
+           viewModel.getTracksOfPlaylist(playList.tracksId)
+           binding.tvPlaylistName.text = getString(R.string.playlist_content_title)+ "[ ${playList.name}] "
+       } catch(e: Exception){
+       }
+      observeForPlaylistTracks()
+    }
+
+    private fun getTrackIntentAndStart(track: Track, context: Context) {
+        val bundle = Bundle().apply {
+            putSerializable("track", track)
+
+        }
+        findNavController().navigate(R.id.playerFragment, bundle)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        observeForPlayLists()
+    }
 }

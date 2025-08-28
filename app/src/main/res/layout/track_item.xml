@@ -11,7 +11,7 @@
 
 
     <ImageView
-        android:id="@+id/trackImage"
+        android:id="@+id/track_image"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="13dp"
         android:layout_marginVertical="8dp"

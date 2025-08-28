@@ -9,6 +9,7 @@ import com.example.playlistmaker.data.db.MainDb
 import com.example.playlistmaker.data.search.network.ITunesApi
 import com.example.playlistmaker.data.search.network.NetworkClient
 import com.example.playlistmaker.data.search.network.RetrofitNetworkClient
+import com.example.playlistmaker.domain.playlists.PlaylistRepository
 import com.example.playlistmaker.utils.Constants
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
@@ -44,7 +45,6 @@ val dataModule = module {
         Room.databaseBuilder(androidContext(), MainDb::class.java, "playlist.db")
             .build()
     }
-
 
 
 

@@ -36,11 +36,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_9
+        targetCompatibility = JavaVersion.VERSION_1_9
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "9"
     }
 }
 
@@ -53,7 +53,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
 
 
-
+// Или для Coroutine Flows
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
