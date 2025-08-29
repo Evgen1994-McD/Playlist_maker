@@ -20,9 +20,7 @@ class PlaylistRepositoryImpl(private val mainDb: MainDb,
     }
     override suspend fun getTracksOfPlaylistById(ids: String) : List<Track>{
         val soloTrackId = ids.split(",")
-        Log.d("playlist", "$ids")
 
-        Log.d("playlist", "$soloTrackId")
         val tempTrackEntityList = ArrayList<PlayListTracksEntity>()
 
             soloTrackId.forEach { trackId ->

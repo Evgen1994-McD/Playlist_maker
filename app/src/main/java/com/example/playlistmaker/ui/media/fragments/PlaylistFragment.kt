@@ -28,6 +28,18 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 class PlaylistFragment : Fragment(), onPlaylistClickListener {
     private lateinit var binding: PlaylistFragmentBinding
     private val viewModel: PlaylistFragmentViewModel by activityViewModel()
+
+    companion object{
+        fun newInstance() = PlaylistFragment()
+
+
+        const val ID = "tracksIds"
+        val NAME =     "name"
+        const val ABOUT =   "about"
+        const val IMAGE =  "image"
+        const val SIZE =  "size"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -60,11 +72,7 @@ observeForPlayLists()
 
     }
 
-    companion object {
 
-        fun newInstance() = PlaylistFragment()
-
-    }
 
     private fun showPlaylists(playLists: List<PlayList>) {
         with(binding) {
@@ -80,43 +88,8 @@ observeForPlayLists()
 
     }
 
-    private fun observeForPlaylistTracks(){
-        viewModel.getPlaylistTracksLiveData.observe(viewLifecycleOwner){ tracks ->
-            showTracks(tracks)
-
-        }
-    }
 
 
-    private fun showTracks(tracks: List<Track>) {
-        with(binding) {
-val reversedTracks = tracks.reversed()
-            rcView.layoutManager = LinearLayoutManager(requireContext())
-            rcView.adapter = TrackAdapter(reversedTracks, object :OnTrackClickListener{
-                override fun onTrackClicked(track: Track) {
-               getTrackIntentAndStart(track, requireContext())
-                }
-            })
-            rcView.makeVisible()
-            phNtsh2.makeInvisible()
-            msgTxtBottom.makeInvisible()
-            rcView.makeVisible()
-            btCreatePlaylist.makeInvisible()
-            tvPlaylistName.makeVisible()
-            btBack.makeVisible()
-            btBack.setOnClickListener {
-             observeForPlayLists()
-                btBack.makeGone()
-                tvPlaylistName.makeInvisible()
-                btCreatePlaylist.makeVisible()
-
-            }
-
-
-
-        }
-
-    }
 
 
     private fun observeForPlayLists(){
@@ -152,21 +125,19 @@ val reversedTracks = tracks.reversed()
     @SuppressLint("SetTextI18n")
     override fun onPlaylistClicked(playList: PlayList) {
        try {
-           viewModel.getTracksOfPlaylist(playList.tracksId)
-           binding.tvPlaylistName.text = getString(R.string.playlist_content_title)+ "[ ${playList.name}] "
+           val bundle = Bundle().apply {
+               putString(ID, playList.tracksId)
+               putString(NAME, playList.name)
+               putString(ABOUT, playList.about)
+               putString(IMAGE, playList.image)
+               putInt(SIZE, playList.size)
+           }
+           findNavController().navigate(R.id.playlistTracksFragment, bundle)
        } catch(e: Exception){
        }
-      observeForPlaylistTracks()
     }
 
-    private fun getTrackIntentAndStart(track: Track, context: Context) {
-        val bundle = Bundle().apply {
-            putSerializable("track", track)
 
-        }
-        findNavController().navigate(R.id.playerFragment, bundle)
-
-    }
 
     override fun onResume() {
         super.onResume()
