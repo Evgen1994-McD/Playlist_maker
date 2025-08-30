@@ -40,6 +40,7 @@ companion object{
     private var about = ""
     private var image = ""
     private var size: Int? = 0
+    private var summTime = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +67,7 @@ getArgs()
 
 
         observeForPlaylistTracks()
+        observeForPlaylistTime()
         viewModel.getTracksOfPlaylist(tracksIds)
 
     }
@@ -91,6 +93,18 @@ getArgs()
     private fun observeForPlaylistTracks(){
         viewModel.getPlaylistTracksLiveData.observe(viewLifecycleOwner){ tracks ->
             showTracks(tracks)
+        }
+    }
+    private fun observeForPlaylistTime(){
+        viewModel.getTimeLiveData.observe(viewLifecycleOwner) { time->
+            val oneForm = getString(R.string.minute1)
+            val twoForm =getString(R.string.minute2)
+            val fiveAndMoreForm =getString(R.string.minute3)
+
+            binding.tvTime.text = declineNoun(time.toInt()?:0, oneForm, twoForm, fiveAndMoreForm)
+
+
+
 
         }
     }
@@ -128,11 +142,9 @@ getArgs()
             .centerCrop()
             .transform().centerCrop()
 
-
-
-
         tvName1.text = name
         tvText.text = about
+        tvTime.text = summTime
 
         val oneForm = getString(R.string.track1)
         val twoForm =getString(R.string.track3)

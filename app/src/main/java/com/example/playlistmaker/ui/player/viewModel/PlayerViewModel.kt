@@ -102,7 +102,6 @@ private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
     }
 
     private fun onPlayComplete() { // это тоже
-        Log.d("MyLog", "Проигрывание завершено")
         stopUpdateProgress()
 
         mutableMediaScreen.value?.let {
@@ -131,7 +130,6 @@ timerJob?.cancel()
 
                 }
             } catch (ex: CancellationException){
-                Log.d("MyLog", "Корутина Отменена")
             }
 
         }

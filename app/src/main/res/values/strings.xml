@@ -58,6 +58,11 @@
     <string name="playlist_content_title" translatable="false">Содержание плейлиста</string>
     <string name="playlist_size" translatable="false"> треков</string>
 
+<!--    Склонение минут-->
+    <string name="minute1" translatable="false">минута</string>
+    <string name="minute2" translatable="false">минуты</string>
+    <string name="minute3" translatable="false">минут</string>
+
 <!--    PlayerFragment(music)-->
     <string name="tv_add_in_playlist" translatable="false">Добавить в плейлист</string>
 
