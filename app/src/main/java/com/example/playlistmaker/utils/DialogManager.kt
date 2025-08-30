@@ -3,6 +3,7 @@ package com.example.playlistmaker.utils
 import android.app.Dialog
 import android.content.Context
 import android.view.ContextThemeWrapper
+import android.view.View
 import com.example.playlistmaker.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -13,7 +14,9 @@ object DialogManager {
         mId: Int,
         positiveId:Int,
         negativeId:Int,
-        listener: Listener,
+        overlay:View?,
+        listener: Listener
+
     ) {  // передаём контекст, mId - messageId ( это сообщение) - Так как ресурсы у нас это ИНТ!!!
         val builder = MaterialAlertDialogBuilder(context)
          // мы делаем Диалоговое окно при попытке сбросить. ПОзитив баттон - согласиться, негатив - отменить
@@ -28,8 +31,15 @@ object DialogManager {
 
         }
         builder.setNegativeButton(negativeId) { _, _ ->
+            overlay?.visibility = View.GONE
+
+
             dialog?.dismiss()  // Просто отменяем диалог если не согласны
         }
+        dialog?.setOnDismissListener {
+            overlay?.visibility = View.GONE
+        }
+
         dialog = builder.create()
         dialog.show() // показываем диалог, иначе его не будет видно
 

@@ -126,6 +126,7 @@ observeForPlayLists()
     override fun onPlaylistClicked(playList: PlayList) {
        try {
            val bundle = Bundle().apply {
+               playList.listId?.toInt()?.let { putInt("ID1", it) }
                putString(ID, playList.tracksId)
                putString(NAME, playList.name)
                putString(ABOUT, playList.about)

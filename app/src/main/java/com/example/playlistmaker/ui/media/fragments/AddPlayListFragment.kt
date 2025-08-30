@@ -46,7 +46,6 @@ class AddPlayListFragment : Fragment() {
     private var ur1: Uri? = null
     private var title: CharSequence? = ""
     private var text: CharSequence? = ""
-    private var trackId: String = ""
     private val viewModel: AddPlayListViewModel by viewModel()
 
     companion object {
@@ -127,6 +126,7 @@ class AddPlayListFragment : Fragment() {
             R.string.text,
             R.string.positive,
             R.string.negative,
+            null,
             object : DialogManager.Listener {
                 override fun onClick() {
 

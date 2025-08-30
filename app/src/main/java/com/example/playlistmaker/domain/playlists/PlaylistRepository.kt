@@ -9,4 +9,5 @@ interface PlaylistRepository {
     suspend fun getAllPlayList(): List<PlayList>
     suspend fun insertTrackInPlaylistTable(track: Track): Long
     suspend fun getTracksOfPlaylistById(ids: String) : List<Track>
+    suspend fun deleteTrackOfPlaylistById(trackId: String)
 }

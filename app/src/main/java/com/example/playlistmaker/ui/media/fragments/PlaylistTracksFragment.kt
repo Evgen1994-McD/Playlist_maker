@@ -16,25 +16,32 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistTracksBinding
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.media.OnItemLongClickListener
+import com.example.playlistmaker.ui.media.PlaylistTrackAdapter
 import com.example.playlistmaker.ui.media.viewmodel.PlaylistTracksViewModel
+import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
+import com.example.playlistmaker.utils.DialogManager
 import com.example.playlistmaker.utils.declineNoun
+import com.example.playlistmaker.utils.getPlaylistIdFromArguments
+import com.example.playlistmaker.utils.getTrackFromArguments
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class PlaylistTracksFragment : Fragment() {
-
-    private val viewModel: PlaylistTracksViewModel by viewModel()
+    private val viewModel: PlaylistTracksViewModel by viewModel(){ parametersOf(getPlaylistIdFromArguments(PLAYLISTID))}
 private lateinit var binding: FragmentPlaylistTracksBinding
 
 companion object{
    const val ID = "tracksIds"
+   const val PLAYLISTID = "ID1"
     val NAME =     "name"
     const val ABOUT =   "about"
     const val IMAGE =  "image"
     const val SIZE =  "size"
 }
-
+private var playlistId = 0
     private var tracksIds = ""
     private var name = ""
     private var about = ""
@@ -73,10 +80,15 @@ getArgs()
     }
 
 
-    private fun clickers(){
-        binding.toolbar.setNavigationOnClickListener {
+    private fun clickers()=with(binding){
+        toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
+
+        overlay.setOnClickListener {
+
+        }
+
 
 
     }
@@ -87,6 +99,8 @@ getArgs()
         about = arguments?.getString(ABOUT).toString()
         image = arguments?.getString(IMAGE).toString()
         size = arguments?.getInt(SIZE)
+
+        playlistId = arguments?.getInt(PLAYLISTID)?.toInt() ?: 0
     }
 
 
@@ -123,10 +137,33 @@ getArgs()
         with(binding) {
             val reversedTracks = tracks.reversed()
             rcView.layoutManager = LinearLayoutManager(requireContext())
-            rcView.adapter = TrackAdapter(reversedTracks, object :OnTrackClickListener{
+            rcView.adapter = PlaylistTrackAdapter(reversedTracks, object :OnTrackClickListener{
                 override fun onTrackClicked(track: Track) {
                     getTrackIntentAndStart(track, requireContext())
                 }
+            }, object : OnItemLongClickListener{
+                override fun onItemLongClick(track: Track) {
+                    overlay.makeVisible()
+                    DialogManager.showDialog(
+                        requireContext(),
+                        R.string.track_dialogue_title,
+                        R.string.track_dialogue_message,
+                        R.string.track_dialogue_positive,
+                            R.string.track_dialogue_negative,
+                        binding.overlay,
+                        object : DialogManager.Listener{
+                            override fun onClick() {
+                                overlay.makeGone()
+                                viewModel.deleteTrackOfPlaylistById(track.trackId)
+                                /*
+                                Удалили трек из плейлиста по Id
+                                 */
+                            }
+
+                        })
+
+                }
+
             })
             rcView.makeVisible()
             rcView.makeVisible()

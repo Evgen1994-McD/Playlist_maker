@@ -15,6 +15,12 @@ class PlaylistRepositoryImpl(private val mainDb: MainDb,
     private val playListDbConvertor: PlayListDbConvertor,
     private val playlistTracksDbConvertor: PlaylistTracksDbConvertor):PlaylistRepository {
 
+    override suspend fun deleteTrackOfPlaylistById(trackId: String){
+        mainDb.playListTracksDao().deleteTrackForId(trackId)
+    }
+
+
+
     override suspend fun insertTrackInPlaylistTable(track: Track): Long{
        return mainDb.playListTracksDao().insertTracks(convertTrackEntityFromTrack(track))
     }

@@ -6,6 +6,11 @@ import com.example.playlistmaker.domain.playlists.PlaylistInteractor
 import com.example.playlistmaker.domain.playlists.PlaylistRepository
 
 class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository):PlaylistInteractor {
+
+    override suspend fun deleteTrackOfPlaylistById(trackId: String){
+        playlistRepository.deleteTrackOfPlaylistById(trackId)
+    }
+
     override suspend fun insertPlayList(playList: PlayList): Long{
        return playlistRepository.insertPlayList(playList)
     }

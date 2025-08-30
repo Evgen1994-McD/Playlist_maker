@@ -83,4 +83,13 @@
     <string name="track1" translatable="false">трек</string>
     <string name="track2" translatable="false">треков</string>
     <string name="track3" translatable="false">трека</string>
+
+
+<!--    Диалог Удаление трека-->
+    <string name="track_dialogue_title" translatable="false">Хотите удалить трек?</string>
+    <string name="track_dialogue_message" translatable="false"> </string>
+    <string name="track_dialogue_positive" translatable="false">Да</string>
+    <string name="track_dialogue_negative" translatable="false">Нет</string>
+
+
 </resources>

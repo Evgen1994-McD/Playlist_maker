@@ -4,6 +4,7 @@ import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.domain.models.Track
 
 interface PlaylistInteractor {
+    suspend fun deleteTrackOfPlaylistById(trackId: String)
     suspend fun insertPlayList(playList: PlayList): Long
     suspend fun deletePlayListForId(listId: String)
     suspend fun getAllPlayList(): List<PlayList>
