@@ -2,7 +2,6 @@ package com.example.playlistmaker.utils
 
 import android.app.Dialog
 import android.content.Context
-import android.view.ContextThemeWrapper
 import android.view.View
 import com.example.playlistmaker.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -18,8 +17,7 @@ object DialogManager {
         listener: Listener
     ) {
         // Оборачиваем контекст с нашим кастомным стилем
-        val styledContext = ContextThemeWrapper(context, R.style.MyDialogTheme)
-        val builder = MaterialAlertDialogBuilder(styledContext)
+        val builder = MaterialAlertDialogBuilder(context, R.style.MyDialog)
 
         var dialog: Dialog? = null
         builder.setTitle(tId)

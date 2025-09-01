@@ -276,9 +276,24 @@
 
     </style>
 
-    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+
+    <style name="MyDialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
         <item name="android:background">@color/white</item>
+        <item name="colorPrimary">@color/blue</item>
+        <item name="android:textSize">@dimen/tv_size_14</item>
+        <item name="android:font">@font/ys_display_regular</item>
+        <item name="colorControlNormal">@color/blue</item>
+        <item name="colorAccent">@color/blue</item>
+        <item name="colorSurface">@color/black</item>
+        <item name="colorOnPrimarySurface">@color/black</item>
+        <item name="android:textColorPrimaryInverse">@color/black</item>
+        <item name="android:textColor">@color/black</item>
+
+
     </style>
+
+
+
 
 </resources>
 
