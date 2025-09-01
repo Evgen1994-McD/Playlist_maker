@@ -80,7 +80,7 @@ class PlaylistTracksFragment : Fragment() {
         }
 
         overlay.setOnClickListener {
-            overlay.makeGone()
+            overlay.makeInvisible()
             bottomSheetMenu.makeGone()
         }
 

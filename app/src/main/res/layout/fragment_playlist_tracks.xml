@@ -13,6 +13,8 @@
     >
 
 
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
 
         android:layout_width="match_parent"
@@ -21,9 +23,9 @@
 
         <View
             android:id="@+id/overlay"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="#801A1B22"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#99000000"
             android:clickable="true"
             android:focusable="true"
             android:visibility="gone"
@@ -31,7 +33,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
 
 
@@ -201,11 +202,12 @@
             app:srcCompat="@drawable/ic_bottom_rectangle" />
 
 
-        <LinearLayout android:id="@+id/rootLayout"
+        <LinearLayout android:id="@+id/album_info_layout"
             android:layout_width="match_parent"
             android:layout_height="61dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:layout_marginTop="12dp"
             >
 
 
@@ -231,12 +233,13 @@
 
                 <TextView
                     android:id="@+id/album_name"
-                    style="@style/track_item_top"
+                    style="@style/album_menu_title"
                     android:layout_width="match_parent"
                     android:layout_height="19dp"
                     android:layout_marginHorizontal="8dp"
                     android:layout_marginTop="14dp"
-                    tools:text="Название трека" />
+
+                    />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -266,6 +269,39 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/share_playlist"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:text="@string/share_playlist"
+            style="@style/album_menu_title"
+            android:paddingLeft="16dp"
+            android:paddingVertical="16dp"
+            />
+
+
+        <TextView
+            android:id="@+id/replace_playlist_info"
+
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:text="@string/replace_playlist_info"
+            style="@style/album_menu_title"
+            android:paddingLeft="16dp"
+            android:paddingVertical="16dp"
+            />
+
+
+        <TextView
+            android:id="@+id/delete_playlist"
+
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:text="@string/delete_playlist"
+            style="@style/album_menu_title"
+            android:paddingLeft="16dp"
+            android:paddingVertical="16dp"
+            />
 
 
     </LinearLayout>

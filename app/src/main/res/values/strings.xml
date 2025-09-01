@@ -92,4 +92,11 @@
     <string name="track_dialogue_negative" translatable="false">Нет</string>
 
 
+<!--    Bottom Menu в Плейлистах ( доп меню)-->
+    <string name="share_playlist" translatable="false">Поделиться</string>
+    <string name="replace_playlist_info" translatable="false">Редактировать информацию</string>
+    <string name="delete_playlist" translatable="false">Удалить плейлист</string>
+
+
+
 </resources>
