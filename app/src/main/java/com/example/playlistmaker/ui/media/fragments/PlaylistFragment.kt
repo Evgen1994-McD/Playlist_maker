@@ -33,11 +33,6 @@ class PlaylistFragment : Fragment(), onPlaylistClickListener {
         fun newInstance() = PlaylistFragment()
 
 
-        const val ID = "tracksIds"
-        val NAME =     "name"
-        const val ABOUT =   "about"
-        const val IMAGE =  "image"
-        const val SIZE =  "size"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,12 +121,8 @@ observeForPlayLists()
     override fun onPlaylistClicked(playList: PlayList) {
        try {
            val bundle = Bundle().apply {
-               playList.listId?.toInt()?.let { putInt("ID1", it) }
-               putString(ID, playList.tracksId)
-               putString(NAME, playList.name)
-               putString(ABOUT, playList.about)
-               putString(IMAGE, playList.image)
-               putInt(SIZE, playList.size)
+               playList.listId?.let { putInt("ID1", it) }
+
            }
            findNavController().navigate(R.id.playlistTracksFragment, bundle)
        } catch(e: Exception){

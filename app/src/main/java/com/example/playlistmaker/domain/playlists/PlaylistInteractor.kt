@@ -10,4 +10,5 @@ interface PlaylistInteractor {
     suspend fun getAllPlayList(): List<PlayList>
      suspend fun insertTrackInTrackTable(track: Track): Long
     suspend fun getTrackOfPlaylistById(ids: String): List<Track>
+    suspend fun getPlaylistById(listId:Int):PlayList
 }

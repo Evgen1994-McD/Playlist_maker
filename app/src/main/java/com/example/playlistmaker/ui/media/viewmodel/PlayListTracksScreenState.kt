@@ -3,14 +3,16 @@ package com.example.playlistmaker.ui.media.viewmodel
 import android.R
 import com.example.playlistmaker.domain.models.Track
 
-sealed  class PlayListTracksScreenState {
+data  class PlayListTracksScreenState(
+        val name: String="",
+        val title: String="",
+        val time: String="",
+        val size: Int=0,
+        val image: String="",
+        val tracks: List<Track> = emptyList()
+) {
 
-        data class PlaylistName(val name: String) : PlayListTracksScreenState()
-        data class PlaylistTitle(val title: String) : PlayListTracksScreenState()
-        data class PlaylistTime(val time: String) : PlayListTracksScreenState()
-        data class PlaylistSize(val size: String) : PlayListTracksScreenState()
-        data class PlaylistImame(val image: String) : PlayListTracksScreenState()
-        data class PlaylistTrackList(val tracks: List<Track>) : PlayListTracksScreenState()
+
 
 
 

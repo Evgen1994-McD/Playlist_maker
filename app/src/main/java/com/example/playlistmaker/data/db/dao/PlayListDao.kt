@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.playlistmaker.data.db.entity.PlayListEntity
+import com.example.playlistmaker.domain.models.PlayList
 
 @Dao
 interface PlayListDao {
@@ -19,7 +20,7 @@ interface PlayListDao {
     suspend fun getAllPlayList(): List<PlayListEntity>
 
     @Query("SELECT * FROM playlist_table WHERE listId =:listId")
-    suspend fun getPlaylistById(listId: String)
+    suspend fun getPlaylistById(listId: Int):PlayList
 
 
 }

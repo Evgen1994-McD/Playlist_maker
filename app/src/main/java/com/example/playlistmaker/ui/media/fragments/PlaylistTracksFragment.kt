@@ -3,6 +3,7 @@ package com.example.playlistmaker.ui.media.fragments
 import android.content.Context
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -34,20 +35,10 @@ class PlaylistTracksFragment : Fragment() {
 private lateinit var binding: FragmentPlaylistTracksBinding
 
 companion object{
-   const val ID = "tracksIds"
+
    const val PLAYLISTID = "ID1"
-    val NAME =     "name"
-    const val ABOUT =   "about"
-    const val IMAGE =  "image"
-    const val SIZE =  "size"
+
 }
-private var playlistId = 0
-    private var tracksIds = ""
-    private var name = ""
-    private var about = ""
-    private var image = ""
-    private var size: Int? = 0
-    private var summTime = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,17 +56,12 @@ private var playlistId = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-getArgs()
-
-        showPlaylist()
        clickers()
-
-
-
-
         observeForPlaylistTracks()
-        observeForPlaylistTime()
-        viewModel.getTracksOfPlaylist(tracksIds)
+        viewModel.getPlayListState()
+        val test = getPlaylistIdFromArguments(PLAYLISTID)
+
+
 
     }
 
@@ -93,24 +79,47 @@ getArgs()
 
     }
 
-    private fun getArgs(){
-        tracksIds = arguments?.getString(ID).toString()
-        name = arguments?.getString(NAME).toString()
-        about = arguments?.getString(ABOUT).toString()
-        image = arguments?.getString(IMAGE).toString()
-        size = arguments?.getInt(SIZE)
-
-        playlistId = arguments?.getInt(PLAYLISTID)?.toInt() ?: 0
-    }
 
 
-    private fun observeForPlaylistTracks(){
-        viewModel.getPlaylistTracksLiveData.observe(viewLifecycleOwner){ tracks ->
-            showTracks(tracks)
+
+    private fun observeForPlaylistTracks()= with(binding){
+        viewModel.getPlaylistTracks1LiveData.observe(viewLifecycleOwner){ state ->
+
+                showTracks(state.tracks)
+                Log.d("get", state.name)
+
+
+                val options = RequestOptions()
+                    .centerCrop()
+                    .transform().centerCrop()
+
+timeToMinutes(state.time)
+                tvName1.text = state.name
+                tvText.text = state.title
+
+
+                val oneForm = getString(R.string.track1)
+                val twoForm = getString(R.string.track3)
+                val fiveAndMoreForm = getString(R.string.track2)
+
+                tvSize1.text = declineNoun(state.size ?: 0, oneForm, twoForm, fiveAndMoreForm)
+
+
+                Glide.with(imMine.context)
+                    .load(state.image?.toUri())
+                    .apply(options)
+                    .placeholder(R.drawable.ic_placeholder_45)
+                    .error(R.drawable.ic_placeholder_45)
+                    .into(imMine)
+
+
+
+
+
         }
     }
-    private fun observeForPlaylistTime(){
-        viewModel.getTimeLiveData.observe(viewLifecycleOwner) { time->
+    private fun timeToMinutes(time:String){
+
             val oneForm = getString(R.string.minute1)
             val twoForm =getString(R.string.minute2)
             val fiveAndMoreForm =getString(R.string.minute3)
@@ -120,7 +129,7 @@ getArgs()
 
 
 
-        }
+
     }
 
     private fun getTrackIntentAndStart(track: Track, context: Context) {
@@ -174,30 +183,7 @@ getArgs()
         }
     }
 
-    private fun showPlaylist()= with(binding){
-         val options = RequestOptions()
-            .centerCrop()
-            .transform().centerCrop()
 
-        tvName1.text = name
-        tvText.text = about
-        tvTime.text = summTime
-
-        val oneForm = getString(R.string.track1)
-        val twoForm =getString(R.string.track3)
-        val fiveAndMoreForm =getString(R.string.track2)
-
-        tvSize1.text = declineNoun(size?:0, oneForm, twoForm, fiveAndMoreForm)
-
-
-        Glide.with(imMine.context)
-            .load(image?.toUri())
-            .apply(options)
-            .placeholder(R.drawable.ic_placeholder_45)
-            .error(R.drawable.ic_placeholder_45)
-            .into(imMine)
-
-    }
 
     private fun View.makeGone() {
         this.visibility = View.GONE // функция для вью гон

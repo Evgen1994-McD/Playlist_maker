@@ -32,6 +32,11 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
  return playlistRepository.getAllPlayList()
     }
 
+    override suspend fun getPlaylistById(listId:Int):PlayList{
+        return playlistRepository.getPlaylistById(listId)
+
+    }
+
 
 
 }
