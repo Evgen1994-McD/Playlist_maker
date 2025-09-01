@@ -60,19 +60,7 @@ class PlayListViewHolder(itemView: View,
             .into(playListImage)
 
     }
-//    val options = RequestOptions().centerCrop()//опции для Glide
-//    val radiusInDP = 8f
-//    val radiusInPX = TypedValue.applyDimension(
-//        TypedValue.COMPLEX_UNIT_DIP,
-//        radiusInDP,
-//        resources.displayMetrics
-//    )
-//    Glide.with(binding.imMine.context)
-//    .load(newState.artworkUrl100)
-//    .apply(options)
-//    .placeholder(R.drawable.ph_media_312).error(R.drawable.ph_media_312)
-//    .transform(RoundedCorners(radiusInPX.toInt()))
-//    .into(binding.imMine)
+
 }
 
 

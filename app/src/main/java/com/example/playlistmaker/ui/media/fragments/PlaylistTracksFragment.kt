@@ -1,14 +1,16 @@
 package com.example.playlistmaker.ui.media.fragments
 
 import android.content.Context
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -20,25 +22,31 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.media.OnItemLongClickListener
 import com.example.playlistmaker.ui.media.PlaylistTrackAdapter
 import com.example.playlistmaker.ui.media.viewmodel.PlaylistTracksViewModel
-import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
-import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
 import com.example.playlistmaker.utils.DialogManager
 import com.example.playlistmaker.utils.declineNoun
 import com.example.playlistmaker.utils.getPlaylistIdFromArguments
-import com.example.playlistmaker.utils.getTrackFromArguments
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class PlaylistTracksFragment : Fragment() {
-    private val viewModel: PlaylistTracksViewModel by viewModel(){ parametersOf(getPlaylistIdFromArguments(PLAYLISTID))}
-private lateinit var binding: FragmentPlaylistTracksBinding
 
-companion object{
+    private val viewModel: PlaylistTracksViewModel by viewModel() {
+        parametersOf(
+            getPlaylistIdFromArguments(PLAYLISTID)
+        )
+    }
 
-   const val PLAYLISTID = "ID1"
+    private lateinit var binding: FragmentPlaylistTracksBinding
+    private lateinit var bottomSheetContainer: LinearLayout
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
-}
+    companion object {
+
+        const val PLAYLISTID = "ID1"
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,77 +64,120 @@ companion object{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-       clickers()
+        bottomSheetMenu()
+
+        clickers()
         observeForPlaylistTracks()
         viewModel.getPlayListState()
-
 
 
     }
 
 
-    private fun clickers()=with(binding){
+    private fun clickers() = with(binding) {
         toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
 
         overlay.setOnClickListener {
-
+            overlay.makeGone()
+            bottomSheetMenu.makeGone()
         }
 
+        btMenu.setOnClickListener {
+            bottomSheetMenu.makeVisible()
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            overlay.makeVisible()
+        }
 
 
     }
 
+    private fun bottomSheetMenu() {
+        bottomSheetContainer = binding.bottomSheetMenu
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
 
 
 
-    private fun observeForPlaylistTracks()= with(binding){
-        viewModel.getPlaylistTracks1LiveData.observe(viewLifecycleOwner){ state ->
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // newState — новое состояние BottomSheet
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
 
-                showTracks(state.tracks)
-                Log.d("get", state.name)
+                        // загружаем рекламный баннер
+                    }
 
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        // останавливаем трейлер
+                    }
 
-                val options = RequestOptions()
-                    .centerCrop()
-                    .transform().centerCrop()
-
-timeToMinutes(state.time)
-                tvName1.text = state.name
-                tvText.text = state.title
-
-
-                val oneForm = getString(R.string.track1)
-                val twoForm = getString(R.string.track3)
-                val fiveAndMoreForm = getString(R.string.track2)
-
-                tvSize1.text = declineNoun(state.size ?: 0, oneForm, twoForm, fiveAndMoreForm)
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.isVisible = false
 
 
-                Glide.with(imMine.context)
-                    .load(state.image?.toUri())
-                    .apply(options)
-                    .placeholder(R.drawable.ic_placeholder_45)
-                    .error(R.drawable.ic_placeholder_45)
-                    .into(imMine)
+                        // возобновляем трейлер
+                    }
+
+                    else -> {
+                        // Остальные состояния не обрабатываем
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+    }
 
 
+    private fun observeForPlaylistTracks() = with(binding) {
+        viewModel.getPlaylistTracks1LiveData.observe(viewLifecycleOwner) { state ->
 
+            showTracks(state.tracks)
+            Log.d("get", state.name)
+
+
+            val options = RequestOptions()
+                .centerCrop()
+                .transform().centerCrop()
+
+            timeToMinutes(state.time)
+            tvName1.text = state.name
+            tvText.text = state.title
+
+
+            val oneForm = getString(R.string.track1)
+            val twoForm = getString(R.string.track3)
+            val fiveAndMoreForm = getString(R.string.track2)
+
+            tvSize1.text = declineNoun(state.size ?: 0, oneForm, twoForm, fiveAndMoreForm)
+
+
+            Glide.with(imMine.context)
+                .load(state.image?.toUri())
+                .apply(options)
+                .placeholder(R.drawable.ic_placeholder_45)
+                .error(R.drawable.ic_placeholder_45)
+                .into(imMine)
+
+            installBottomSheetMenu(
+                state.size,
+                state.name, state.image
+            )
 
 
         }
     }
-    private fun timeToMinutes(time:String){
 
-            val oneForm = getString(R.string.minute1)
-            val twoForm =getString(R.string.minute2)
-            val fiveAndMoreForm =getString(R.string.minute3)
+    private fun timeToMinutes(time: String) {
 
-            binding.tvTime.text = declineNoun(time.toInt()?:0, oneForm, twoForm, fiveAndMoreForm)
+        val oneForm = getString(R.string.minute1)
+        val twoForm = getString(R.string.minute2)
+        val fiveAndMoreForm = getString(R.string.minute3)
 
-
-
+        binding.tvTime.text = declineNoun(time.toInt() ?: 0, oneForm, twoForm, fiveAndMoreForm)
 
 
     }
@@ -145,11 +196,11 @@ timeToMinutes(state.time)
         with(binding) {
             val reversedTracks = tracks.reversed()
             rcView.layoutManager = LinearLayoutManager(requireContext())
-            rcView.adapter = PlaylistTrackAdapter(reversedTracks, object :OnTrackClickListener{
+            rcView.adapter = PlaylistTrackAdapter(reversedTracks, object : OnTrackClickListener {
                 override fun onTrackClicked(track: Track) {
                     getTrackIntentAndStart(track, requireContext())
                 }
-            }, object : OnItemLongClickListener{
+            }, object : OnItemLongClickListener {
                 override fun onItemLongClick(track: Track) {
                     overlay.makeVisible()
                     DialogManager.showDialog(
@@ -157,9 +208,9 @@ timeToMinutes(state.time)
                         R.string.track_dialogue_title,
                         R.string.track_dialogue_message,
                         R.string.track_dialogue_positive,
-                            R.string.track_dialogue_negative,
+                        R.string.track_dialogue_negative,
                         binding.overlay,
-                        object : DialogManager.Listener{
+                        object : DialogManager.Listener {
                             override fun onClick() {
                                 overlay.makeGone()
                                 viewModel.deleteTrackOfPlaylistById(track.trackId)
@@ -177,10 +228,43 @@ timeToMinutes(state.time)
             rcView.makeVisible()
 
 
+        }
+    }
 
+    private fun installBottomSheetMenu(size: Int, name: String, imageUri: String) {
+        with(binding) {
+
+            val options = RequestOptions().centerCrop()
+            val radiusInDP = 2f
+            val radiusInPX = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                radiusInDP,
+                requireContext().resources.displayMetrics
+            )
+            val oneForm = requireContext().getString(R.string.track1)
+            val twoForm = requireContext().getString(R.string.track3)
+            val fiveAndMoreForm = requireContext().getString(R.string.track2)
+
+            albumInfo.text = declineNoun(size, oneForm, twoForm, fiveAndMoreForm)
+            albumName.text = name
+
+
+
+
+            Glide.with(albumImage.context)
+                .load(imageUri?.toUri())
+                .transform(RoundedCorners(radiusInPX.toInt()))
+                .apply(options)
+                .placeholder(R.drawable.ic_placeholder_45)
+                .error(R.drawable.ic_placeholder_45)
+                .into(albumImage)
 
         }
     }
+
+
+
+
 
 
 
