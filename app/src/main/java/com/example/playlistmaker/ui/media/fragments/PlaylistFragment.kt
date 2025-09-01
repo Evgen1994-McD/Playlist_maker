@@ -23,11 +23,12 @@ import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.listener.OnTrackClickListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class PlaylistFragment : Fragment(), onPlaylistClickListener {
     private lateinit var binding: PlaylistFragmentBinding
-    private val viewModel: PlaylistFragmentViewModel by activityViewModel()
+    private val viewModel: PlaylistFragmentViewModel by viewModel()
 
     companion object{
         fun newInstance() = PlaylistFragment()
@@ -134,5 +135,6 @@ observeForPlayLists()
     override fun onResume() {
         super.onResume()
         observeForPlayLists()
+        viewModel.getAllPlaylists()
     }
 }

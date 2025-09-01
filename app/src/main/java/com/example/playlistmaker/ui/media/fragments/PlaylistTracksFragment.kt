@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -27,6 +28,10 @@ import com.example.playlistmaker.utils.DialogManager
 import com.example.playlistmaker.utils.declineNoun
 import com.example.playlistmaker.utils.getPlaylistIdFromArguments
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -136,37 +141,46 @@ class PlaylistTracksFragment : Fragment() {
         viewModel.getPlaylistTracks1LiveData.observe(viewLifecycleOwner) { state ->
 
             sharePlaylist.setOnClickListener {
-                viewModel.generateAndSharePlayList(
-                    state.name,
-                    state.title,
-                    state.tracks,
-                    requireContext()
-                )
+                if (state.size != 0) {
+                    viewModel.generateAndSharePlayList(
+                        state.name,
+                        state.title,
+                        state.tracks,
+                        requireContext()
+                    )
+                } else snackBarNoSharing()
             }
 
             btShare.setOnClickListener {
-                viewModel.generateAndSharePlayList(
-                    state.name,
-                    state.title,
-                    state.tracks,
-                    requireContext()
-                )
+                if (state.size != 0) {
+                    viewModel.generateAndSharePlayList(
+                        state.name,
+                        state.title,
+                        state.tracks,
+                        requireContext()
+                    )
+                } else snackBarNoSharing()
+
             }
 
             deletePlaylist.setOnClickListener {
                 DialogManager.showDialog(
                     requireContext(),
-                    requireContext().getString(R.string.delete_playlist_dialogue)+" «${state.name}»?",
+                    requireContext().getString(R.string.delete_playlist_dialogue) + " «${state.name}»?",
                     "",
                     R.string.track_dialogue_positive,
                     R.string.track_dialogue_negative,
                     binding.overlay,
-                    object : DialogManager.Listener{
+                    object : DialogManager.Listener {
                         override fun onClick() {
-                            TODO("Not yet implemented")
+                            lifecycleScope.launch {
+                                viewModel.deleteTracksOfDeletedPlayList()
+
+                                delay(300)
+                                findNavController().popBackStack()
+                            }
                         }
                     }
-
 
 
                 )
@@ -300,11 +314,6 @@ class PlaylistTracksFragment : Fragment() {
     }
 
 
-
-
-
-
-
     private fun View.makeGone() {
         this.visibility = View.GONE // функция для вью гон
     }
@@ -317,6 +326,14 @@ class PlaylistTracksFragment : Fragment() {
         this.visibility = View.INVISIBLE // функция для вью инвизибл
     }
 
+
+    private fun snackBarNoSharing() {
+        Snackbar.make(
+            requireView(),
+            getString(R.string.no_possible_share_playlist),
+            Snackbar.LENGTH_SHORT
+        ).show()
+    }
 
 
 }

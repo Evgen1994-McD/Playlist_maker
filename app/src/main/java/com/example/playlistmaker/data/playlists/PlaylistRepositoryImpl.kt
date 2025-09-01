@@ -54,7 +54,7 @@ class PlaylistRepositoryImpl(private val mainDb: MainDb,
 
     }
 
-    override suspend fun deletePlayListForId(listId:String){
+    override suspend fun deletePlayListForId(listId:Int){
         mainDb.playListDao().deletePlayListForId(listId)
 
     }
@@ -66,6 +66,15 @@ class PlaylistRepositoryImpl(private val mainDb: MainDb,
             convertPlaylistFromEntity(playListEntity)
         }
     }
+
+
+    override suspend fun selectDontDeletedPlaylists(listId:Int):List<PlayList> {
+        return  mainDb.playListDao().selectDontDeletedPlaylists(listId).map {
+                playListEntity ->
+            convertPlaylistFromEntity(playListEntity)
+        }
+    }
+
 
 
 

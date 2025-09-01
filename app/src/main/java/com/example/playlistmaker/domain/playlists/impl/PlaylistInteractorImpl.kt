@@ -7,6 +7,10 @@ import com.example.playlistmaker.domain.playlists.PlaylistRepository
 
 class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository):PlaylistInteractor {
 
+
+    override suspend fun selectDontDeletedPlaylists(listId:Int):List<PlayList>{
+        return playlistRepository.selectDontDeletedPlaylists(listId)
+    }
     override suspend fun deleteTrackOfPlaylistById(trackId: String){
         playlistRepository.deleteTrackOfPlaylistById(trackId)
     }
@@ -23,7 +27,7 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
       return playlistRepository.getTracksOfPlaylistById(ids)
     }
 
-    override suspend fun deletePlayListForId(listId:String){
+    override suspend fun deletePlayListForId(listId: Int) {
        playlistRepository.deletePlayListForId(listId)
     }
 

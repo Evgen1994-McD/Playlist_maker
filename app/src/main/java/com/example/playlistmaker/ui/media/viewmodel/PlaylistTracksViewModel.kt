@@ -7,32 +7,67 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.copy
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.playlists.PlaylistInteractor
 import com.example.playlistmaker.utils.TimeUtils
 import com.example.playlistmaker.utils.declineNoun
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PlaylistTracksViewModel(private val playlistInteractor: PlaylistInteractor,
-    private val playListId: Int) : ViewModel() {
-private lateinit var currentPlayList:PlayList
+class PlaylistTracksViewModel(
+    private val playlistInteractor: PlaylistInteractor,
+    private val playListId: Int
+) : ViewModel() {
+    private lateinit var currentPlayList: PlayList
     private val playListTracksLiveData1 = MutableLiveData<PlayListTracksScreenState>()
-    val getPlaylistTracks1LiveData : LiveData<PlayListTracksScreenState> get() = playListTracksLiveData1
+    val getPlaylistTracks1LiveData: LiveData<PlayListTracksScreenState> get() = playListTracksLiveData1
 
-    fun generateAndSharePlayList(playlistName: String, title: String, tracks: List<Track>, context: Context) {
-        val tracksCount = declineNoun(tracks.size,
+    suspend fun deleteTracksOfDeletedPlayList() {
+        val deletedPlaylistTracks = currentPlayList.tracksId.split(",")
+        val otherPlaylist =
+            currentPlayList.listId?.let { playlistInteractor.selectDontDeletedPlaylists(it) }
+        var tempOtherString = ""
+        otherPlaylist?.forEach { playlist ->
+            tempOtherString += "," + playlist.tracksId
+        }
+        val splittedTempString = tempOtherString.split(",").toSet()
+        var idForDelete =
+            deletedPlaylistTracks.filter { element -> !splittedTempString.contains(element) }
+
+
+        idForDelete.forEach {
+            playlistInteractor.deleteTrackOfPlaylistById(it)
+        }
+        deletePlaylist()
+
+    }
+
+    fun deletePlaylist() = viewModelScope.launch {
+
+
+        currentPlayList.listId?.let { playlistInteractor.deletePlayListForId(it) }
+
+    }
+
+
+    fun generateAndSharePlayList(
+        playlistName: String,
+        title: String,
+        tracks: List<Track>,
+        context: Context
+    ) {
+        val tracksCount = declineNoun(
+            tracks.size,
             context.getString(R.string.track1),
             context.getString(R.string.track3),
-            context.getString(R.string.track2))
+            context.getString(R.string.track2)
+        )
         val tracksList = tracks.mapIndexed { index, track ->
             "${index + 1}. ${track.artistName} - ${track.trackName} (${track.trackTimeMillis})"
         }.joinToString("\n")
 
-        val playList= """
+        val playList = """
         |$playlistName
         |
         |$title
@@ -52,7 +87,6 @@ private lateinit var currentPlayList:PlayList
         }
 
 
-
         val chooserIntent = Intent.createChooser(
             intent,
             context.getString(R.string.share_playlist_title)
@@ -62,38 +96,36 @@ private lateinit var currentPlayList:PlayList
         context.startActivity(chooserIntent)
 
 
-
     }
 
 
+    private fun tracksTimeInMinutes(list: List<Track>): String {
+        var summTrackTimeMillis: Long = 0
+        list.forEach { track ->
+            summTrackTimeMillis += (TimeUtils.parseTrackTime(track.trackTimeMillis)).toLong()
+        }
+        var formattedTimeInString = TimeUtils.finalTracksTime(summTrackTimeMillis)
 
-
-
-
-
-
-   private fun tracksTimeInMinutes(list: List<Track>):String{
-       var summTrackTimeMillis: Long = 0
-       list.forEach { track->
-           summTrackTimeMillis +=(TimeUtils.parseTrackTime(track.trackTimeMillis)).toLong()
-       }
-       var formattedTimeInString = TimeUtils.finalTracksTime(summTrackTimeMillis)
-
-       return formattedTimeInString
+        return formattedTimeInString
 
     }
 
-    fun deleteTrackOfPlaylistById(trackId: String)=viewModelScope.launch{
+    fun deleteTrackOfPlaylistById(trackId: String) = viewModelScope.launch {
         val currentTracks = currentPlayList.tracksId.split(",")
-        val filteredElements = currentTracks.filterNot { it.trim()==trackId.trim() }
+        val filteredElements = currentTracks.filterNot { it.trim() == trackId.trim() }
         val filteredTracks = filteredElements.joinToString(separator = ",")
         playlistInteractor.deleteTrackOfPlaylistById(trackId)
-        playlistInteractor.insertPlayList(currentPlayList.copy(size = currentPlayList.size-1, tracksId = filteredTracks))
+        playlistInteractor.insertPlayList(
+            currentPlayList.copy(
+                size = currentPlayList.size - 1,
+                tracksId = filteredTracks
+            )
+        )
         getPlayListState()
 
     }
 
-    fun getPlayListState()= viewModelScope.launch{
+    fun getPlayListState() = viewModelScope.launch {
 
         try {
 
@@ -111,8 +143,7 @@ private lateinit var currentPlayList:PlayList
                     tracks = trackList
                 )
             )
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             Log.d("get", e.message.toString())
         }
 

@@ -99,6 +99,7 @@
 
 
     <string name="share_playlist_title" translatable="false">Share APK</string>
+    <string name="no_possible_share_playlist" translatable="false">В этом плейлисте нет списка треков, которым можно поделиться</string>
 
 
 <!--    Удаление плейлиста в меню управления плейлистами-->
