@@ -1,15 +1,19 @@
 package com.example.playlistmaker.ui.media.viewmodel
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.util.copy
+import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.playlists.PlaylistInteractor
 import com.example.playlistmaker.utils.TimeUtils
+import com.example.playlistmaker.utils.declineNoun
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -18,8 +22,52 @@ class PlaylistTracksViewModel(private val playlistInteractor: PlaylistInteractor
 private lateinit var currentPlayList:PlayList
     private val playListTracksLiveData1 = MutableLiveData<PlayListTracksScreenState>()
     val getPlaylistTracks1LiveData : LiveData<PlayListTracksScreenState> get() = playListTracksLiveData1
-init {
-}
+
+    fun generateAndSharePlayList(playlistName: String, title: String, tracks: List<Track>, context: Context) {
+        val tracksCount = declineNoun(tracks.size,
+            context.getString(R.string.track1),
+            context.getString(R.string.track3),
+            context.getString(R.string.track2))
+        val tracksList = tracks.mapIndexed { index, track ->
+            "${index + 1}. ${track.artistName} - ${track.trackName} (${track.trackTimeMillis})"
+        }.joinToString("\n")
+
+        val playList= """
+        |$playlistName
+        |
+        |$title
+        |
+        |$tracksCount 
+        |
+        |$tracksList
+        """.trimMargin()
+
+        val intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(
+                Intent.EXTRA_TEXT,
+                playList
+            ) // Ссылка на курс андроид разработки
+            type = "text/plain"
+        }
+
+
+
+        val chooserIntent = Intent.createChooser(
+            intent,
+            context.getString(R.string.share_playlist_title)
+        )
+
+        chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(chooserIntent)
+
+
+
+    }
+
+
+
+
 
 
 

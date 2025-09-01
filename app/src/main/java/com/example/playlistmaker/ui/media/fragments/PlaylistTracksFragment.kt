@@ -135,6 +135,43 @@ class PlaylistTracksFragment : Fragment() {
     private fun observeForPlaylistTracks() = with(binding) {
         viewModel.getPlaylistTracks1LiveData.observe(viewLifecycleOwner) { state ->
 
+            sharePlaylist.setOnClickListener {
+                viewModel.generateAndSharePlayList(
+                    state.name,
+                    state.title,
+                    state.tracks,
+                    requireContext()
+                )
+            }
+
+            btShare.setOnClickListener {
+                viewModel.generateAndSharePlayList(
+                    state.name,
+                    state.title,
+                    state.tracks,
+                    requireContext()
+                )
+            }
+
+            deletePlaylist.setOnClickListener {
+                DialogManager.showDialog(
+                    requireContext(),
+                    requireContext().getString(R.string.delete_playlist_dialogue)+" «${state.name}»?",
+                    "",
+                    R.string.track_dialogue_positive,
+                    R.string.track_dialogue_negative,
+                    binding.overlay,
+                    object : DialogManager.Listener{
+                        override fun onClick() {
+                            TODO("Not yet implemented")
+                        }
+                    }
+
+
+
+                )
+            }
+
             showTracks(state.tracks)
             Log.d("get", state.name)
 
@@ -205,8 +242,8 @@ class PlaylistTracksFragment : Fragment() {
                     overlay.makeVisible()
                     DialogManager.showDialog(
                         requireContext(),
-                        R.string.track_dialogue_title,
-                        R.string.track_dialogue_message,
+                        requireContext().getString(R.string.track_dialogue_title),
+                        "",
                         R.string.track_dialogue_positive,
                         R.string.track_dialogue_negative,
                         binding.overlay,

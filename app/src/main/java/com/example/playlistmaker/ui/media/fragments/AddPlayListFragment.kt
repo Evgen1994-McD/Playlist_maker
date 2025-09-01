@@ -122,8 +122,8 @@ class AddPlayListFragment : Fragment() {
     private fun showDialog() {
         DialogManager.showDialog(
             requireContext(),
-            R.string.title,
-            R.string.text,
+            requireContext().getString(R.string.title),
+            requireContext().getString(R.string.text),
             R.string.positive,
             R.string.negative,
             null,

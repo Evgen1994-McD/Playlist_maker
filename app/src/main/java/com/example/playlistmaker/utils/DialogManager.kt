@@ -10,42 +10,33 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 object DialogManager {
     fun showDialog(
         context: Context,
-        tId: Int,
-        mId: Int,
-        positiveId:Int,
-        negativeId:Int,
-        overlay:View?,
+        tId: String,
+        mId: String,
+        positiveId: Int,
+        negativeId: Int,
+        overlay: View?,
         listener: Listener
+    ) {
+        // Оборачиваем контекст с нашим кастомным стилем
+        val styledContext = ContextThemeWrapper(context, R.style.MyDialogTheme)
+        val builder = MaterialAlertDialogBuilder(styledContext)
 
-    ) {  // передаём контекст, mId - messageId ( это сообщение) - Так как ресурсы у нас это ИНТ!!!
-        val builder = MaterialAlertDialogBuilder(context)
-         // мы делаем Диалоговое окно при попытке сбросить. ПОзитив баттон - согласиться, негатив - отменить
-        var dialog: Dialog? =
-            null // типа инициализировали диалог, изначально он равен null, а ниже мы используем его
+        var dialog: Dialog? = null
         builder.setTitle(tId)
         builder.setMessage(mId)
         builder.setPositiveButton(positiveId) { _, _ ->
-            // суть - _,_ ->   - нижние подчёркивания используются для того, если мы не используем переданные переменные. Тут передаются определенные значения. Если нам они не нужны, используем подчёркивания. А так это ОнКликЛистенер типа.
             listener.onClick()
             dialog?.dismiss()
-
         }
         builder.setNegativeButton(negativeId) { _, _ ->
             overlay?.visibility = View.GONE
-
-
-            dialog?.dismiss()  // Просто отменяем диалог если не согласны
+            dialog?.dismiss()
         }
-        dialog?.setOnDismissListener {
-            overlay?.visibility = View.GONE
-        }
-
         dialog = builder.create()
-        dialog.show() // показываем диалог, иначе его не будет видно
-
+        dialog.show()
     }
+
     interface Listener {
-        fun onClick()  // мы создали Интерфейс с функцией Он клик, это будет наш кликер :D
+        fun onClick()
     }
-
 }

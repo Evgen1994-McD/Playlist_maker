@@ -98,5 +98,15 @@
     <string name="delete_playlist" translatable="false">Удалить плейлист</string>
 
 
+    <string name="share_playlist_title" translatable="false">Share APK</string>
+
+
+<!--    Удаление плейлиста в меню управления плейлистами-->
+    <string name="delete_playlist_dialogue" translatable="false">Хотите удалить плейлист</string>
+
+
+
+
+
 
 </resources>
