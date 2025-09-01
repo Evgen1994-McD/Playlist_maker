@@ -59,7 +59,6 @@ companion object{
        clickers()
         observeForPlaylistTracks()
         viewModel.getPlayListState()
-        val test = getPlaylistIdFromArguments(PLAYLISTID)
 
 
 

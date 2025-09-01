@@ -18,7 +18,6 @@ class PlaylistTracksViewModel(private val playlistInteractor: PlaylistInteractor
     private val playListTracksLiveData1 = MutableLiveData<PlayListTracksScreenState>()
     val getPlaylistTracks1LiveData : LiveData<PlayListTracksScreenState> get() = playListTracksLiveData1
 init {
-    getPlayListState()
 }
 
 
@@ -30,8 +29,6 @@ init {
            summTrackTimeMillis +=(TimeUtils.parseTrackTime(track.trackTimeMillis)).toLong()
        }
        var formattedTimeInString = TimeUtils.finalTracksTime(summTrackTimeMillis)
-
-
 
        return formattedTimeInString
 
