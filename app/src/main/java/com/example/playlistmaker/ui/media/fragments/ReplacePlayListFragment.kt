@@ -47,12 +47,10 @@ ur1 = playlist.image?.toUri()
         binding.edPlaylistName.setText(playlist.name)
         binding.edAboutPlaylist.setText(playlist.about)
         binding.imMines.setImageURI(playlist.image?.toUri())
-        if (playlist.image!=null){
+        if (playlist.image!="null"){
             binding.ph.isVisible = false
-        }
-        if (ur1!=null){
-            binding.ph.isVisible = false
-        }
+        } else binding.ph.isVisible = true
+
 
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
