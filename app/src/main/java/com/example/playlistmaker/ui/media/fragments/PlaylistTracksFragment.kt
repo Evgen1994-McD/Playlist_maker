@@ -51,6 +51,8 @@ class PlaylistTracksFragment : Fragment() {
 
         const val PLAYLISTID = "ID1"
 
+        const val REPLACE_LISTID = "listId"
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -186,8 +188,15 @@ class PlaylistTracksFragment : Fragment() {
                 )
             }
 
+            replacePlaylistInfo.setOnClickListener {
+                val bundle = Bundle().apply {
+
+                    state.listId?.let { it1 -> putInt(REPLACE_LISTID, it1) }
+                }
+                findNavController().navigate(R.id.action_playlistTracksFragment_to_replacePlayListFragment, bundle)
+            }
+
             showTracks(state.tracks)
-            Log.d("get", state.name)
 
 
             val options = RequestOptions()
@@ -212,6 +221,14 @@ class PlaylistTracksFragment : Fragment() {
                 .placeholder(R.drawable.ic_placeholder_45)
                 .error(R.drawable.ic_placeholder_45)
                 .into(imMine)
+
+            val displayMetrics = resources.displayMetrics
+            val screenHeightInDp = displayMetrics.heightPixels / displayMetrics.densityDpi * 320f
+            val peekHeightPercentage = (screenHeightInDp * 0.2f).toInt() // 10%
+val btStandartContainer = bottomSheet
+            val btStBeh = BottomSheetBehavior.from(btStandartContainer)
+            btStBeh.peekHeight = peekHeightPercentage
+
 
             installBottomSheetMenu(
                 state.size,

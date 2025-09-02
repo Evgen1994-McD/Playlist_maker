@@ -140,7 +140,8 @@ class PlaylistTracksViewModel(
                     time = timeForScreenState,
                     size = currentPlayList.size,
                     image = currentPlayList.image.toString(),
-                    tracks = trackList
+                    tracks = trackList,
+                    listId = currentPlayList.listId
                 )
             )
         } catch (e: Exception) {

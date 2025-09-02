@@ -9,7 +9,8 @@ data  class PlayListTracksScreenState(
         val time: String="",
         val size: Int=0,
         val image: String="",
-        val tracks: List<Track> = emptyList()
+        val tracks: List<Track> = emptyList(),
+        val listId :Int?
 ) {
 
 

@@ -109,5 +109,12 @@
 
 
 
+    <string name="replace_playlist_title" translatable="false">Редактирование плейлиста</string>
+    <string name="replace_playlist_button" translatable="false">Сохранить</string>
+
+
+
+
+
 
 </resources>

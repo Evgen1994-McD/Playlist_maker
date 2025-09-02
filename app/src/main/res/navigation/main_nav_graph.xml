@@ -73,5 +73,13 @@
         android:id="@+id/playlistTracksFragment"
         android:name="com.example.playlistmaker.ui.media.fragments.PlaylistTracksFragment"
         android:label="fragment_playlist_tracks"
-        tools:layout="@layout/fragment_playlist_tracks" />
+        tools:layout="@layout/fragment_playlist_tracks" >
+        <action
+            android:id="@+id/action_playlistTracksFragment_to_replacePlayListFragment"
+            app:destination="@id/replacePlayListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/replacePlayListFragment"
+        android:name="com.example.playlistmaker.ui.media.fragments.ReplacePlayListFragment"
+        android:label="ReplacePlayListFragment" />
 </navigation>

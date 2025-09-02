@@ -41,12 +41,12 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
 
-class AddPlayListFragment : Fragment() {
-    private lateinit var binding: FragmentAddPlayListBinding
-    private var ur1: Uri? = null
-    private var title: CharSequence? = ""
-    private var text: CharSequence? = ""
-    private val viewModel: AddPlayListViewModel by viewModel()
+open class AddPlayListFragment : Fragment() {
+    protected lateinit var binding: FragmentAddPlayListBinding
+    protected var ur1: Uri? = null
+    protected var title: CharSequence? = ""
+    protected var text: CharSequence? = ""
+     open val viewModel: AddPlayListViewModel by viewModel()
 
     companion object {
         private const val playListName = "NAME"
@@ -86,7 +86,7 @@ class AddPlayListFragment : Fragment() {
     }
 
 
-    private fun savePlayList() {
+     fun savePlayList() {
 
             val playList =
                 PlayList(null, title.toString(), text.toString(), ur1.toString(), "", 0)
@@ -243,9 +243,6 @@ class AddPlayListFragment : Fragment() {
                         .into(binding.imMines)
                     saveImageToPrivateStorage(uri)
                     binding.ph.isVisible = false
-
-                } else {
-                    binding.ph.isVisible = true
 
                 }
 

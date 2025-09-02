@@ -78,6 +78,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout2"
         style="@style/my_input_layout_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -86,14 +87,14 @@
         android:layout_marginTop="17dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
-        >
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+
         <com.google.android.material.textfield.TextInputEditText
 
             android:id="@+id/ed_about_playlist"
+            style="@style/input_edit_text_style"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-    style="@style/input_edit_text_style"
             android:hint="@string/playlist_body_hint"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
