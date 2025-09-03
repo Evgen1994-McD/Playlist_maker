@@ -5,10 +5,13 @@ import com.example.playlistmaker.ui.media.viewmodel.AddPlayListViewModel
 import com.example.playlistmaker.ui.media.viewmodel.FavoriteFragmentViewModel
 import com.example.playlistmaker.ui.media.viewmodel.MediaFragmentViewModel
 import com.example.playlistmaker.ui.media.viewmodel.PlaylistFragmentViewModel
+import com.example.playlistmaker.ui.media.viewmodel.PlaylistTracksViewModel
+import com.example.playlistmaker.ui.media.viewmodel.ReplacePlaylistViewModel
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
 import com.example.playlistmaker.ui.settings.viewModel.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
 
@@ -61,6 +64,16 @@ val viewModelModule = module {
 
     viewModel {
         AddPlayListViewModel( get())
+    }
+
+    viewModel { params->
+        ReplacePlaylistViewModel( get(), params.get())
+    }
+
+
+
+    viewModel { params->
+        PlaylistTracksViewModel( get(), params.get())
     }
 
 }

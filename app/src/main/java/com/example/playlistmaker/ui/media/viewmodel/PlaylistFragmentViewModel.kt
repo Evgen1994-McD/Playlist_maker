@@ -13,19 +13,14 @@ import kotlinx.coroutines.launch
 class PlaylistFragmentViewModel(private val playlistInteractor: PlaylistInteractor):ViewModel() {
 
     private val allPlayListsData = MutableLiveData<List<PlayList>>()
-    private val playListTracksLiveData = MutableLiveData<List<Track>>()
 
     val getLiveData : LiveData<List<PlayList>> get() = allPlayListsData
-    val getPlaylistTracksLiveData : LiveData<List<Track>> get() = playListTracksLiveData
 
 
      fun getAllPlaylists() = viewModelScope.launch{
      allPlayListsData.value =  playlistInteractor.getAllPlayList()
     }
 
-    fun getTracksOfPlaylist(ids: String)=viewModelScope.launch{
-        playListTracksLiveData.value = playlistInteractor.getTrackOfPlaylistById(ids)
-    }
 
 
 }

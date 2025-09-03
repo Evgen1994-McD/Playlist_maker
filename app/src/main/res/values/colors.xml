@@ -15,6 +15,7 @@
     <color name="secondary_text_color">@color/black</color> <!-- Темно-серый цвет для обычного режима -->
 
     <color name="primary_background">@color/white</color> <!-- Чёрный цвет для обычного режима -->
+    <color name="dialog_text">@color/black</color> <!-- Чёрный цвет для обычного режима -->
 
     <color name="reverse_primary_background">@color/black</color> <!-- Чёрный цвет для обычного режима -->
 

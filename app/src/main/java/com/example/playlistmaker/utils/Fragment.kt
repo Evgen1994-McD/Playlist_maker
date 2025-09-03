@@ -20,3 +20,21 @@ fun Fragment.getTrackFromArguments(): Track? {
 
     }
 }
+
+
+fun Fragment.getPlaylistIdFromArguments(key: String): Int? {
+    return arguments.let { bundle ->
+        if (Build.VERSION.SDK_INT >= 33) {
+            bundle?.getInt(key, 0)
+
+        } else {
+            bundle?.getInt(key) as Int
+        }
+
+        /*
+        Экстеншен функция для получения трека на фрагменте из бандл
+         */
+
+
+    }
+}

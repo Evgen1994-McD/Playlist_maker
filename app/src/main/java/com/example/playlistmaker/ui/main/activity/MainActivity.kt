@@ -65,6 +65,9 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
 R.id.addPlayListFragment -> bottomNavigationView.isVisible = false
+R.id.playlistTracksFragment -> bottomNavigationView.isVisible = false
+R.id.action_playlistTracksFragment_to_replacePlayListFragment -> bottomNavigationView.isVisible = false
+                R.id.replacePlayListFragment->bottomNavigationView.isVisible = false
                 else-> bottomNavigationView.isVisible = true
             }
 

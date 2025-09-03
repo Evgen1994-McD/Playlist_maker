@@ -72,6 +72,9 @@
 
 
 
+
+
+
     <style name="MySettingsStyle" parent="Widget.MaterialComponents.TextView">
 
         <item name="android:paddingHorizontal">@dimen/standart_padding_start</item>
@@ -263,6 +266,30 @@
 
 
     </style>
+
+    <style name="album_menu_title" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/black</item>
+        <item name="font">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/standart_text_size_16sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+
+    </style>
+
+
+    <style name="MyDialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:background">@color/white</item>
+        <item name="colorPrimary">@color/blue</item>
+        <item name="android:textSize">@dimen/tv_size_14</item>
+        <item name="android:font">@font/ys_display_regular</item>
+
+        <item name="colorOnPrimarySurface">@color/black</item>
+
+        <item name="colorOnSurface">@color/black</item> <!-- Белые буквы на черном фоне -->
+
+    </style>
+
+
 
 
 

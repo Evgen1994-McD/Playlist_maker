@@ -58,6 +58,11 @@
     <string name="playlist_content_title" translatable="false">Содержание плейлиста</string>
     <string name="playlist_size" translatable="false"> треков</string>
 
+<!--    Склонение минут-->
+    <string name="minute1" translatable="false">минута</string>
+    <string name="minute2" translatable="false">минуты</string>
+    <string name="minute3" translatable="false">минут</string>
+
 <!--    PlayerFragment(music)-->
     <string name="tv_add_in_playlist" translatable="false">Добавить в плейлист</string>
 
@@ -78,4 +83,38 @@
     <string name="track1" translatable="false">трек</string>
     <string name="track2" translatable="false">треков</string>
     <string name="track3" translatable="false">трека</string>
+
+
+<!--    Диалог Удаление трека-->
+    <string name="track_dialogue_title" translatable="false">Хотите удалить трек?</string>
+    <string name="track_dialogue_message" translatable="false"> </string>
+    <string name="track_dialogue_positive" translatable="false">Да</string>
+    <string name="track_dialogue_negative" translatable="false">Нет</string>
+
+
+<!--    Bottom Menu в Плейлистах ( доп меню)-->
+    <string name="share_playlist" translatable="false">Поделиться</string>
+    <string name="replace_playlist_info" translatable="false">Редактировать информацию</string>
+    <string name="delete_playlist" translatable="false">Удалить плейлист</string>
+
+
+    <string name="share_playlist_title" translatable="false">Share APK</string>
+    <string name="no_possible_share_playlist" translatable="false">В этом плейлисте нет списка треков, которым можно поделиться</string>
+
+
+<!--    Удаление плейлиста в меню управления плейлистами-->
+    <string name="delete_playlist_dialogue" translatable="false">Хотите удалить плейлист</string>
+
+
+
+
+
+    <string name="replace_playlist_title" translatable="false">Редактирование плейлиста</string>
+    <string name="replace_playlist_button" translatable="false">Сохранить</string>
+
+
+
+
+
+
 </resources>

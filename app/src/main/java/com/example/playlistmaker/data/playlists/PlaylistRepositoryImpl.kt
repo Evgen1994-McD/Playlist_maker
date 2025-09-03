@@ -1,6 +1,8 @@
 package com.example.playlistmaker.data.playlists
 
+import android.content.Intent
 import android.util.Log
+import com.example.playlistmaker.R
 import com.example.playlistmaker.data.db.MainDb
 import com.example.playlistmaker.data.db.converters.PlayListDbConvertor
 import com.example.playlistmaker.data.db.converters.PlaylistTracksDbConvertor
@@ -15,14 +17,22 @@ class PlaylistRepositoryImpl(private val mainDb: MainDb,
     private val playListDbConvertor: PlayListDbConvertor,
     private val playlistTracksDbConvertor: PlaylistTracksDbConvertor):PlaylistRepository {
 
+    override suspend fun getPlaylistById(listId:Int):PlayList{
+     return   mainDb.playListDao().getPlaylistById(listId)
+    }
+
+    override suspend fun deleteTrackOfPlaylistById(trackId: String){
+        mainDb.playListTracksDao().deleteTrackForId(trackId)
+    }
+
+
+
     override suspend fun insertTrackInPlaylistTable(track: Track): Long{
        return mainDb.playListTracksDao().insertTracks(convertTrackEntityFromTrack(track))
     }
     override suspend fun getTracksOfPlaylistById(ids: String) : List<Track>{
         val soloTrackId = ids.split(",")
-        Log.d("playlist", "$ids")
 
-        Log.d("playlist", "$soloTrackId")
         val tempTrackEntityList = ArrayList<PlayListTracksEntity>()
 
             soloTrackId.forEach { trackId ->
@@ -44,7 +54,7 @@ class PlaylistRepositoryImpl(private val mainDb: MainDb,
 
     }
 
-    override suspend fun deletePlayListForId(listId:String){
+    override suspend fun deletePlayListForId(listId:Int){
         mainDb.playListDao().deletePlayListForId(listId)
 
     }
@@ -56,6 +66,16 @@ class PlaylistRepositoryImpl(private val mainDb: MainDb,
             convertPlaylistFromEntity(playListEntity)
         }
     }
+
+
+    override suspend fun selectDontDeletedPlaylists(listId:Int):List<PlayList> {
+        return  mainDb.playListDao().selectDontDeletedPlaylists(listId).map {
+                playListEntity ->
+            convertPlaylistFromEntity(playListEntity)
+        }
+    }
+
+
 
 
     private fun convertPlaylistFromEntity(playListEntity: PlayListEntity): PlayList{

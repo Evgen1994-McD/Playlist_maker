@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.playlistmaker.data.db.entity.PlayListEntity
+import com.example.playlistmaker.domain.models.PlayList
 
 @Dao
 interface PlayListDao {
@@ -13,12 +14,16 @@ interface PlayListDao {
 
 
     @Query("DELETE FROM playlist_table WHERE listId =:listId")
-    suspend fun deletePlayListForId(listId: String)
+    suspend fun deletePlayListForId(listId: Int)
+
+    @Query("SELECT * FROM playlist_table WHERE listId <>:listId")
+    suspend fun selectDontDeletedPlaylists(listId: Int) : List<PlayListEntity>
 
     @Query("SELECT * FROM playlist_table")
     suspend fun getAllPlayList(): List<PlayListEntity>
 
-
+    @Query("SELECT * FROM playlist_table WHERE listId =:listId")
+    suspend fun getPlaylistById(listId: Int):PlayList
 
 
 }
