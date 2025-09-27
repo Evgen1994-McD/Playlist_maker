@@ -99,23 +99,12 @@ class PlayerFragment : Fragment() {
         viewModel.intentGetExtraBind()
 
     }
-
     private fun composeTrack() {
         viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
-            if (newState.isPlaying == false) {
-                binding.play.isEnabled
-                binding.play.makeVisible()
-                binding.pause.makeInvisible()
-            } else if (newState.isPlaying == true) {
-                binding.play.isEnabled = true
-                binding.play.makeInvisible()
-                binding.pause.makeVisible()
-            }
             when {
                 !newState.trackName.isEmpty() && !newState.collectionName.contains(noAlbum) -> {
 
                     saveAndDeleteFavoriteTrack(newState.isLike)
-
 
 
                     binding.tvGenre.text = newState.primaryGenreName
@@ -187,10 +176,7 @@ class PlayerFragment : Fragment() {
             viewModel.mediaCommander(PlayerCommand.Play)
             viewModel.startUpdateProgress()
         }
-        binding.pause.setOnClickListener {
-            viewModel.mediaCommander(PlayerCommand.Pause)
-            viewModel.stopUpdateProgress()
-        }
+
 
 
         bottomSheetContainer = binding.bottomSheet

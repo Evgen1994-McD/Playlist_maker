@@ -163,27 +163,20 @@
         app:layout_constraintStart_toStartOf="@+id/imMine"
         app:layout_constraintTop_toTopOf="@+id/play"
         app:srcCompat="@drawable/ic_plus_51dp" />
-    <ImageView
+
+    <com.example.playlistmaker.ui.player.utils.PlaybackButtonView
+        app:playImage="@drawable/ic_play_100"
+        app:pauseImage="@drawable/ic_pause_84"
         android:id="@+id/play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline6"
         app:layout_constraintEnd_toStartOf="@+id/like"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toEndOf="@+id/add_on_playlist"
         app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:layout_constraintVertical_bias="0.5"
-        app:srcCompat="@drawable/ic_play_100" />
-    <ImageView
-        android:id="@+id/pause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/play"
-        app:layout_constraintEnd_toEndOf="@+id/play"
-        app:layout_constraintStart_toStartOf="@+id/play"
-        app:layout_constraintTop_toTopOf="@+id/play"
-        app:srcCompat="@drawable/ic_pause_84" />
+
+        />
+
     <ImageView
         android:id="@+id/like"
         android:layout_width="wrap_content"
