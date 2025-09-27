@@ -1,12 +1,14 @@
 package com.example.playlistmaker.ui.player.utils
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.toRect
 import com.example.playlistmaker.R
 import kotlin.math.min
 
@@ -16,6 +18,8 @@ class PlaybackButtonView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0
 ) : View(context, attrs, defStyleAttr, defStyleRes) {
+
+
 
     private var playImage: Drawable? = null
     private var pauseImage: Drawable? = null
@@ -30,14 +34,26 @@ class PlaybackButtonView @JvmOverloads constructor(
         pauseImage = typedArray.getDrawable(R.styleable.PlaybackButtonView_pauseImage)
         typedArray.recycle()
 
-        // Устанавливаем начальное изображение
-        setImage(playImage)
+//        // Устанавливаем начальное изображение
+//        setImage(playImage)
 
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+
+        // Отрисовка текущего изображения
+        val currentImage = if (isPlaying) pauseImage else playImage
+        if (currentImage != null) {
+            currentImage.bounds = if (isPlaying) pauseRect.toRect() else playRect.toRect()
+            currentImage.draw(canvas)
+        }
     }
 
     private fun setImage(drawable: Drawable?) {
         if (drawable != null) {
             setBackground(drawable)
+
         }
     }
 
@@ -64,6 +80,8 @@ class PlaybackButtonView @JvmOverloads constructor(
 
     fun changeState(isPlaying : Boolean){
         if (isPlaying) {
+
+
             setImage(pauseImage)
             // Запускаем воспроизведение
         } else {
@@ -97,4 +115,7 @@ class PlaybackButtonView @JvmOverloads constructor(
 
 
 
+
+
 }
+
