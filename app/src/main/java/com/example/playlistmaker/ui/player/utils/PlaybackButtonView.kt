@@ -1,19 +1,21 @@
 package com.example.playlistmaker.ui.player.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.widget.ImageView
 import androidx.annotation.AttrRes
 import androidx.annotation.StyleRes
 import com.example.playlistmaker.R
 import kotlin.math.min
 
-class PlayPauseButton @JvmOverloads constructor(
+@SuppressLint("AppCompatCustomView")
+class PlaybackButtonView @JvmOverloads constructor(
     context: Context,
     attr: AttributeSet? = null,
     @AttrRes defStyleAttr:Int = 0,
     @StyleRes defStyleRes: Int = 0,
-) : View(context, attr, defStyleAttr, defStyleRes) {
+) : ImageView(context, attr, defStyleAttr, defStyleRes) {
     private val minViewSize = resources.getDimensionPixelSize(R.dimen.play_button_min_size)
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -62,6 +64,8 @@ class PlayPauseButton @JvmOverloads constructor(
         // Устанавливаем посчитанные размеры
         setMeasuredDimension(size, size)
     }
+
+
 
 
 

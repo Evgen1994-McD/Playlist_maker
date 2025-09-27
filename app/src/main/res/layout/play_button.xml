@@ -6,14 +6,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-    <com.example.playlistmaker.ui.player.utils.PlayPauseButton
-        android:layout_width="150dp"
+    <com.example.playlistmaker.ui.player.utils.PlaybackButtonView
+        android:layout_width="0dp"
         android:layout_height="150dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:background="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
 
-    </com.example.playlistmaker.ui.player.utils.PlayPauseButton>
+    </com.example.playlistmaker.ui.player.utils.PlaybackButtonView>
 </androidx.constraintlayout.widget.ConstraintLayout>
