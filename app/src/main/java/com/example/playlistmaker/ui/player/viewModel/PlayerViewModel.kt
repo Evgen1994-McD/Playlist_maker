@@ -73,6 +73,9 @@ private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
 
         if (playlistForSave >= 0) {
          mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(isSuccess = true))
+            delay(50)
+            mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(isSuccess = false))
+
         } else {
             mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(isSuccess = false))
 

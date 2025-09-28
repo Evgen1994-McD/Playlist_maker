@@ -99,6 +99,7 @@ class PlayerFragment : Fragment() {
         viewModel.intentGetExtraBind()
 
     }
+
     private fun composeTrack() {
         viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
             when {
@@ -175,8 +176,8 @@ class PlayerFragment : Fragment() {
 
         binding.play.setOnClickListener {
             if (binding.play.isPlaying) {
-            viewModel.mediaCommander(PlayerCommand.Play)
-            viewModel.startUpdateProgress()
+                viewModel.mediaCommander(PlayerCommand.Play)
+                viewModel.startUpdateProgress()
             } else {
                 viewModel.mediaCommander(PlayerCommand.Pause)
                 viewModel.stopUpdateProgress()
@@ -296,17 +297,17 @@ class PlayerFragment : Fragment() {
                 } else {
                     viewModel.insertTrackInPlaylistsTable(playList)
 
-                    // Подождите обновления состояния и отобразите SnackBar
+
 
                     viewModel.getLiveData.observe(viewLifecycleOwner) { state ->
                         if (state.isSuccess) {
-                            Snackbar.make(
-                                requireView(),
-                                getString(R.string.add_in) + " ${playList.name}",
-                                Snackbar.LENGTH_SHORT
-                            ).show()
+                                Snackbar.make(
+                                    requireView(),
+                                    getString(R.string.add_in) + " ${playList.name}",
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
+                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
-                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                         }
                     }
 

@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toRect
 import com.example.playlistmaker.R
 import kotlin.math.min
@@ -20,10 +19,9 @@ class PlaybackButtonView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr, defStyleRes) {
 
 
-
     private var playImage: Drawable? = null
     private var pauseImage: Drawable? = null
-     var isPlaying = false
+    var isPlaying = false
     private lateinit var playRect: RectF
     private lateinit var pauseRect: RectF
 
@@ -59,19 +57,18 @@ class PlaybackButtonView @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        when(event.action){
+        when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 if (isPlaying) {
-           isPlaying = false
-                }
-                else {
+                    isPlaying = false
+                } else {
                     isPlaying = true
                 }
 
             }
 
             MotionEvent.ACTION_UP -> {
-            changeState(isPlaying)
+                changeState(isPlaying)
             }
 
         }
@@ -79,7 +76,7 @@ class PlaybackButtonView @JvmOverloads constructor(
 
     }
 
-    fun changeState(isPlaying : Boolean){
+    fun changeState(isPlaying: Boolean) {
         if (isPlaying) {
 
 
@@ -90,6 +87,7 @@ class PlaybackButtonView @JvmOverloads constructor(
             // Приостанавливаем воспроизведение
         }
     }
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
 
