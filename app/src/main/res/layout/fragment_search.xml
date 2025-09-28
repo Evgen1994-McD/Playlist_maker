@@ -44,7 +44,8 @@
         android:layout_height="120dp"
         android:layout_gravity="center"
         android:layout_marginTop="102dp"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="invisible">
 
     </ImageView>
 

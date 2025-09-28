@@ -31,6 +31,8 @@
     <dimen name="button_nointernet_padding_6dp">6dp</dimen>
     <dimen name="button_nointernet_radius_54dp">54dp</dimen>
 
+    <dimen name="play_button_min_size">100dp</dimen>
+
 
 
 </resources>

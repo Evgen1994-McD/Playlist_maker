@@ -102,21 +102,12 @@ class PlayerFragment : Fragment() {
 
     private fun composeTrack() {
         viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
-            if (newState.isPlaying == false) {
-                binding.play.isEnabled
-                binding.play.makeVisible()
-                binding.pause.makeInvisible()
-            } else if (newState.isPlaying == true) {
-                binding.play.isEnabled = true
-                binding.play.makeInvisible()
-                binding.pause.makeVisible()
-            }
             when {
                 !newState.trackName.isEmpty() && !newState.collectionName.contains(noAlbum) -> {
 
                     saveAndDeleteFavoriteTrack(newState.isLike)
-
-
+                    binding.play.isPlaying = newState.isPlaying
+                    binding.play.changeState(newState.isPlaying)
 
                     binding.tvGenre.text = newState.primaryGenreName
                     binding.tvCountry.text = newState.country
@@ -184,13 +175,15 @@ class PlayerFragment : Fragment() {
         }
 
         binding.play.setOnClickListener {
-            viewModel.mediaCommander(PlayerCommand.Play)
-            viewModel.startUpdateProgress()
+            if (binding.play.isPlaying) {
+                viewModel.mediaCommander(PlayerCommand.Play)
+                viewModel.startUpdateProgress()
+            } else {
+                viewModel.mediaCommander(PlayerCommand.Pause)
+                viewModel.stopUpdateProgress()
+            }
         }
-        binding.pause.setOnClickListener {
-            viewModel.mediaCommander(PlayerCommand.Pause)
-            viewModel.stopUpdateProgress()
-        }
+
 
 
         bottomSheetContainer = binding.bottomSheet
@@ -304,17 +297,17 @@ class PlayerFragment : Fragment() {
                 } else {
                     viewModel.insertTrackInPlaylistsTable(playList)
 
-                    // Подождите обновления состояния и отобразите SnackBar
+
 
                     viewModel.getLiveData.observe(viewLifecycleOwner) { state ->
                         if (state.isSuccess) {
-                            Snackbar.make(
-                                requireView(),
-                                getString(R.string.add_in) + " ${playList.name}",
-                                Snackbar.LENGTH_SHORT
-                            ).show()
+                                Snackbar.make(
+                                    requireView(),
+                                    getString(R.string.add_in) + " ${playList.name}",
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
+                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
-                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                         }
                     }
 
