@@ -105,7 +105,8 @@ class PlayerFragment : Fragment() {
                 !newState.trackName.isEmpty() && !newState.collectionName.contains(noAlbum) -> {
 
                     saveAndDeleteFavoriteTrack(newState.isLike)
-
+                    binding.play.isPlaying = newState.isPlaying
+                    binding.play.changeState(newState.isPlaying)
 
                     binding.tvGenre.text = newState.primaryGenreName
                     binding.tvCountry.text = newState.country
@@ -173,8 +174,13 @@ class PlayerFragment : Fragment() {
         }
 
         binding.play.setOnClickListener {
+            if (binding.play.isPlaying) {
             viewModel.mediaCommander(PlayerCommand.Play)
             viewModel.startUpdateProgress()
+            } else {
+                viewModel.mediaCommander(PlayerCommand.Pause)
+                viewModel.stopUpdateProgress()
+            }
         }
 
 

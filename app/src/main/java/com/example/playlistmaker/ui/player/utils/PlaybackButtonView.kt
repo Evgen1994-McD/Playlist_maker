@@ -23,7 +23,7 @@ class PlaybackButtonView @JvmOverloads constructor(
 
     private var playImage: Drawable? = null
     private var pauseImage: Drawable? = null
-    private var isPlaying = false
+     var isPlaying = false
     private lateinit var playRect: RectF
     private lateinit var pauseRect: RectF
 
@@ -35,13 +35,14 @@ class PlaybackButtonView @JvmOverloads constructor(
         typedArray.recycle()
 
 //        // Устанавливаем начальное изображение
-//        setImage(playImage)
+        setImage(playImage)
 
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+        changeState(isPlaying)
         // Отрисовка текущего изображения
         val currentImage = if (isPlaying) pauseImage else playImage
         if (currentImage != null) {
@@ -93,7 +94,7 @@ class PlaybackButtonView @JvmOverloads constructor(
         super.onSizeChanged(w, h, oldw, oldh)
 
         // Рассчитываем размеры и положение изображений
-        val padding = 10f // Отступы
+        val padding = 0f // Отступы
         val imageSize = min(w, h) - 2 * padding
 
         // Координаты для изображения "Играть"
@@ -114,7 +115,12 @@ class PlaybackButtonView @JvmOverloads constructor(
     }
 
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
+        val size = min(measuredWidth, measuredHeight)
+        setMeasuredDimension(size, size)
+    }
 
 
 }
