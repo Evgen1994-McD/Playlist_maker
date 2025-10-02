@@ -68,7 +68,7 @@ internal class MusicService : Service() {
 
     fun preparePlayer(previewUrl: String) {
         if (previewUrl.isEmpty()) return
-        if (playerState == PlayerState.Default()) {
+
             try {
                 mediaPlayer?.reset()
                 mediaPlayer?.setDataSource(previewUrl)
@@ -80,28 +80,25 @@ internal class MusicService : Service() {
                 }
                 mediaPlayer?.setOnCompletionListener {
                     Log.d("MyLog", "Playback completed")
+                    timerJob?.cancel()
                     _playerState.value  = PlayerState.Prepared()
 
                 }
-                _playerState.value  = PlayerState.Prepared()
-                Log.d("MyLog", "Плеер готов")
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-        }
+
     }
 
     fun startPlayback() {
-        if (playerState != PlayerState.Prepared() && playerState != PlayerState.Paused(updateProgress())) return
         mediaPlayer.start()
         _playerState.value = PlayerState.Playing(updateProgress())
 startTimer()
-        Log.d("MyLog", "Плеер играет")
+        Log.d("MyLog", "Плеер играет112")
 
     }
 
     fun pausePlayback() {
-        if (playerState != PlayerState.Playing(updateProgress())) return
         mediaPlayer.pause()
         _playerState.value  = PlayerState.Paused(updateProgress())
         timerJob?.cancel()
@@ -120,12 +117,11 @@ startTimer()
 
 
     fun updateProgress(): String {
-        if(playerState == PlayerState.Playing(updateProgress()) || playerState == PlayerState.Paused(updateProgress()))
-        {
+
             val formattedTime =
                 SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
             return formattedTime
-        } else return "00:00"
+
     }
 
     private fun startTimer() {

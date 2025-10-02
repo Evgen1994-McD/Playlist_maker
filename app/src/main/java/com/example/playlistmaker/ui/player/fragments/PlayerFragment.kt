@@ -67,7 +67,9 @@ class PlayerFragment : Fragment() {
             lifecycleScope.launch {
                 musicService?.playerState?.collect {
                     playerState = it
-                    updateButtonAndProgress()
+                    binding.progressTime.text = playerState.progress
+
+                        // updateButtonAndProgress()
                 }
 
             }
@@ -152,7 +154,7 @@ class PlayerFragment : Fragment() {
                     binding.tvGroup.text = newState.artistName
                     binding.tvTrackName.text = newState.trackName
 
-                    binding.progressTime.text = newState.progress
+//                    binding.progressTime.text = newState.progress
                     val options = RequestOptions().centerCrop()//опции для Glide
                     val radiusInDP = 8f
                     val radiusInPX = TypedValue.applyDimension(
@@ -208,11 +210,14 @@ class PlayerFragment : Fragment() {
 
         binding.play.setOnClickListener {
             if (binding.play.isPlaying) {
-                viewModel.mediaCommander(PlayerCommand.Play)
-                viewModel.startUpdateProgress()
+                musicService?.startPlayback()
+//                viewModel.mediaCommander(PlayerCommand.Play)
+//                viewModel.startUpdateProgress()
             } else {
-                viewModel.mediaCommander(PlayerCommand.Pause)
-                viewModel.stopUpdateProgress()
+                musicService?.pausePlayback()
+
+//                viewModel.mediaCommander(PlayerCommand.Pause)
+//                viewModel.stopUpdateProgress()
             }
         }
 
