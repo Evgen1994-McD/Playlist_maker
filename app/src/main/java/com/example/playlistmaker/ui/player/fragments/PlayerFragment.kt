@@ -26,11 +26,13 @@ import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.services.MusicService
 import com.example.playlistmaker.ui.media.onPlaylistClickListener
 import com.example.playlistmaker.ui.player.viewModel.PlayerCommand
+import com.example.playlistmaker.ui.player.viewModel.PlayerState
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import com.example.playlistmaker.utils.getTrackFromArguments
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -57,11 +59,18 @@ class PlayerFragment : Fragment() {
 
 
     private var musicService: MusicService? = null
-
+    private var playerState: PlayerState = PlayerState.Default()
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as MusicService.MusicServiceBinder
             musicService = binder.getService()
+            lifecycleScope.launch {
+                musicService?.playerState?.collect {
+                    playerState = it
+                    updateButtonAndProgress()
+                }
+
+            }
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {

@@ -6,86 +6,84 @@ import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
+import com.example.playlistmaker.ui.player.viewModel.PlayerState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-internal class MusicService: Service() {
+internal class MusicService : Service() {
 
-private lateinit var mediaPlayer:MediaPlayer
-private lateinit var previewUrl: String
+    private var timerJob: Job? = null
 
-private val binder = MusicServiceBinder()
+    private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var previewUrl: String
+
+    private val binder = MusicServiceBinder()
 
     inner class MusicServiceBinder : Binder() {
         fun getService(): MusicService = this@MusicService
     }
-    override fun onBind(intent: Intent?): IBinder?{
+
+    override fun onBind(intent: Intent?): IBinder? {
         previewUrl = intent?.getStringExtra("track") ?: ""
         preparePlayer(previewUrl)
         return binder
     }
 
-
     override fun onUnbind(intent: Intent?): Boolean {
-       releasePlayer()
+        releasePlayer()
         return super.onUnbind(intent)
 
 
-
-
     }
 
-    companion object {
 
+    private val _playerState = MutableStateFlow<PlayerState>(PlayerState.Default())
+    val playerState = _playerState.asStateFlow()
 
-        const val STATE_IDLE = 0
-        const val STATE_PREPARED = 1
-        const val STATE_PLAYING = 2
-        const val STATE_PAUSED = 3
-    }
-
-    private var playerState = STATE_IDLE
 
 
     override fun onCreate() {
         super.onCreate()
-mediaPlayer = MediaPlayer()
+        mediaPlayer = MediaPlayer()
 
     }
 
-//    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-//        previewUrl = intent?.getStringExtra("track") ?: ""
-//        preparePlayer(previewUrl)
-//        return Service.START_NOT_STICKY
-//    }
 
 
-
-     fun stopPlayerAndReset(){
-        if (mediaPlayer.isPlaying){
+    fun stopPlayerAndReset() {
+        if (mediaPlayer.isPlaying) {
             mediaPlayer.stop()
         }
         mediaPlayer.reset()
     }
 
 
-
-
-     fun preparePlayer(previewUrl: String) {
-         if (previewUrl.isEmpty()) return
-        if (playerState == STATE_IDLE) {
+    fun preparePlayer(previewUrl: String) {
+        if (previewUrl.isEmpty()) return
+        if (playerState == PlayerState.Default()) {
             try {
                 mediaPlayer?.reset()
                 mediaPlayer?.setDataSource(previewUrl)
                 mediaPlayer?.prepareAsync()
                 mediaPlayer?.setOnPreparedListener {
                     Log.d("My_Log", "Media Player prepared")
+                    _playerState.value = PlayerState.Prepared()
+
                 }
                 mediaPlayer?.setOnCompletionListener {
                     Log.d("MyLog", "Playback completed")
+                    _playerState.value  = PlayerState.Prepared()
+
                 }
-                playerState = STATE_PREPARED
+                _playerState.value  = PlayerState.Prepared()
                 Log.d("MyLog", "Плеер готов")
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -93,40 +91,53 @@ mediaPlayer = MediaPlayer()
         }
     }
 
-     fun startPlayback() {
-        if (playerState != STATE_PREPARED && playerState != STATE_PAUSED) return
+    fun startPlayback() {
+        if (playerState != PlayerState.Prepared() && playerState != PlayerState.Paused(updateProgress())) return
         mediaPlayer.start()
-        playerState = STATE_PLAYING
+        _playerState.value = PlayerState.Playing(updateProgress())
+startTimer()
         Log.d("MyLog", "Плеер играет")
 
     }
 
-     fun pausePlayback() {
-        if (playerState != STATE_PLAYING) return
+    fun pausePlayback() {
+        if (playerState != PlayerState.Playing(updateProgress())) return
         mediaPlayer.pause()
-        playerState = STATE_PAUSED
+        _playerState.value  = PlayerState.Paused(updateProgress())
+        timerJob?.cancel()
         Log.d("MyLog", "Плеер на Паузе")
     }
 
-     fun releasePlayer() {
+    fun releasePlayer() {
         if (mediaPlayer.isPlaying) {
             mediaPlayer.stop()
         }
+        timerJob?.cancel()
         mediaPlayer.release()
-        playerState = STATE_IDLE
+        _playerState.value  = PlayerState.Default()
         Log.d("MyLog", "Плеер освобождён")
     }
 
 
-
     fun updateProgress(): String {
-        if (playerState == STATE_PLAYING || playerState == STATE_PAUSED) {
+        if(playerState == PlayerState.Playing(updateProgress()) || playerState == PlayerState.Paused(updateProgress()))
+        {
             val formattedTime =
                 SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
             return formattedTime
-        }else return "00:00"
+        } else return "00:00"
     }
 
+    private fun startTimer() {
+        timerJob = CoroutineScope(Dispatchers.Default).launch {
+            while (mediaPlayer?.isPlaying == true) {
+                delay(300L)
+                _playerState.value  = PlayerState.Playing(updateProgress())
+
+            }
+        }
+
+    }
 
 
 }
