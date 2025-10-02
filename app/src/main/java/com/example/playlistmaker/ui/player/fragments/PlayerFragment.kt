@@ -1,6 +1,11 @@
 package com.example.playlistmaker.ui.player.fragments
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -18,6 +23,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.models.PlayList
+import com.example.playlistmaker.services.MusicService
 import com.example.playlistmaker.ui.media.onPlaylistClickListener
 import com.example.playlistmaker.ui.player.viewModel.PlayerCommand
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
@@ -32,6 +38,7 @@ class PlayerFragment : Fragment() {
     private lateinit var adapter: PlayListAdapter
     private lateinit var currentTrackId: String
     private lateinit var binding: FragmentPlayerBinding // делаю байдинг
+
 
     private val viewModel: PlayerViewModel by viewModel { parametersOf(getTrackFromArguments()) }
     private lateinit var bottomSheetContainer: LinearLayout
@@ -48,9 +55,24 @@ class PlayerFragment : Fragment() {
     }
 
 
+
+    private var musicService: MusicService? = null
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.MusicServiceBinder
+            musicService = binder.getService()
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            musicService = null
+        }
+    }
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -65,6 +87,7 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        bindMusicService()
         clicker()
 
         viewModel.getAllPlaylist()
@@ -247,6 +270,7 @@ class PlayerFragment : Fragment() {
 
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
+        unbindMusicService()
 
         viewModel.reliesePlayer()
         viewModel.getPlaylistsLiveData.removeObservers(this)
@@ -321,6 +345,21 @@ class PlayerFragment : Fragment() {
         viewModel.getPlaylistsLiveData.observe(viewLifecycleOwner) { playlists ->
             adapter.submitNewList(playlists)
         }
+    }
+
+
+    private fun bindMusicService(){
+        val intent = Intent(requireContext(), MusicService::class.java).apply {
+            val track = getTrackFromArguments()
+            putExtra("track", track?.previewUrl)
+        }
+
+        requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+
+    }
+
+    private fun unbindMusicService(){
+        requireContext().unbindService(serviceConnection)
     }
 
 }

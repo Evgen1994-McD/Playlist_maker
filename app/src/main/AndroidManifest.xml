@@ -16,6 +16,11 @@
 
         tools:targetApi="35">
 
+<service android:name=".services.MusicService"
+    android:exported="false"
+    >
+
+</service>
 
 
 
