@@ -20,8 +20,20 @@ private val binder = MusicServiceBinder()
     inner class MusicServiceBinder : Binder() {
         fun getService(): MusicService = this@MusicService
     }
-    override fun onBind(p0: Intent?): IBinder?{
+    override fun onBind(intent: Intent?): IBinder?{
+        previewUrl = intent?.getStringExtra("track") ?: ""
+        preparePlayer(previewUrl)
         return binder
+    }
+
+
+    override fun onUnbind(intent: Intent?): Boolean {
+       releasePlayer()
+        return super.onUnbind(intent)
+
+
+
+
     }
 
     companion object {
@@ -42,11 +54,11 @@ mediaPlayer = MediaPlayer()
 
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        previewUrl = intent?.getStringExtra("track") ?: ""
-        preparePlayer(previewUrl)
-        return Service.START_NOT_STICKY
-    }
+//    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+//        previewUrl = intent?.getStringExtra("track") ?: ""
+//        preparePlayer(previewUrl)
+//        return Service.START_NOT_STICKY
+//    }
 
 
 
