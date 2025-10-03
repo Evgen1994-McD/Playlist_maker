@@ -6,8 +6,6 @@ import com.example.playlistmaker.data.search.impl.FavoriteTrackRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TrackRepositoryImpl
 import com.example.playlistmaker.domain.db.FavoriteInteractor
 import com.example.playlistmaker.domain.db.impl.FavoriteInteractorImpl
-import com.example.playlistmaker.domain.player.MediaInteractor
-import com.example.playlistmaker.domain.player.impl.MediaInteractorImpl
 import com.example.playlistmaker.domain.playlists.PlaylistInteractor
 import com.example.playlistmaker.domain.playlists.impl.PlaylistInteractorImpl
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
@@ -58,10 +56,6 @@ val interactorModule = module {
         ShareAppUseCaseImpl(get())
     }
 
-    //Media
-    factory<MediaInteractor> {
-        MediaInteractorImpl(get())
-    }
 
 single<FavoriteInteractor> {
     FavoriteInteractorImpl(get())

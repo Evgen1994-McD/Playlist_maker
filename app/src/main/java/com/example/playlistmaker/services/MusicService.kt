@@ -31,15 +31,16 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
+
 const val NOTIFICATION_CHANNEL_ID = "music_service_channel"
 const val NOTIFICATION_ID = 1
 private const val TRACK = "track"
 private const val ARTIST = "artistName"
 private const val TRACKNAME = "trackName"
-internal class MusicService : Service(),AudioPlayerControl {
+
+internal class MusicService : Service(), AudioPlayerControl {
 
     private var timerJob: Job? = null
-
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var previewUrl: String
     private lateinit var artistName: String
@@ -76,8 +77,6 @@ internal class MusicService : Service(),AudioPlayerControl {
     private val _playerState = MutableStateFlow<PlayerState>(PlayerState.Default())
 
 
-
-
     // Контроль состояния отображения уведомления
     fun setShouldShowNotification(show: Boolean) {
         shouldShowNotification = show
@@ -103,7 +102,6 @@ internal class MusicService : Service(),AudioPlayerControl {
     }
 
 
-
     fun stopPlayerAndReset() {
         if (mediaPlayer.isPlaying) {
             mediaPlayer.stop()
@@ -115,24 +113,24 @@ internal class MusicService : Service(),AudioPlayerControl {
     fun preparePlayer(previewUrl: String) {
         if (previewUrl.isEmpty()) return
 
-            try {
-                mediaPlayer?.reset()
-                mediaPlayer?.setDataSource(previewUrl)
-                mediaPlayer?.prepareAsync()
-                mediaPlayer?.setOnPreparedListener {
-                    Log.d("My_Log", "Media Player prepared")
-                    _playerState.value = PlayerState.Prepared()
+        try {
+            mediaPlayer?.reset()
+            mediaPlayer?.setDataSource(previewUrl)
+            mediaPlayer?.prepareAsync()
+            mediaPlayer?.setOnPreparedListener {
+                Log.d("My_Log", "Media Player prepared")
+                _playerState.value = PlayerState.Prepared()
 
-                }
-                mediaPlayer?.setOnCompletionListener {
-                    Log.d("MyLog", "Playback completed")
-                    timerJob?.cancel()
-                    _playerState.value  = PlayerState.Prepared()
-
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
             }
+            mediaPlayer?.setOnCompletionListener {
+                Log.d("MyLog", "Playback completed")
+                timerJob?.cancel()
+                _playerState.value = PlayerState.Prepared()
+
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
 
     }
 
@@ -140,17 +138,18 @@ internal class MusicService : Service(),AudioPlayerControl {
         val playerState = _playerState.asStateFlow()
         return playerState
     }
+
     override fun startPlayback() {
         mediaPlayer.start()
         _playerState.value = PlayerState.Playing(updateProgress())
-startTimer()
+        startTimer()
         Log.d("MyLog", "Плеер играет112")
 
     }
 
     override fun pausePlayback() {
         mediaPlayer.pause()
-        _playerState.value  = PlayerState.Paused(updateProgress())
+        _playerState.value = PlayerState.Paused(updateProgress())
         timerJob?.cancel()
         Log.d("MyLog", "Плеер на Паузе")
     }
@@ -161,16 +160,16 @@ startTimer()
         }
         timerJob?.cancel()
         mediaPlayer.release()
-        _playerState.value  = PlayerState.Default()
+        _playerState.value = PlayerState.Default()
         Log.d("MyLog", "Плеер освобождён")
     }
 
 
     fun updateProgress(): String {
 
-            val formattedTime =
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
-            return formattedTime
+        val formattedTime =
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+        return formattedTime
 
     }
 
@@ -178,7 +177,7 @@ startTimer()
         timerJob = CoroutineScope(Dispatchers.Default).launch {
             while (mediaPlayer?.isPlaying == true) {
                 delay(300L)
-                _playerState.value  = PlayerState.Playing(updateProgress())
+                _playerState.value = PlayerState.Playing(updateProgress())
 
             }
         }
@@ -200,7 +199,8 @@ startTimer()
         channel.description = "Service for playing music"
 
         // Регистрируем канал уведомлений
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 
@@ -208,12 +208,13 @@ startTimer()
 
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle(getString(R.string.app_name))
-            .setContentText(artistName+" - "+trackName)
+            .setContentText(artistName + " - " + trackName)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .build()
     }
+
     private fun getForegroundServiceTypeConstant(): Int {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK

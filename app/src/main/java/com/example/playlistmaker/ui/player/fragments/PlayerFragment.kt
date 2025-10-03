@@ -42,7 +42,6 @@ private const val ARTIST = "artistName"
 private const val TRACKNAME = "trackName"
 
 
-
 class PlayerFragment : Fragment() {
     private lateinit var adapter: PlayListAdapter
     private lateinit var currentTrackId: String
@@ -53,7 +52,7 @@ class PlayerFragment : Fragment() {
     private val noAlbum = "No Album"
     private var isVisible = true
     private var serviceIsBound = false
-    private lateinit var musicService : MusicService
+    private lateinit var musicService: MusicService
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -68,6 +67,7 @@ class PlayerFragment : Fragment() {
             serviceIsBound = false
         }
     }
+
     // Описали обработчик разрешения
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -77,7 +77,8 @@ class PlayerFragment : Fragment() {
             bindMusicService()
         } else {
             // Иначе просто покажем ошибку
-            Toast.makeText(requireContext(), "Can't start foreground service!", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Can't start foreground service!", Toast.LENGTH_LONG)
+                .show()
         }
     }
 
@@ -113,15 +114,15 @@ class PlayerFragment : Fragment() {
         }
 
 
-        viewModel.observePlayerState().observe(viewLifecycleOwner) {playerState ->
+        viewModel.observePlayerState().observe(viewLifecycleOwner) { playerState ->
             binding.progressTime.text = playerState.progress
             if (playerState.buttonText == PLAY) {
-                        binding.play.isPlaying = false
-                        binding.play.changeState(false)
-                    } else {
-                        binding.play.isPlaying = true
-                        binding.play.changeState(true)
-                    }
+                binding.play.isPlaying = false
+                binding.play.changeState(false)
+            } else {
+                binding.play.isPlaying = true
+                binding.play.changeState(true)
+            }
         }
 
     }
@@ -130,10 +131,11 @@ class PlayerFragment : Fragment() {
         super.onSaveInstanceState(outState)// Сохраняем факт видимости аудиоплеера
         outState.putBoolean("isAudioPlayerVisible", true) // Сохраняем факт видимости аудиоплеера
     }
+
     override fun onResume() {
         super.onResume()
         viewModel.intentGetExtraBind()
-isVisible = true
+        isVisible = true
         if (serviceIsBound) {
             (musicService as? MusicService)?.setShouldShowNotification(false)
         }
@@ -148,7 +150,6 @@ isVisible = true
         }
 
     }
-
 
 
     private fun composeTrack() {
@@ -183,10 +184,12 @@ isVisible = true
                         .transform(RoundedCorners(radiusInPX.toInt()))
                         .into(binding.imMine)
                 }
+
                 newState.collectionName.contains(noAlbum) -> {
                     binding.tvAlbum.makeGone()// убираем поле альбом если нет альбома
                     binding.tvAlbumLeft.makeGone()// убираем поле альбом если нет альбома
                 }
+
                 !newState.progress.isEmpty() -> binding.progressTime.text = newState.progress
             }
         }
@@ -225,9 +228,11 @@ isVisible = true
                     BottomSheetBehavior.STATE_EXPANDED -> {
                         // загружаем рекламный баннер
                     }
+
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         // останавливаем трейлер
                     }
+
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         binding.overlay.isVisible = false
                         bottomView.isVisible = true
@@ -240,15 +245,19 @@ isVisible = true
                     }
                 }
             }
+
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
     }
+
     private fun View.makeGone() {
         this.visibility = View.GONE // функция для вью гон
     }
+
     private fun View.makeVisible() {
         this.visibility = View.VISIBLE // функция для вью визибл
     }
+
     private fun View.makeInvisible() {
         this.visibility = View.INVISIBLE // функция для вью инвизибл
     }
@@ -261,6 +270,7 @@ isVisible = true
         viewModel.getLiveData.removeObservers(this) // отключил обсерверы от медиа
 
     }
+
     private fun saveAndDeleteFavoriteTrack(isLike: Boolean) {
         if (isLike) {
             binding.dislike.visibility = View.VISIBLE
@@ -283,6 +293,7 @@ isVisible = true
         }
 
     }
+
     private fun displayPlayLists() = with(binding) {
         rcView.layoutManager = LinearLayoutManager(requireContext())
         adapter = PlayListAdapter(listener = object : onPlaylistClickListener {
@@ -317,6 +328,7 @@ isVisible = true
             adapter.submitNewList(playlists)
         }
     }
+
     private fun bindMusicService() {
         val intent = Intent(requireContext(), MusicService::class.java).apply {
             val track = getTrackFromArguments()
@@ -327,6 +339,7 @@ isVisible = true
         requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
 
     }
+
     private fun unbindMusicService() {
         requireContext().unbindService(serviceConnection)
     }

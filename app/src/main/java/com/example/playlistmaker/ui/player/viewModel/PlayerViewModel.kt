@@ -9,7 +9,6 @@ import com.example.playlistmaker.domain.db.FavoriteInteractor
 import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
-import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.playlists.PlaylistInteractor
 import com.example.playlistmaker.services.AudioPlayerControl
 import kotlinx.coroutines.Job
@@ -17,16 +16,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val noAlbum = "No Album"
-private const val default_time = "00:00" // для прогресса
 
 class PlayerViewModel(
     private val favoriteTrackInteractor: FavoriteTrackInteractor,
-    private val mediaInteractor: MediaInteractor,
     private val trackFromArgs: Track,
     private val myLikedTracksInteractor: FavoriteInteractor,
     private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
-    private var timerJob: Job? = null
+
     private var audioPlayerControl: AudioPlayerControl? = null
     private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
     val getPlaylistsLiveData: LiveData<List<PlayList>> get() = mutablePlaylistLiveData
@@ -136,7 +133,6 @@ class PlayerViewModel(
                     mutableMediaScreen.value!!.copy(collectionName = collectionName)
                 Log.d("Mylog", previewUrl)
 
-                mediaInteractor.preparePlayer(previewUrl)
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
                     trackName = trackName,
                     primaryGenreName = primaryGenreName,
@@ -179,8 +175,6 @@ class PlayerViewModel(
             val artworkUrl100 = track.artworkUrl100
             val trackId = track.trackId
 
-            val previewUrl = track.previewUrl
-            mediaInteractor.preparePlayer(previewUrl)
             mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
                 trackName = trackName,
                 trackTimeMillis = trackTimeMillis,
