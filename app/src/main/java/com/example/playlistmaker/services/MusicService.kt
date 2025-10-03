@@ -12,13 +12,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-internal class MusicService : Service() {
+internal class MusicService : Service(),AudioPlayerControl {
 
     private var timerJob: Job? = null
 
@@ -46,7 +47,7 @@ internal class MusicService : Service() {
 
 
     private val _playerState = MutableStateFlow<PlayerState>(PlayerState.Default())
-    val playerState = _playerState.asStateFlow()
+
 
 
 
@@ -90,7 +91,11 @@ internal class MusicService : Service() {
 
     }
 
-    fun startPlayback() {
+    override fun getPlayerState(): StateFlow<PlayerState> {
+        val playerState = _playerState.asStateFlow()
+        return playerState
+    }
+    override fun startPlayback() {
         mediaPlayer.start()
         _playerState.value = PlayerState.Playing(updateProgress())
 startTimer()
@@ -98,7 +103,7 @@ startTimer()
 
     }
 
-    fun pausePlayback() {
+    override fun pausePlayback() {
         mediaPlayer.pause()
         _playerState.value  = PlayerState.Paused(updateProgress())
         timerJob?.cancel()

@@ -36,50 +36,28 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
+private const val PLAY = "PLAY"
+private const val PAUSE = "PAUSE"
+
 class PlayerFragment : Fragment() {
     private lateinit var adapter: PlayListAdapter
     private lateinit var currentTrackId: String
     private lateinit var binding: FragmentPlayerBinding // делаю байдинг
-
-
     private val viewModel: PlayerViewModel by viewModel { parametersOf(getTrackFromArguments()) }
     private lateinit var bottomSheetContainer: LinearLayout
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
-    /*
-    by ViewModel привяжет вьюмодел к циклу жизни фрагмента
-     */
-
-
-    companion object { // компаньон медиаплеера
-        private const val noAlbum = "No Album"
-
-
-    }
-
-
-
-    private var musicService: MusicService? = null
-    private var playerState: PlayerState = PlayerState.Default()
+    private val noAlbum = "No Album"
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as MusicService.MusicServiceBinder
-            musicService = binder.getService()
-            lifecycleScope.launch {
-                musicService?.playerState?.collect {
-                    playerState = it
-                    binding.progressTime.text = playerState.progress
+            viewModel.setAudioPlayerControl(binder.getService())
 
-                        // updateButtonAndProgress()
-                }
-
-            }
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-            musicService = null
+            viewModel.removeAudioPlayerControl()
         }
     }
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,28 +75,23 @@ class PlayerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         bindMusicService()
         clicker()
-
         viewModel.getAllPlaylist()
         displayPlayLists()
-
-
-        /*
-        Сохраняю трек в таблицу треков, далее бандлом отправляю Id на фрагмент создания плейлиста,
-        Там запишу этот Id в результате создания нового плейлиста
-         */
-
-
-
-
-        viewModel.addListeners() // добавил листенеры
-
         viewModel.intentGetExtraBind()
-
         composeTrack()
 
+        viewModel.observePlayerState().observe(viewLifecycleOwner) {playerState ->
+            binding.progressTime.text = playerState.progress
+            if (playerState.buttonText == PLAY) {
+                        binding.play.isPlaying = false
+                        binding.play.changeState(false)
+                    } else {
+                        binding.play.isPlaying = true
+                        binding.play.changeState(true)
+                    }
+        }
 
     }
 
@@ -126,22 +99,17 @@ class PlayerFragment : Fragment() {
         super.onSaveInstanceState(outState)// Сохраняем факт видимости аудиоплеера
         outState.putBoolean("isAudioPlayerVisible", true) // Сохраняем факт видимости аудиоплеера
     }
-
-
     override fun onResume() {
         super.onResume()
         viewModel.intentGetExtraBind()
 
     }
-
     private fun composeTrack() {
         viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
             when {
                 !newState.trackName.isEmpty() && !newState.collectionName.contains(noAlbum) -> {
 
                     saveAndDeleteFavoriteTrack(newState.isLike)
-                    binding.play.isPlaying = newState.isPlaying
-                    binding.play.changeState(newState.isPlaying)
 
                     binding.tvGenre.text = newState.primaryGenreName
                     binding.tvCountry.text = newState.country
@@ -154,7 +122,6 @@ class PlayerFragment : Fragment() {
                     binding.tvGroup.text = newState.artistName
                     binding.tvTrackName.text = newState.trackName
 
-//                    binding.progressTime.text = newState.progress
                     val options = RequestOptions().centerCrop()//опции для Glide
                     val radiusInDP = 8f
                     val radiusInPX = TypedValue.applyDimension(
@@ -169,79 +136,51 @@ class PlayerFragment : Fragment() {
                         .transform(RoundedCorners(radiusInPX.toInt()))
                         .into(binding.imMine)
                 }
-
                 newState.collectionName.contains(noAlbum) -> {
                     binding.tvAlbum.makeGone()// убираем поле альбом если нет альбома
                     binding.tvAlbumLeft.makeGone()// убираем поле альбом если нет альбома
                 }
-
                 !newState.progress.isEmpty() -> binding.progressTime.text = newState.progress
             }
         }
     }
 
     private fun clicker() {
-
-
         val bottomView =
             requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
-
-
         binding.addOnPlaylist.setOnClickListener {
             binding.bottomSheet.isVisible = true
             binding.overlay.isVisible = true
             bottomView.isVisible = false
-
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
-
         binding.overlay.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
-
         binding.btNewPlaylist.setOnClickListener {
             currentTrackId = viewModel.getLiveData.value?.trackId.toString()
-
             findNavController().navigate(R.id.addPlayListFragment)
         }
-
         binding.play.setOnClickListener {
-            if (binding.play.isPlaying) {
-                musicService?.startPlayback()
-//                viewModel.mediaCommander(PlayerCommand.Play)
-//                viewModel.startUpdateProgress()
-            } else {
-                musicService?.pausePlayback()
+            viewModel.onPlayerButtonClicked()
 
-//                viewModel.mediaCommander(PlayerCommand.Pause)
-//                viewModel.stopUpdateProgress()
-            }
         }
-
-
-
         bottomSheetContainer = binding.bottomSheet
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
-
-
-
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 // newState — новое состояние BottomSheet
                 when (newState) {
                     BottomSheetBehavior.STATE_EXPANDED -> {
-
                         // загружаем рекламный баннер
                     }
-
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         // останавливаем трейлер
                     }
-
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         binding.overlay.isVisible = false
                         bottomView.isVisible = true
@@ -254,45 +193,29 @@ class PlayerFragment : Fragment() {
                     }
                 }
             }
-
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
-
-
     }
-
-
     private fun View.makeGone() {
         this.visibility = View.GONE // функция для вью гон
     }
-
     private fun View.makeVisible() {
         this.visibility = View.VISIBLE // функция для вью визибл
     }
-
     private fun View.makeInvisible() {
         this.visibility = View.INVISIBLE // функция для вью инвизибл
     }
-
     override fun onPause() { //пауза когда сворачиваем
         super.onPause()
-        viewModel.mediaCommander(PlayerCommand.Pause)
-        viewModel.stopUpdateProgress()
-
-
     }
 
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
         unbindMusicService()
-
-        viewModel.reliesePlayer()
         viewModel.getPlaylistsLiveData.removeObservers(this)
         viewModel.getLiveData.removeObservers(this) // отключил обсерверы от медиа
 
     }
-
-
     private fun saveAndDeleteFavoriteTrack(isLike: Boolean) {
         if (isLike) {
             binding.dislike.visibility = View.VISIBLE
@@ -302,26 +225,19 @@ class PlayerFragment : Fragment() {
             binding.dislike.visibility = View.INVISIBLE
             binding.like.visibility = View.VISIBLE
         }
-
-
-
         binding.like.setOnClickListener {
-
             viewModel.saveTrackToFavorite()
             binding.like.visibility = View.INVISIBLE
             binding.dislike.visibility = View.VISIBLE
-
         }
 
         binding.dislike.setOnClickListener {
             binding.like.visibility = View.VISIBLE
             binding.dislike.visibility = View.INVISIBLE
             viewModel.deleteTrackFromFavorite()
-
         }
 
     }
-
     private fun displayPlayLists() = with(binding) {
         rcView.layoutManager = LinearLayoutManager(requireContext())
         adapter = PlayListAdapter(listener = object : onPlaylistClickListener {
@@ -334,18 +250,14 @@ class PlayerFragment : Fragment() {
                     ).show()
                 } else {
                     viewModel.insertTrackInPlaylistsTable(playList)
-
-
-
                     viewModel.getLiveData.observe(viewLifecycleOwner) { state ->
                         if (state.isSuccess) {
-                                Snackbar.make(
-                                    requireView(),
-                                    getString(R.string.add_in) + " ${playList.name}",
-                                    Snackbar.LENGTH_SHORT
-                                ).show()
-                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
+                            Snackbar.make(
+                                requireView(),
+                                getString(R.string.add_in) + " ${playList.name}",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                         }
                     }
 
@@ -360,19 +272,15 @@ class PlayerFragment : Fragment() {
             adapter.submitNewList(playlists)
         }
     }
-
-
-    private fun bindMusicService(){
+    private fun bindMusicService() {
         val intent = Intent(requireContext(), MusicService::class.java).apply {
             val track = getTrackFromArguments()
             putExtra("track", track?.previewUrl)
         }
-
         requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
 
     }
-
-    private fun unbindMusicService(){
+    private fun unbindMusicService() {
         requireContext().unbindService(serviceConnection)
     }
 
