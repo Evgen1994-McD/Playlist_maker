@@ -1,9 +1,11 @@
 package com.example.playlistmaker.ui.player.fragments
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -12,9 +14,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -25,19 +28,20 @@ import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.services.MusicService
 import com.example.playlistmaker.ui.media.onPlaylistClickListener
-import com.example.playlistmaker.ui.player.viewModel.PlayerCommand
-import com.example.playlistmaker.ui.player.viewModel.PlayerState
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import com.example.playlistmaker.utils.getTrackFromArguments
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 private const val PLAY = "PLAY"
-private const val PAUSE = "PAUSE"
+private const val TRACK = "track"
+private const val ARTIST = "artistName"
+private const val TRACKNAME = "trackName"
+
+
 
 class PlayerFragment : Fragment() {
     private lateinit var adapter: PlayListAdapter
@@ -47,18 +51,35 @@ class PlayerFragment : Fragment() {
     private lateinit var bottomSheetContainer: LinearLayout
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private val noAlbum = "No Album"
+    private var isVisible = true
+    private var serviceIsBound = false
+    private lateinit var musicService : MusicService
+
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as MusicService.MusicServiceBinder
             viewModel.setAudioPlayerControl(binder.getService())
-
+            musicService = binder.getService()
+            serviceIsBound = true
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
             viewModel.removeAudioPlayerControl()
+            serviceIsBound = false
         }
     }
-
+    // Описали обработчик разрешения
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Если выдали разрешение — запускаем сервис.
+            bindMusicService()
+        } else {
+            // Иначе просто покажем ошибку
+            Toast.makeText(requireContext(), "Can't start foreground service!", Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +103,16 @@ class PlayerFragment : Fragment() {
         viewModel.intentGetExtraBind()
         composeTrack()
 
+        // На версии Android 13 и выше — сначала запросим разрешение
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            // На версиях ниже Android 13 —
+            // можно сразу стартовать сервис.
+            bindMusicService()
+        }
+
+
         viewModel.observePlayerState().observe(viewLifecycleOwner) {playerState ->
             binding.progressTime.text = playerState.progress
             if (playerState.buttonText == PLAY) {
@@ -102,8 +133,24 @@ class PlayerFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.intentGetExtraBind()
+isVisible = true
+        if (serviceIsBound) {
+            (musicService as? MusicService)?.setShouldShowNotification(false)
+        }
 
     }
+
+    override fun onPause() { //пауза когда сворачиваем
+        super.onPause()
+        isVisible = false
+        if (serviceIsBound) {
+            (musicService as? MusicService)?.setShouldShowNotification(true)
+        }
+
+    }
+
+
+
     private fun composeTrack() {
         viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
             when {
@@ -205,9 +252,7 @@ class PlayerFragment : Fragment() {
     private fun View.makeInvisible() {
         this.visibility = View.INVISIBLE // функция для вью инвизибл
     }
-    override fun onPause() { //пауза когда сворачиваем
-        super.onPause()
-    }
+
 
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
@@ -275,7 +320,9 @@ class PlayerFragment : Fragment() {
     private fun bindMusicService() {
         val intent = Intent(requireContext(), MusicService::class.java).apply {
             val track = getTrackFromArguments()
-            putExtra("track", track?.previewUrl)
+            putExtra(TRACK, track?.previewUrl)
+            putExtra(ARTIST, track?.artistName)
+            putExtra(TRACKNAME, track?.trackName)
         }
         requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
 

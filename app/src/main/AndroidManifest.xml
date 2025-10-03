@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Для показа уведомления foreground-сервиса -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Для запуска foreground-сервиса -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
     <application
         android:name=".App"
@@ -16,12 +22,12 @@
 
         tools:targetApi="35">
 
-<service android:name=".services.MusicService"
-    android:exported="false"
-    >
-
-</service>
-
+        <service
+            android:name=".services.MusicService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback"> <!-- добавляем сюда -->
+        </service>
 
 
 
