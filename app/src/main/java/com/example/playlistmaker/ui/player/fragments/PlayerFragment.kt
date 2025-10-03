@@ -28,6 +28,7 @@ import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.services.MusicService
 import com.example.playlistmaker.ui.media.onPlaylistClickListener
+import com.example.playlistmaker.ui.player.viewModel.PlayerState
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import com.example.playlistmaker.utils.getTrackFromArguments
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -50,7 +51,7 @@ class PlayerFragment : Fragment() {
     private lateinit var bottomSheetContainer: LinearLayout
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private val noAlbum = "No Album"
-    private var isVisible = true
+    private var isPlaying = true
     private var serviceIsBound = false
     private lateinit var musicService: MusicService
 
@@ -116,10 +117,17 @@ class PlayerFragment : Fragment() {
 
         viewModel.observePlayerState().observe(viewLifecycleOwner) { playerState ->
             binding.progressTime.text = playerState.progress
+
+            if (playerState is PlayerState.Prepared) {
+                viewModel.setNotificationVisible(false)
+            }
+
             if (playerState.buttonText == PLAY) {
+                isPlaying = false
                 binding.play.isPlaying = false
                 binding.play.changeState(false)
             } else {
+                isPlaying = true
                 binding.play.isPlaying = true
                 binding.play.changeState(true)
             }
@@ -135,20 +143,22 @@ class PlayerFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.intentGetExtraBind()
-        isVisible = true
         if (serviceIsBound) {
-            (musicService as? MusicService)?.setShouldShowNotification(false)
+            viewModel.setNotificationVisible(false)
         }
 
     }
 
     override fun onPause() { //пауза когда сворачиваем
         super.onPause()
-        isVisible = false
         if (serviceIsBound) {
-            (musicService as? MusicService)?.setShouldShowNotification(true)
-        }
+if (isPlaying){
+    viewModel.setNotificationVisible(true)
 
+}else {
+    viewModel.setNotificationVisible(false)
+}
+        }
     }
 
 

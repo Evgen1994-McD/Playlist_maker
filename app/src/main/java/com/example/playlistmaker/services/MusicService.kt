@@ -78,7 +78,7 @@ internal class MusicService : Service(), AudioPlayerControl {
 
 
     // Контроль состояния отображения уведомления
-    fun setShouldShowNotification(show: Boolean) {
+   override fun setShouldShowNotification(show: Boolean) {
         shouldShowNotification = show
         updateNotificationVisibility()
     }
@@ -102,13 +102,6 @@ internal class MusicService : Service(), AudioPlayerControl {
     }
 
 
-    fun stopPlayerAndReset() {
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.stop()
-        }
-        mediaPlayer.reset()
-    }
-
 
     fun preparePlayer(previewUrl: String) {
         if (previewUrl.isEmpty()) return
@@ -124,8 +117,8 @@ internal class MusicService : Service(), AudioPlayerControl {
             }
             mediaPlayer?.setOnCompletionListener {
                 Log.d("MyLog", "Playback completed")
-                timerJob?.cancel()
-                _playerState.value = PlayerState.Prepared()
+                handlePlaybackCompleted()
+
 
             }
         } catch (e: IOException) {
@@ -184,6 +177,14 @@ internal class MusicService : Service(), AudioPlayerControl {
 
     }
 
+    // Обработчик завершения воспроизведения
+    private fun handlePlaybackCompleted() {
+        // После окончания воспроизведения убиваем таймер и очищаем прогресс
+        timerJob?.cancel()
+        _playerState.value = PlayerState.Prepared()
+        // Устанавливаем флаг, чтобы убрать уведомление
+        setShouldShowNotification(false)
+    }
 
     private fun createNotificationChannel() {
         // Создание каналов доступно только с Android 8.0

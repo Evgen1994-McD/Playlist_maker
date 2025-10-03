@@ -53,6 +53,11 @@ class PlayerViewModel(
     }
 
 
+    fun setNotificationVisible(show:Boolean){
+   audioPlayerControl?.setShouldShowNotification(show)
+    }
+
+
     fun onPlayerButtonClicked() {
         if (playerStateData.value is PlayerState.Playing) {
             audioPlayerControl?.pausePlayback()
