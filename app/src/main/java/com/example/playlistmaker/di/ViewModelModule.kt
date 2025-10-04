@@ -38,10 +38,9 @@ val viewModelModule = module {
     viewModel { params ->
         PlayerViewModel(
             get(),
-            get(),
             params.get(),
-            get(),// в качестве парамс тут интент передаю в активити
-        get()
+            get(),
+            get()// в качестве парамс тут интент передаю в активити
             )
     }
 

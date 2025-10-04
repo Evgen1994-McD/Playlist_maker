@@ -1,15 +1,23 @@
 package com.example.playlistmaker.ui.player.fragments
 
+import android.Manifest
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -18,8 +26,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.models.PlayList
+import com.example.playlistmaker.services.MusicService
 import com.example.playlistmaker.ui.media.onPlaylistClickListener
-import com.example.playlistmaker.ui.player.viewModel.PlayerCommand
+import com.example.playlistmaker.ui.player.viewModel.PlayerState
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
 import com.example.playlistmaker.utils.getTrackFromArguments
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -28,29 +37,54 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
+private const val PLAY = "PLAY"
+private const val TRACK = "track"
+private const val ARTIST = "artistName"
+private const val TRACKNAME = "trackName"
+
+
 class PlayerFragment : Fragment() {
     private lateinit var adapter: PlayListAdapter
     private lateinit var currentTrackId: String
     private lateinit var binding: FragmentPlayerBinding // делаю байдинг
-
     private val viewModel: PlayerViewModel by viewModel { parametersOf(getTrackFromArguments()) }
     private lateinit var bottomSheetContainer: LinearLayout
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
-    /*
-    by ViewModel привяжет вьюмодел к циклу жизни фрагмента
-     */
+    private val noAlbum = "No Album"
+    private var isPlaying = true
+    private var serviceIsBound = false
+    private lateinit var musicService: MusicService
 
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.MusicServiceBinder
+            viewModel.setAudioPlayerControl(binder.getService())
+            musicService = binder.getService()
+            serviceIsBound = true
+        }
 
-    companion object { // компаньон медиаплеера
-        private const val noAlbum = "No Album"
-
-
+        override fun onServiceDisconnected(name: ComponentName?) {
+            viewModel.removeAudioPlayerControl()
+            serviceIsBound = false
+        }
     }
 
+    // Описали обработчик разрешения
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Если выдали разрешение — запускаем сервис.
+            bindMusicService()
+        } else {
+            // Иначе просто покажем ошибку
+            Toast.makeText(requireContext(), "Can't start foreground service!", Toast.LENGTH_LONG)
+                .show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -64,27 +98,40 @@ class PlayerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        bindMusicService()
         clicker()
-
         viewModel.getAllPlaylist()
         displayPlayLists()
-
-
-        /*
-        Сохраняю трек в таблицу треков, далее бандлом отправляю Id на фрагмент создания плейлиста,
-        Там запишу этот Id в результате создания нового плейлиста
-         */
-
-
-
-
-        viewModel.addListeners() // добавил листенеры
-
         viewModel.intentGetExtraBind()
-
         composeTrack()
 
+        // На версии Android 13 и выше — сначала запросим разрешение
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            // На версиях ниже Android 13 —
+            // можно сразу стартовать сервис.
+            bindMusicService()
+        }
+
+
+        viewModel.observePlayerState().observe(viewLifecycleOwner) { playerState ->
+            binding.progressTime.text = playerState.progress
+
+            if (playerState is PlayerState.Prepared) {
+                viewModel.setNotificationVisible(false)
+            }
+
+            if (playerState.buttonText == PLAY) {
+                isPlaying = false
+                binding.play.isPlaying = false
+                binding.play.changeState(false)
+            } else {
+                isPlaying = true
+                binding.play.isPlaying = true
+                binding.play.changeState(true)
+            }
+        }
 
     }
 
@@ -93,12 +140,27 @@ class PlayerFragment : Fragment() {
         outState.putBoolean("isAudioPlayerVisible", true) // Сохраняем факт видимости аудиоплеера
     }
 
-
     override fun onResume() {
         super.onResume()
         viewModel.intentGetExtraBind()
+        if (serviceIsBound) {
+            viewModel.setNotificationVisible(false)
+        }
 
     }
+
+    override fun onPause() { //пауза когда сворачиваем
+        super.onPause()
+        if (serviceIsBound) {
+if (isPlaying){
+    viewModel.setNotificationVisible(true)
+
+}else {
+    viewModel.setNotificationVisible(false)
+}
+        }
+    }
+
 
     private fun composeTrack() {
         viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
@@ -106,8 +168,6 @@ class PlayerFragment : Fragment() {
                 !newState.trackName.isEmpty() && !newState.collectionName.contains(noAlbum) -> {
 
                     saveAndDeleteFavoriteTrack(newState.isLike)
-                    binding.play.isPlaying = newState.isPlaying
-                    binding.play.changeState(newState.isPlaying)
 
                     binding.tvGenre.text = newState.primaryGenreName
                     binding.tvCountry.text = newState.country
@@ -120,7 +180,6 @@ class PlayerFragment : Fragment() {
                     binding.tvGroup.text = newState.artistName
                     binding.tvTrackName.text = newState.trackName
 
-                    binding.progressTime.text = newState.progress
                     val options = RequestOptions().centerCrop()//опции для Glide
                     val radiusInDP = 8f
                     val radiusInPX = TypedValue.applyDimension(
@@ -147,57 +206,36 @@ class PlayerFragment : Fragment() {
     }
 
     private fun clicker() {
-
-
         val bottomView =
             requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
-
-
         binding.addOnPlaylist.setOnClickListener {
             binding.bottomSheet.isVisible = true
             binding.overlay.isVisible = true
             bottomView.isVisible = false
-
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
-
         binding.overlay.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
-
         binding.btNewPlaylist.setOnClickListener {
             currentTrackId = viewModel.getLiveData.value?.trackId.toString()
-
             findNavController().navigate(R.id.addPlayListFragment)
         }
-
         binding.play.setOnClickListener {
-            if (binding.play.isPlaying) {
-                viewModel.mediaCommander(PlayerCommand.Play)
-                viewModel.startUpdateProgress()
-            } else {
-                viewModel.mediaCommander(PlayerCommand.Pause)
-                viewModel.stopUpdateProgress()
-            }
+            viewModel.onPlayerButtonClicked()
+
         }
-
-
-
         bottomSheetContainer = binding.bottomSheet
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
-
-
-
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 // newState — новое состояние BottomSheet
                 when (newState) {
                     BottomSheetBehavior.STATE_EXPANDED -> {
-
                         // загружаем рекламный баннер
                     }
 
@@ -220,10 +258,7 @@ class PlayerFragment : Fragment() {
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
-
-
     }
-
 
     private fun View.makeGone() {
         this.visibility = View.GONE // функция для вью гон
@@ -237,23 +272,14 @@ class PlayerFragment : Fragment() {
         this.visibility = View.INVISIBLE // функция для вью инвизибл
     }
 
-    override fun onPause() { //пауза когда сворачиваем
-        super.onPause()
-        viewModel.mediaCommander(PlayerCommand.Pause)
-        viewModel.stopUpdateProgress()
-
-
-    }
 
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
-
-        viewModel.reliesePlayer()
+        unbindMusicService()
         viewModel.getPlaylistsLiveData.removeObservers(this)
         viewModel.getLiveData.removeObservers(this) // отключил обсерверы от медиа
 
     }
-
 
     private fun saveAndDeleteFavoriteTrack(isLike: Boolean) {
         if (isLike) {
@@ -264,22 +290,16 @@ class PlayerFragment : Fragment() {
             binding.dislike.visibility = View.INVISIBLE
             binding.like.visibility = View.VISIBLE
         }
-
-
-
         binding.like.setOnClickListener {
-
             viewModel.saveTrackToFavorite()
             binding.like.visibility = View.INVISIBLE
             binding.dislike.visibility = View.VISIBLE
-
         }
 
         binding.dislike.setOnClickListener {
             binding.like.visibility = View.VISIBLE
             binding.dislike.visibility = View.INVISIBLE
             viewModel.deleteTrackFromFavorite()
-
         }
 
     }
@@ -296,18 +316,14 @@ class PlayerFragment : Fragment() {
                     ).show()
                 } else {
                     viewModel.insertTrackInPlaylistsTable(playList)
-
-
-
                     viewModel.getLiveData.observe(viewLifecycleOwner) { state ->
                         if (state.isSuccess) {
-                                Snackbar.make(
-                                    requireView(),
-                                    getString(R.string.add_in) + " ${playList.name}",
-                                    Snackbar.LENGTH_SHORT
-                                ).show()
-                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
+                            Snackbar.make(
+                                requireView(),
+                                getString(R.string.add_in) + " ${playList.name}",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                         }
                     }
 
@@ -321,6 +337,21 @@ class PlayerFragment : Fragment() {
         viewModel.getPlaylistsLiveData.observe(viewLifecycleOwner) { playlists ->
             adapter.submitNewList(playlists)
         }
+    }
+
+    private fun bindMusicService() {
+        val intent = Intent(requireContext(), MusicService::class.java).apply {
+            val track = getTrackFromArguments()
+            putExtra(TRACK, track?.previewUrl)
+            putExtra(ARTIST, track?.artistName)
+            putExtra(TRACKNAME, track?.trackName)
+        }
+        requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+
+    }
+
+    private fun unbindMusicService() {
+        requireContext().unbindService(serviceConnection)
     }
 
 }

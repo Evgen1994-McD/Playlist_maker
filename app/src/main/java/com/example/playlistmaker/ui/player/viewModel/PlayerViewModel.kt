@@ -1,62 +1,84 @@
 package com.example.playlistmaker.ui.player.viewModel
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.copy
 import com.example.playlistmaker.domain.db.FavoriteInteractor
 import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
-import com.example.playlistmaker.domain.player.MediaInteractor
 import com.example.playlistmaker.domain.playlists.PlaylistInteractor
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
+import com.example.playlistmaker.services.AudioPlayerControl
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.ensureActive
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class PlayerViewModel(private val favoriteTrackInteractor: FavoriteTrackInteractor,
-                               private val mediaInteractor: MediaInteractor,
+private const val noAlbum = "No Album"
+
+class PlayerViewModel(
+    private val favoriteTrackInteractor: FavoriteTrackInteractor,
     private val trackFromArgs: Track,
-    private val myLikedTracksInteractor:FavoriteInteractor,
+    private val myLikedTracksInteractor: FavoriteInteractor,
     private val playlistInteractor: PlaylistInteractor
-) : ViewModel(){
-    private var timerJob :Job? = null
-
-    companion object { // компаньон медиаплеера
-        private const val default_time = "00:00" // для прогресса
-        private const val noAlbum = "No Album"
-
-    }
-
-
-
-private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
-
-    val getPlaylistsLiveData : LiveData<List<PlayList>> get() = mutablePlaylistLiveData
-
+) : ViewModel() {
+    private var job: Job? = null
+    private var audioPlayerControl: AudioPlayerControl? = null
+    private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
+    val getPlaylistsLiveData: LiveData<List<PlayList>> get() = mutablePlaylistLiveData
     private val mutableMediaScreen = MutableLiveData(
         PlayerScreenState()
     )
-
-
     val getLiveData: LiveData<PlayerScreenState> get() = mutableMediaScreen
 
 
-    fun getAllPlaylist()=viewModelScope.launch{
-     mutablePlaylistLiveData.value =   playlistInteractor.getAllPlayList()
+    private val playerStateData = MutableLiveData<PlayerState>(PlayerState.Default())
+    fun observePlayerState(): LiveData<PlayerState> = playerStateData
+
+
+    fun getAllPlaylist() = viewModelScope.launch {
+        mutablePlaylistLiveData.value = playlistInteractor.getAllPlayList()
     }
 
 
+    fun setAudioPlayerControl(audioPlayerControl: AudioPlayerControl) {
+        this.audioPlayerControl = audioPlayerControl
+
+        if (job?.isActive != true) {
+            job = viewModelScope.launch {
+                audioPlayerControl.getPlayerState().collect {
+                    playerStateData.postValue(it)
+                }
+            }
+        }
+    }
 
 
-    fun compareTracksIds(playList: PlayList): Boolean{
+    fun setNotificationVisible(show:Boolean){
+   audioPlayerControl?.setShouldShowNotification(show)
+    }
+
+
+    fun onPlayerButtonClicked() {
+        if (playerStateData.value is PlayerState.Playing) {
+            audioPlayerControl?.pausePlayback()
+        } else {
+            audioPlayerControl?.startPlayback()
+        }
+    }
+
+    fun removeAudioPlayerControl() {
+        audioPlayerControl = null
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        audioPlayerControl = null
+    }
+
+
+    fun compareTracksIds(playList: PlayList): Boolean {
         val playlistIds = playList.tracksId.split(",")
         val currentTrackId = trackFromArgs.trackId
         return playlistIds.contains(currentTrackId)
@@ -64,15 +86,18 @@ private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
     }
 
     fun insertTrackInPlaylistsTable(playList: PlayList) = viewModelScope.launch {
-       playlistInteractor.insertTrackInTrackTable(trackFromArgs)
-        val updatedPlaylist = playList.copy(tracksId = "${playList.tracksId},${trackFromArgs.trackId}", size = playList.size + 1)
+        playlistInteractor.insertTrackInTrackTable(trackFromArgs)
+        val updatedPlaylist = playList.copy(
+            tracksId = "${playList.tracksId},${trackFromArgs.trackId}",
+            size = playList.size + 1
+        )
         val playlistForSave = playlistInteractor.insertPlayList(updatedPlaylist)
 
         val allPlaylists = playlistInteractor.getAllPlayList()
         mutablePlaylistLiveData.postValue(allPlaylists)
 
         if (playlistForSave >= 0) {
-         mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(isSuccess = true))
+            mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(isSuccess = true))
             delay(50)
             mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(isSuccess = false))
 
@@ -83,89 +108,13 @@ private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
     }
 
 
-
-
-    fun addListeners() {
-        mediaInteractor.addListeners(
-            ::onPlayerReady, ::onPlayComplete
-        )  // листенер для определения начала и окончания воспроизведения
-
-    }
-
-
-    fun reliesePlayer(){
-        mediaInteractor.releasePlayer()
-        stopUpdateProgress()
-
-    }
-
-    private fun onPlayerReady() { // это функция для листенера
-        startUpdateProgress()
-        mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isPlaying = false)
-    }
-
-    private fun onPlayComplete() { // это тоже
-        stopUpdateProgress()
-
-        mutableMediaScreen.value?.let {
-            mutableMediaScreen.value = it.copy(progress = default_time, isPlaying = false)
-        }
-            addListeners()
-            intentGetExtraBind()
-
-    }
-
-    fun stopUpdateProgress() {
-timerJob?.cancel()
-    }
-
-    @SuppressLint("SuspiciousIndentation")
-    fun startUpdateProgress() {
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            try {
-
-                while (isActive && mutableMediaScreen.value!!.isPlaying) {
-                    delay(300L)
-                    ensureActive()
-                    val progress = mediaInteractor.updateProgress()
-                    mutableMediaScreen.postValue(mutableMediaScreen.value!!.copy(progress = progress))
-
-                }
-            } catch (ex: CancellationException){
-            }
-
-        }
-
-
-
-    }
-
-
-    fun mediaCommander(command: PlayerCommand) {
-        when (command) {
-            is PlayerCommand.Play -> {
-                mediaInteractor.startPlayback()
-                mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isPlaying = true)
-                startUpdateProgress()
-
-            }
-            is PlayerCommand.Pause -> {
-                stopUpdateProgress()
-                mediaInteractor.pausePlayback()
-                mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isPlaying = false)
-
-            }
-
-        }
-    }
-
     fun intentGetExtraBind() {
 
         if (!trackFromArgs?.trackName
-                .isNullOrEmpty()) {
+                .isNullOrEmpty()
+        ) {
 
-controlIsLike(trackFromArgs)
+            controlIsLike(trackFromArgs)
             val trackName = trackFromArgs.trackName
             val previewUrl = trackFromArgs.previewUrl
 
@@ -179,19 +128,18 @@ controlIsLike(trackFromArgs)
 
             if (trackFromArgs.collectionName
                     ?.isNullOrEmpty() == true || trackFromArgs.collectionName
-                        ?.contains("No Album") == true // Если нет альбома или ответ сервера содержит No Album то убираем поле с альбомом
+                    ?.contains("No Album") == true // Если нет альбома или ответ сервера содержит No Album то убираем поле с альбомом
             ) {
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(collectionName = noAlbum)
 
 
             } else {
                 val collectionName = trackFromArgs.collectionName
-                    // убираем поле альбом если нет альбома
+                // убираем поле альбом если нет альбома
                 mutableMediaScreen.value =
                     mutableMediaScreen.value!!.copy(collectionName = collectionName)
-                Log.d("Mylog" , previewUrl)
+                Log.d("Mylog", previewUrl)
 
-                mediaInteractor.preparePlayer(previewUrl)
                 mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
                     trackName = trackName,
                     primaryGenreName = primaryGenreName,
@@ -205,15 +153,10 @@ controlIsLike(trackFromArgs)
 
 
             }
-        } else if (!favoriteTrackInteractor.getAllTracksFromStorage().isNullOrEmpty()){
+        } else if (!favoriteTrackInteractor.getAllTracksFromStorage().isNullOrEmpty()) {
             loadLastLikedTrack()
         } else return
     }
-
-
-
-
-
 
 
     fun loadLastLikedTrack() {// убираем поле альбом если нет альбома
@@ -239,8 +182,6 @@ controlIsLike(trackFromArgs)
             val artworkUrl100 = track.artworkUrl100
             val trackId = track.trackId
 
-            val previewUrl = track.previewUrl
-            mediaInteractor.preparePlayer(previewUrl)
             mutableMediaScreen.value = mutableMediaScreen.value!!.copy(
                 trackName = trackName,
                 trackTimeMillis = trackTimeMillis,
@@ -255,13 +196,14 @@ controlIsLike(trackFromArgs)
         }
     }
 
-    fun saveTrackToFavorite()= viewModelScope.launch{
+    fun saveTrackToFavorite() = viewModelScope.launch {
         mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isLike = true)
 
-  myLikedTracksInteractor.saveTrackToFavorite(trackFromArgs)
+        myLikedTracksInteractor.saveTrackToFavorite(trackFromArgs)
 
     }
-    fun deleteTrackFromFavorite()= viewModelScope.launch{
+
+    fun deleteTrackFromFavorite() = viewModelScope.launch {
         myLikedTracksInteractor.deleteTrackFromFavorite(trackFromArgs)
         mutableMediaScreen.value = mutableMediaScreen.value!!.copy(isLike = false)
 
