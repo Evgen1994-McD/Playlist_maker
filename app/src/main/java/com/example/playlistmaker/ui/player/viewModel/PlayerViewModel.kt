@@ -23,7 +23,7 @@ class PlayerViewModel(
     private val myLikedTracksInteractor: FavoriteInteractor,
     private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
-
+    private var job: Job? = null
     private var audioPlayerControl: AudioPlayerControl? = null
     private val mutablePlaylistLiveData = MutableLiveData<List<PlayList>>()
     val getPlaylistsLiveData: LiveData<List<PlayList>> get() = mutablePlaylistLiveData
@@ -45,9 +45,11 @@ class PlayerViewModel(
     fun setAudioPlayerControl(audioPlayerControl: AudioPlayerControl) {
         this.audioPlayerControl = audioPlayerControl
 
-        viewModelScope.launch {
-            audioPlayerControl.getPlayerState().collect {
-                playerStateData.postValue(it)
+        if (job?.isActive != true) {
+            job = viewModelScope.launch {
+                audioPlayerControl.getPlayerState().collect {
+                    playerStateData.postValue(it)
+                }
             }
         }
     }

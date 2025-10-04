@@ -32,8 +32,8 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-const val NOTIFICATION_CHANNEL_ID = "music_service_channel"
-const val NOTIFICATION_ID = 1
+private const val NOTIFICATION_CHANNEL_ID = "music_service_channel"
+private const val NOTIFICATION_ID = 1
 private const val TRACK = "track"
 private const val ARTIST = "artistName"
 private const val TRACKNAME = "trackName"
@@ -111,12 +111,10 @@ internal class MusicService : Service(), AudioPlayerControl {
             mediaPlayer?.setDataSource(previewUrl)
             mediaPlayer?.prepareAsync()
             mediaPlayer?.setOnPreparedListener {
-                Log.d("My_Log", "Media Player prepared")
                 _playerState.value = PlayerState.Prepared()
 
             }
             mediaPlayer?.setOnCompletionListener {
-                Log.d("MyLog", "Playback completed")
                 handlePlaybackCompleted()
 
 
@@ -136,7 +134,6 @@ internal class MusicService : Service(), AudioPlayerControl {
         mediaPlayer.start()
         _playerState.value = PlayerState.Playing(updateProgress())
         startTimer()
-        Log.d("MyLog", "Плеер играет112")
 
     }
 
@@ -144,7 +141,6 @@ internal class MusicService : Service(), AudioPlayerControl {
         mediaPlayer.pause()
         _playerState.value = PlayerState.Paused(updateProgress())
         timerJob?.cancel()
-        Log.d("MyLog", "Плеер на Паузе")
     }
 
     fun releasePlayer() {
@@ -154,7 +150,6 @@ internal class MusicService : Service(), AudioPlayerControl {
         timerJob?.cancel()
         mediaPlayer.release()
         _playerState.value = PlayerState.Default()
-        Log.d("MyLog", "Плеер освобождён")
     }
 
 
@@ -216,13 +211,6 @@ internal class MusicService : Service(), AudioPlayerControl {
             .build()
     }
 
-    private fun getForegroundServiceTypeConstant(): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
-        } else {
-            0
-        }
-    }
 
 
 }
