@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     style="@style/Settings_Day_night_style"
     android:id="@+id/searchLayout"
-    tools:context=".ui.search.fragment.SearchActivity"
+    tools:context=".presentation.search.fragment.SearchActivity"
     android:orientation="vertical"
     >
 

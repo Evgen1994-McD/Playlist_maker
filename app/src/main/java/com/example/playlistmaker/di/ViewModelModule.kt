@@ -1,17 +1,16 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.ui.main.viewModel.MainViewModel
-import com.example.playlistmaker.ui.media.viewmodel.AddPlayListViewModel
-import com.example.playlistmaker.ui.media.viewmodel.FavoriteFragmentViewModel
-import com.example.playlistmaker.ui.media.viewmodel.MediaFragmentViewModel
-import com.example.playlistmaker.ui.media.viewmodel.PlaylistFragmentViewModel
-import com.example.playlistmaker.ui.media.viewmodel.PlaylistTracksViewModel
-import com.example.playlistmaker.ui.media.viewmodel.ReplacePlaylistViewModel
-import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
-import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
-import com.example.playlistmaker.ui.settings.viewModel.SettingsViewModel
+import com.example.playlistmaker.presentation.main.viewModel.MainViewModel
+import com.example.playlistmaker.presentation.media.viewmodel.AddPlayListViewModel
+import com.example.playlistmaker.presentation.media.viewmodel.FavoriteFragmentViewModel
+import com.example.playlistmaker.presentation.media.viewmodel.MediaFragmentViewModel
+import com.example.playlistmaker.presentation.media.viewmodel.PlaylistFragmentViewModel
+import com.example.playlistmaker.presentation.media.viewmodel.PlaylistTracksViewModel
+import com.example.playlistmaker.presentation.media.viewmodel.ReplacePlaylistViewModel
+import com.example.playlistmaker.presentation.player.viewModel.PlayerViewModel
+import com.example.playlistmaker.presentation.search.viewModel.SearchViewModel
+import com.example.playlistmaker.presentation.settings.viewModel.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
 

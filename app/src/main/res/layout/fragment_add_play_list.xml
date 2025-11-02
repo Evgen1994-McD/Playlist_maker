@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/Settings_Day_night_style"
-    tools:context=".ui.media.fragments.AddPlayListFragment">
+    tools:context=".presentation.media.fragments.AddPlayListFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
