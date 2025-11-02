@@ -1,5 +1,6 @@
 package com.example.playlistmaker.presentation.settings.fragments
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -36,6 +38,7 @@ val themeMode = viewModel.getLiveData.observeAsState()
 Column(
     modifier = Modifier
         .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
 ) {
     Row(
         modifier = Modifier
@@ -47,6 +50,8 @@ Column(
         Text(
             modifier = Modifier
                 .padding(start = 16.dp),
+            color = MaterialTheme.colorScheme.onSurface
+            ,
 
             text = stringResource(R.string.dark_theme),
             fontSize = 16.sp,
@@ -91,6 +96,8 @@ Column(
     ) {
         Text(
             modifier = Modifier,
+            color = MaterialTheme.colorScheme.onSurface,
+
             text = stringResource(R.string.share_name),
             fontSize = 16.sp,
             fontFamily = FontFamily(
@@ -101,6 +108,8 @@ Column(
             )
         )
         Icon(
+            tint = MaterialTheme.colorScheme.onSurface,
+
             painter = painterResource(R.drawable.ic_share_24),
             contentDescription = null,
             modifier = Modifier
@@ -121,6 +130,8 @@ Column(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
+            color = MaterialTheme.colorScheme.onSurface,
+
             modifier = Modifier,
             text = stringResource(R.string.support_name),
             fontSize = 16.sp,
@@ -132,6 +143,8 @@ Column(
             )
         )
         Icon(
+            tint = MaterialTheme.colorScheme.onSurface,
+
             painter = painterResource(R.drawable.ic_support_24),
             contentDescription = null,
             modifier = Modifier
@@ -152,6 +165,8 @@ Column(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
+            color = MaterialTheme.colorScheme.onSurface,
+
             modifier = Modifier,
             text = stringResource(R.string.user_assets_name),
             fontSize = 16.sp,
@@ -163,6 +178,8 @@ Column(
             )
         )
         Icon(
+            tint = MaterialTheme.colorScheme.onSurface,
+
             painter = painterResource(R.drawable.ic_userasset_24),
             contentDescription = null,
             modifier = Modifier

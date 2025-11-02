@@ -55,6 +55,7 @@ class SettingsViewModel(
 
     fun controlTHemeBySwitcher(theme: Boolean) {
         switchThemeUseCase.switchThemeModeBySettings(theme)
+        currentThemeLiveData.value = theme
 
     }
 
