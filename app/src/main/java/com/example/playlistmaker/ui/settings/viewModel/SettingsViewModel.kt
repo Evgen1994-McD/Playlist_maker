@@ -41,7 +41,7 @@ class SettingsViewModel(
     }
 
 
-    var currentThemeLiveData = MutableLiveData<Boolean>()
+   private var currentThemeLiveData = MutableLiveData<Boolean>()
 
 
     init {
