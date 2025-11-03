@@ -20,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
+import com.example.playlistmaker.ui.PlaylistMakerTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -128,5 +131,9 @@ fun SearchScreen(){
 @Preview(showSystemUi = true)
 @Composable
 fun SearchPreview(){
+    val testState = remember { mutableStateOf(false) }
+PlaylistMakerTheme(testState) {
     SearchScreen()
+}
+
 }

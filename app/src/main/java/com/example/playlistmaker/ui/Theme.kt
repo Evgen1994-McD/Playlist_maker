@@ -9,6 +9,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -40,16 +41,14 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun PlaylistMakerTheme(
-    viewModel: SettingsViewModel,
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false,
+themeMode: State<Boolean>,
     content: @Composable () -> Unit
 ) {
 
     val context = LocalContext.current
 
 
-    val themeMode = viewModel.getLiveData.observeAsState()
+//    val themeMode = viewModel.getLiveData.observeAsState()
     Log.d("theme", "theme in mode $themeMode")
 
 

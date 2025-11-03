@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.State
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.example.playlistmaker.presentation.settings.viewModel.SettingsViewModel
@@ -29,7 +31,8 @@ class SettingsFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnLifecycleDestroyed(lifecycleOwner = this@SettingsFragment))
 
             setContent {
-                PlaylistMakerTheme(viewModel = viewModel){
+                val themeMode = viewModel.getLiveData.observeAsState()
+                PlaylistMakerTheme(themeMode as State<Boolean>){
 
                     SettingsScreen(
                         viewModel,
