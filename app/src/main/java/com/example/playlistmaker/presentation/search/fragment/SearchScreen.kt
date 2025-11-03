@@ -1,5 +1,6 @@
 package com.example.playlistmaker.presentation.search.fragment
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,11 +20,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,15 +40,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.search.viewModel.SearchScreenState
 import com.example.playlistmaker.ui.PlaylistMakerTheme
-
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.livedata.observeAsState
+import com.example.playlistmaker.presentation.search.viewModel.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    tracks: List<Track>
-){
+   viewModel: SearchViewModel
+) {
     var text by remember { mutableStateOf("") }
+    val state =  viewModel.getLiveData.observeAsState()
 
     Scaffold(
         topBar = {
@@ -82,7 +83,8 @@ fun SearchScreen(
                 .padding(paddingValues)
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.background),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             BasicTextField(
                 value = text,
@@ -101,7 +103,7 @@ fun SearchScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start,
 
-                    ) {
+                        ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_hintsearch_16),
                             contentDescription = null,
@@ -110,10 +112,12 @@ fun SearchScreen(
                                 .height(16.dp),
                             tint = MaterialTheme.colorScheme.surface
                         )
-                        Text(text = stringResource(R.string.search),
+                        Text(
+                            text = stringResource(R.string.search),
                             color = MaterialTheme.colorScheme.surface,
                             modifier = Modifier
-                                .padding(start = 8.dp))
+                                .padding(start = 8.dp)
+                        )
                         innerTextField()
                     }
                 },
@@ -125,24 +129,21 @@ fun SearchScreen(
                 singleLine = true
             )
 
-
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-
-                    .padding(top = 16.dp)
-            ){
-                items(tracks) { track->
-                    TrackItem(track)
-
-                }
-
-
+            when (state.value){
+is SearchScreenState.Loading -> DisplayPhNotFound()
+    is SearchScreenState.SearchResults -> DisplayTracks(((state.value) as SearchScreenState.SearchResults).data)
+                is SearchScreenState.History->DisplayTracks(((state.value) as SearchScreenState.History).history)
+                is SearchScreenState.ErrorNotFound ->DisplayPhNotFound()
+                is SearchScreenState.ErrorNoEnternet ->DisplayPhNotFound()
+                else -> DisplayPhNotFound()
             }
 
-        }
 
+
+
+
+
+        }
 
 
     }
@@ -151,56 +152,35 @@ fun SearchScreen(
 }
 
 
-@Preview(showSystemUi = true)
+
 @Composable
-fun SearchPreview(){
-    val testList = listOf(
-    Track(
-            "112211",
-    "Fill Nawe dsadasd  asda sd aasd asd asd asd asd ",
-    "Jason",
-    "3:54",
-    "",
-    "",
-    "2025",
-    "Rock",
-    "Usa",
-    "21",
-    false
-    ),
-        Track(
-            "112211",
-            "Fill Nawe dsadasd  asda sd aasd asd asd asd asd ",
-            "Jason",
-            "3:54",
-            "",
-            "",
-            "2025",
-            "Rock",
-            "Usa",
-            "21",
-            false
-        ),
-        Track(
-            "112211",
-            "Fill Nawe dsadasd  asda sd aasd asd asd asd asd ",
-            "Jason",
-            "3:54",
-            "",
-            "",
-            "2025",
-            "Rock",
-            "Usa",
-            "21",
-            false
-        ),
+fun DisplayTracks(trackList: List<Track>){
+        LazyColumn (
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 16.dp)
+        ) {
+            items(trackList) { track ->
+                TrackItem(track)
+
+            }
+
+
+        }
+    }
+
+@Composable
+fun DisplayPhNotFound(){
+    Image(
+        painter = painterResource(
+            R.drawable.ph_nothing_to_show_120
+
+        ), null,
+        modifier = Modifier
+            .padding(top = 25.dp)
+            .size(120.dp)
 
     )
-
-
-    val testState = remember { mutableStateOf(false) }
-PlaylistMakerTheme(testState) {
-    SearchScreen(testList)
 }
 
-}
+

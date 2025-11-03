@@ -8,6 +8,7 @@ import com.example.playlistmaker.domain.search.FavoriteTrackInteractor
 import com.example.playlistmaker.domain.search.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -26,6 +27,7 @@ class SearchViewModel(
     val getLiveData: LiveData<SearchScreenState> get() = mutableScreenState
 
 
+
     fun addTrackToFavorite(track: Track){
             favoriteTrackInteractor.addTrack(track)
     }
@@ -38,14 +40,14 @@ class SearchViewModel(
 
 
     fun clearSearchHistory(){
-        mutableScreenState.postValue(SearchScreenState.SearchResults(null))
+//        mutableScreenState.postValue(SearchScreenState.SearchResults(null))
         mutableScreenState.postValue(SearchScreenState.ErrorNotFound(retryStateString))
     }
 
 
     fun clearHistory(){
         favoriteTrackInteractor.clearHistory()
-        mutableScreenState.postValue(SearchScreenState.History(null))
+//        mutableScreenState.postValue(SearchScreenState.History(null))
 
     }
 
@@ -67,7 +69,7 @@ if(pair.first==null && pair.second == "Exception" ){
 
 
 else if (!pair.first.isNullOrEmpty()) {
-    mutableScreenState.postValue(SearchScreenState.SearchResults(pair.first))
+    mutableScreenState.postValue(SearchScreenState.SearchResults(pair.first!!))
                     }
                 }
 
