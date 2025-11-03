@@ -15,16 +15,26 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.example.playlistmaker.presentation.settings.viewModel.SettingsViewModel
+import com.example.playlistmaker.ui.Black_1A1B22
 
 private val DarkColorScheme = darkColorScheme(
 
     background = Color(0xFF1A1B22),
-    onSurface = Color(0xFFE6E1E5)
+    onSurface = Color(0xFFE6E1E5),
+    surface = Black_1A1B22, // тинт для поиска
+    surfaceTint = White_FFFFFF,
+    primary = White_FFFFFF
+
 )
 
 private val LightColorScheme = lightColorScheme(
     background = Color(0xFFFFFFFF),
-    onSurface = Color(0xFF1A1B22)
+    onSurface = Color(0xFF1A1B22),
+    surface = Grey_AEAFB4,  //Тинт для поиска
+    surfaceTint = LightGrey_E6E8EB,
+    primary = LightGrey_E6E8EB
+
+
 )
 
 
@@ -47,9 +57,7 @@ fun PlaylistMakerTheme(
 
 
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            if (themeMode.value==true) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+
 
         themeMode.value==true -> DarkColorScheme
         else -> LightColorScheme

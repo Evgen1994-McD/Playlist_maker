@@ -2,10 +2,9 @@ package com.example.playlistmaker.ui
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val Grey_AEAFB4 = Color(0xFFAEAFB4)
+val White_FFFFFF = Color(0xFFFFFFFF)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFFE5DDF6)
-val Pink40 = Color(0xFFDEC5CD)
+val LightGrey_E6E8EB = Color(0xFFE6E8EB)
+val Black_1A1B22 = Color(0xFF1A1B22)
+
