@@ -17,26 +17,14 @@ import androidx.compose.ui.platform.LocalContext
 import com.example.playlistmaker.presentation.settings.viewModel.SettingsViewModel
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    onPrimary = Color(0xFF1A1A1A),
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
-    onPrimaryContainer = Color(0xFF1A1A1A),
-    onBackground = Color(0xFFE6E1E5),
-    background = Color(0xFF1A1A1A),
-    surface = Color(0xFF2A2A2A),
+
+    background = Color(0xFF1A1B22),
     onSurface = Color(0xFFE6E1E5)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    onPrimary = Color.White,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
-    onBackground = Color(0xFF1C1B1F),
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onSurface = Color(0xFF1C1B1F)
+    background = Color(0xFFFFFFFF),
+    onSurface = Color(0xFF1A1B22)
 )
 
 
@@ -49,10 +37,7 @@ fun PlaylistMakerTheme(
 ) {
 
     val context = LocalContext.current
-//    val themeUseCase = EntryPoints.get(
-//        context.applicationContext,
-//        ThemeEntryPoint::class.java
-//    ).themeInteractor()
+
 
     val themeMode = viewModel.getLiveData.observeAsState()
     Log.d("theme", "theme in mode $themeMode")

@@ -13,9 +13,6 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SettingsFragment : Fragment() {
 
-    private var isUpdatingUI = false
-
-
     private val viewModel: SettingsViewModel by activityViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,8 +31,18 @@ class SettingsFragment : Fragment() {
             setContent {
                 PlaylistMakerTheme(viewModel = viewModel){
 
-
-                    SettingsScreen(viewModel)
+                    SettingsScreen(
+                        viewModel,
+                        onShareClick = {
+                            shareApp()
+                                       },
+                        onSupportClick = {
+                            sendSuppEmail()
+                                         },
+                        onUserAssetClick = {
+                            openUrlInDefaultBrowser()
+                                           },
+                    )
 
                 }
             }
@@ -48,33 +55,7 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-//        val shareTheAppClicker = // Кликер поделиться приложением
-//            binding.shareApp
-//        shareTheAppClicker.setOnClickListener {
-//            shareApp()
-//        }
-//        val mesToSuppClicker = // Пишем в поддержку
-//            binding.sMesToSuport
-//        mesToSuppClicker.setOnClickListener {
-//            sendSuppEmail()  //Здесь будет вызван метод
-//        }
-//        val userAssetClicker =
-//            binding.userAssetUri
-//        userAssetClicker.setOnClickListener {
-//            openUrlInDefaultBrowser()
-//        }
-//        val switcherTheme = binding.switchTheme
 
-
-// Установка обработчика изменений
-
-//        switcherTheme.isChecked = viewModel.getLiveData.value as Boolean
-//
-//        switcherTheme.setOnCheckedChangeListener { _, isChecked ->
-//            if (!isUpdatingUI) {
-//                viewModel.controlTHemeBySwitcher(isChecked)
-//            }
-//        }
 
 
     }
