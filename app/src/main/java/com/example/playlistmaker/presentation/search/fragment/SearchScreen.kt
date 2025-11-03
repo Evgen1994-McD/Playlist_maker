@@ -5,11 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,12 +42,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.PlaylistMakerTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(){
+fun SearchScreen(
+    tracks: List<Track>
+){
     var text by remember { mutableStateOf("") }
 
     Scaffold(
@@ -119,7 +125,24 @@ fun SearchScreen(){
                 singleLine = true
             )
 
+
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+
+                    .padding(top = 16.dp)
+            ){
+                items(tracks) { track->
+                    TrackItem(track)
+
+                }
+
+
+            }
+
         }
+
 
 
     }
@@ -131,9 +154,53 @@ fun SearchScreen(){
 @Preview(showSystemUi = true)
 @Composable
 fun SearchPreview(){
+    val testList = listOf(
+    Track(
+            "112211",
+    "Fill Nawe dsadasd  asda sd aasd asd asd asd asd ",
+    "Jason",
+    "3:54",
+    "",
+    "",
+    "2025",
+    "Rock",
+    "Usa",
+    "21",
+    false
+    ),
+        Track(
+            "112211",
+            "Fill Nawe dsadasd  asda sd aasd asd asd asd asd ",
+            "Jason",
+            "3:54",
+            "",
+            "",
+            "2025",
+            "Rock",
+            "Usa",
+            "21",
+            false
+        ),
+        Track(
+            "112211",
+            "Fill Nawe dsadasd  asda sd aasd asd asd asd asd ",
+            "Jason",
+            "3:54",
+            "",
+            "",
+            "2025",
+            "Rock",
+            "Usa",
+            "21",
+            false
+        ),
+
+    )
+
+
     val testState = remember { mutableStateOf(false) }
 PlaylistMakerTheme(testState) {
-    SearchScreen()
+    SearchScreen(testList)
 }
 
 }

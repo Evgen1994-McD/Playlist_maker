@@ -119,6 +119,10 @@ implementation(libs.recycler.view)
     implementation ("androidx.compose.runtime:runtime-livedata:1.5.9")
 
 
+    implementation(libs.coil.compose)
+
+
+
 
 
 

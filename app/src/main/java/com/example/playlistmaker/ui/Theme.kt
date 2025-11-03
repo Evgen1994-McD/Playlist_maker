@@ -23,8 +23,10 @@ private val DarkColorScheme = darkColorScheme(
     background = Color(0xFF1A1B22),
     onSurface = Color(0xFFE6E1E5),
     surface = Black_1A1B22, // тинт для поиска
+    onSurfaceVariant = White_FFFFFF,
     surfaceTint = White_FFFFFF,
-    primary = White_FFFFFF
+    primary = White_FFFFFF,
+    surfaceBright = Grey_AEAFB4
 
 )
 
@@ -33,7 +35,10 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1A1B22),
     surface = Grey_AEAFB4,  //Тинт для поиска
     surfaceTint = LightGrey_E6E8EB,
-    primary = LightGrey_E6E8EB
+    primary = LightGrey_E6E8EB,
+    onSurfaceVariant = Grey_AEAFB4,
+    surfaceBright = Grey_AEAFB4
+
 
 
 )

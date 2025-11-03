@@ -27,9 +27,11 @@ lifecycleLivedataKtx = "2.9.4"
 lifecycleViewmodelKtx = "2.9.4"
 roomRuntime = "2.8.3"
 composeBom = "2025.09.01"
+coil = "2.7.0"
 
 [libraries]
 
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 
