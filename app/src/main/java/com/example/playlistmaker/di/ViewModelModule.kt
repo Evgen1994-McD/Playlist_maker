@@ -10,6 +10,7 @@ import com.example.playlistmaker.presentation.media.viewmodel.ReplacePlaylistVie
 import com.example.playlistmaker.presentation.player.viewModel.PlayerViewModel
 import com.example.playlistmaker.presentation.search.viewModel.SearchViewModel
 import com.example.playlistmaker.presentation.settings.viewModel.SettingsViewModel
+import com.example.playlistmaker.presentation.theme.ThemeViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -48,11 +49,12 @@ val viewModelModule = module {
         SearchViewModel( get(), get())
     }
 
-
-
+    viewModel {
+        ThemeViewModel(get())
+    }
 
     viewModel { // описать получение юз кейсов в интерактор модуле
-        SettingsViewModel(get(), get(), get(), get())
+        SettingsViewModel(get(), get(), get())
     }
 
 

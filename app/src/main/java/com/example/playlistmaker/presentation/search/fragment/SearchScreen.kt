@@ -3,6 +3,7 @@ package com.example.playlistmaker.presentation.search.fragment
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -26,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
@@ -43,16 +43,20 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.viewModel.SearchScreenState
 import com.example.playlistmaker.ui.PlaylistMakerTheme
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import com.example.playlistmaker.presentation.search.viewModel.SearchViewModel
+import com.example.playlistmaker.ui.Black_1A1B22
+import com.example.playlistmaker.ui.Blue_3772E7
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-   viewModel: SearchViewModel
+    viewModel: SearchViewModel
 ) {
     var text by remember { mutableStateOf("") }
-    val state =  viewModel.getLiveData.observeAsState()
+    val state = viewModel.getLiveData.observeAsState()
 
     Scaffold(
         topBar = {
@@ -98,6 +102,8 @@ fun SearchScreen(
                         shape = RoundedCornerShape(8.dp)
                     )
                     .height(36.dp),
+
+
                 decorationBox = { innerTextField ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -108,39 +114,49 @@ fun SearchScreen(
                             painter = painterResource(R.drawable.ic_hintsearch_16),
                             contentDescription = null,
                             modifier = Modifier
+                                .padding(start = 13.dp)
                                 .width(18.dp)
                                 .height(16.dp),
                             tint = MaterialTheme.colorScheme.surface
                         )
-                        Text(
-                            text = stringResource(R.string.search),
-                            color = MaterialTheme.colorScheme.surface,
-                            modifier = Modifier
-                                .padding(start = 8.dp)
-                        )
-                        innerTextField()
+                        if (text == "") {
+                            Box(modifier = Modifier.padding(start = 8.dp)) {
+                                innerTextField()
+                                Text(
+                                    text = stringResource(R.string.search),
+                                    color = MaterialTheme.colorScheme.surface,
+                                    modifier = Modifier
+
+                                )
+                            }
+
+                        } else {
+                            Box(modifier = Modifier.padding(start = 8.dp)) {
+                                innerTextField()
+                            }
+                        }
                     }
+
                 },
                 textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 16.sp
+                    color = Black_1A1B22,
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(
+                        R.font.ys_display_regular
+                    ))
                 ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
                 singleLine = true
             )
 
-            when (state.value){
-is SearchScreenState.Loading -> DisplayPhNotFound()
-    is SearchScreenState.SearchResults -> DisplayTracks(((state.value) as SearchScreenState.SearchResults).data)
-                is SearchScreenState.History->DisplayTracks(((state.value) as SearchScreenState.History).history)
-                is SearchScreenState.ErrorNotFound ->DisplayPhNotFound()
-                is SearchScreenState.ErrorNoEnternet ->DisplayPhNotFound()
+            when (state.value) {
+                is SearchScreenState.Loading -> DisplayProgressBar()
+                is SearchScreenState.SearchResults -> DisplayTracks(((state.value) as SearchScreenState.SearchResults).data)
+                is SearchScreenState.History -> DisplayTracks(((state.value) as SearchScreenState.History).history)
+                is SearchScreenState.ErrorNotFound -> DisplayPhNotFound()
+                is SearchScreenState.ErrorNoEnternet -> DisplayPhNotFound()
                 else -> DisplayPhNotFound()
             }
-
-
-
-
 
 
         }
@@ -151,36 +167,64 @@ is SearchScreenState.Loading -> DisplayPhNotFound()
 
 }
 
+@Composable
+fun DisplayProgressBar() {
+    CircularProgressIndicator(
+        modifier = Modifier
+            .padding(top = 140.dp)
+            .size(44.dp),
+        color = Blue_3772E7
+    )
+}
 
 
 @Composable
-fun DisplayTracks(trackList: List<Track>){
-        LazyColumn (
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 16.dp)
-        ) {
-            items(trackList) { track ->
-                TrackItem(track)
-
-            }
-
+fun DisplayTracks(trackList: List<Track>) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 16.dp)
+    ) {
+        items(trackList) { track ->
+            TrackItem(track)
 
         }
+
+
     }
+}
 
 @Composable
-fun DisplayPhNotFound(){
-    Image(
-        painter = painterResource(
-            R.drawable.ph_nothing_to_show_120
+fun DisplayPhNotFound() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(
+                R.drawable.ph_nothing_to_show_120
 
-        ), null,
-        modifier = Modifier
-            .padding(top = 25.dp)
-            .size(120.dp)
+            ), null,
+            modifier = Modifier
+                .padding(
+                    top = 102.dp,
+                    bottom = 16.dp
+                )
+                .size(120.dp)
+        )
+        Text(
+            text = stringResource(R.string.msg_nothing_to_show),
+            modifier = Modifier,
+            fontSize = 19.sp,
+            fontFamily = FontFamily(
+                Font(
+                    R.font.ys_display_medium,
+                    weight = FontWeight.Normal
+                )
+            ),
+            color = MaterialTheme.colorScheme.onSurface
+        )
 
-    )
+    }
 }
 
 

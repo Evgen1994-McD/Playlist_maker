@@ -11,12 +11,14 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.settings.viewModel.SettingsViewModel
+import com.example.playlistmaker.presentation.theme.ThemeViewModel
 import com.example.playlistmaker.ui.PlaylistMakerTheme
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SettingsFragment : Fragment() {
 
     private val viewModel: SettingsViewModel by activityViewModel()
+    private val themeViewModel: ThemeViewModel by activityViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +34,12 @@ class SettingsFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnLifecycleDestroyed(lifecycleOwner = this@SettingsFragment))
 
             setContent {
-                val themeMode = viewModel.getLiveData.observeAsState()
+                val themeMode = themeViewModel.themeMode.observeAsState()
                 PlaylistMakerTheme(themeMode as State<Boolean>){
 
                     SettingsScreen(
                         viewModel,
+                        themeViewModel,
                         onShareClick = {
                             shareApp()
                                        },
@@ -79,7 +82,7 @@ class SettingsFragment : Fragment() {
 
     override fun onDestroy() { // закрываем плеер при завершении работы
         super.onDestroy()
-        viewModel.getLiveData.removeObservers(this)
+        themeViewModel.themeMode.removeObservers(this)
 
     }
 

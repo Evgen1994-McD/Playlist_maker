@@ -36,19 +36,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
 import com.example.playlistmaker.presentation.settings.viewModel.SettingsViewModel
+import com.example.playlistmaker.presentation.theme.ThemeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-
     viewModel: SettingsViewModel,
+    themeViewModel: ThemeViewModel,
     onShareClick:()-> Unit,
     onSupportClick:()-> Unit,
     onUserAssetClick:()-> Unit
-
-
 ) {
-    val themeMode = viewModel.getLiveData.observeAsState()
+    val themeMode = themeViewModel.themeMode.observeAsState()
 
     Scaffold(
         topBar = {
@@ -105,10 +104,7 @@ fun SettingsScreen(
                 )
                 Switch(
                     checked = themeMode.value == true,
-                    onCheckedChange = { isChecked ->
-                        val theme = if (isChecked) true else false
-                        viewModel.controlTHemeBySwitcher(theme)
-                    },
+                    onCheckedChange = { themeViewModel.updateTheme(it) },
                     modifier = Modifier
                         .padding(end = 6.dp),
                     colors = SwitchDefaults.colors(

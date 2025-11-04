@@ -20,8 +20,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
@@ -40,10 +38,12 @@ import com.example.playlistmaker.presentation.settings.fragments.SettingsFragmen
 import com.example.playlistmaker.presentation.settings.fragments.SettingsScreen
 import com.example.playlistmaker.ui.PlaylistMakerTheme
 import com.example.playlistmaker.utils.debounce
+import com.example.playlistmaker.presentation.theme.ThemeViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SearchFragment : Fragment(), OnTrackClickListener {
     private val viewModel: SearchViewModel by activityViewModel()
+    private val themeViewModel: ThemeViewModel by activityViewModel()
     private lateinit var searchEditText: AppCompatEditText
     private lateinit var txtForSearch: String
     private var textFromInput: String = null.toString()
@@ -87,8 +87,8 @@ class SearchFragment : Fragment(), OnTrackClickListener {
             )
 
             setContent {
-                val testThemeMode = remember { mutableStateOf(false) }
-                PlaylistMakerTheme(testThemeMode as State<Boolean>) {
+                val themeMode = themeViewModel.themeMode.observeAsState()
+                PlaylistMakerTheme(themeMode as State<Boolean>) {
                     SearchScreen(viewModel)
                 }
             }
