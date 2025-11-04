@@ -45,22 +45,41 @@ import com.example.playlistmaker.presentation.search.viewModel.SearchScreenState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import com.example.playlistmaker.presentation.search.viewModel.SearchViewModel
 import com.example.playlistmaker.ui.Black_1A1B22
 import com.example.playlistmaker.ui.Blue_3772E7
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
     onSearchTextChanged: (String)-> Unit,
-    onRetryClick:(String)-> Unit
+    onRetryClick:(String)-> Unit,
+    loadSearchHistory:()-> Unit
 ) {
     var text by remember { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
+    val coroutineScope = rememberCoroutineScope()
     val state = viewModel.getLiveData.observeAsState()
+    val focusManager = LocalFocusManager.current // Добавить
+    val keyboardController = LocalSoftwareKeyboardController.current // Добавить
+//    LaunchedEffect(Unit) {
+//        coroutineScope.launch {
+//            focusRequester.requestFocus()
+//        }
+//    }
+
 
     Scaffold(
         topBar = {
@@ -94,12 +113,13 @@ fun SearchScreen(
                 .background(MaterialTheme.colorScheme.background),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             BasicTextField(
                 value = text,
-                onValueChange = { newText -> text = newText
-                                onSearchTextChanged(newText)
-
-                                },
+                onValueChange = { newText -> 
+                    text = newText
+                    onSearchTextChanged(newText)
+                },
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .padding(top = 8.dp)
@@ -108,15 +128,18 @@ fun SearchScreen(
                         color = MaterialTheme.colorScheme.surfaceTint,
                         shape = RoundedCornerShape(8.dp)
                     )
-                    .height(36.dp),
-
-
+                    .height(36.dp)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged { focus ->
+                        if (focus.isFocused && text.isEmpty()) {
+                            loadSearchHistory()
+                        }
+                    },
                 decorationBox = { innerTextField ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start,
-
-                        ) {
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_hintsearch_16),
                             contentDescription = null,
@@ -126,24 +149,41 @@ fun SearchScreen(
                                 .height(16.dp),
                             tint = MaterialTheme.colorScheme.surface
                         )
-                        if (text == "") {
-                            Box(modifier = Modifier.padding(start = 8.dp)) {
-                                innerTextField()
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp, end = 8.dp)
+                        ) {
+                            if (text.isEmpty()) {
                                 Text(
                                     text = stringResource(R.string.search),
                                     color = MaterialTheme.colorScheme.surface,
                                     modifier = Modifier
-
                                 )
                             }
-
-                        } else {
-                            Box(modifier = Modifier.padding(start = 8.dp)) {
-                                innerTextField()
-                            }
+                            innerTextField()
+                        }
+                        if (text.isNotEmpty()) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_clear_16),
+                                contentDescription = "Clear",
+                                modifier = Modifier
+                                    .padding(end = 13.dp)
+                                    .size(16.dp)
+                                    .clickable(
+                                        onClick = {
+                                            text = ""
+                                            onSearchTextChanged("")
+                                            focusManager.clearFocus() // Убрать фокус
+                                            keyboardController?.hide() // Скрыть клавиатуру
+                                        },
+                                        indication = null,
+                                        interactionSource = remember { MutableInteractionSource() }
+                                    ),
+                                tint = MaterialTheme.colorScheme.surface
+                            )
                         }
                     }
-
                 },
                 textStyle = TextStyle(
                     color = Black_1A1B22,
@@ -158,8 +198,11 @@ fun SearchScreen(
 
             when (state.value) {
                 is SearchScreenState.Loading -> DisplayProgressBar()
-                is SearchScreenState.SearchResults -> DisplayTracks(((state.value) as SearchScreenState.SearchResults).data)
-                is SearchScreenState.History -> DisplayTracks(((state.value) as SearchScreenState.History).history)
+                is SearchScreenState.SearchResults -> if (text.isNotEmpty()){
+                    DisplayTracks(((state.value) as SearchScreenState.SearchResults).data)
+                }
+                is SearchScreenState.History -> if (text.isEmpty()){
+                    DisplayTracks(((state.value) as SearchScreenState.History).history)}
                 is SearchScreenState.ErrorNotFound -> DisplayPhNotFound()
                 is SearchScreenState.ErrorNoEnternet -> DisplayPhNotEnternet(
                     onRetryClick = onRetryClick,

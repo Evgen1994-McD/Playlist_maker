@@ -83,14 +83,14 @@ class FavoriteTrackRepositoryImpl(private val prefs: SharedPreferences,
             Track(
                 trackName = it.trackName,
                 artistName = it.artistName,
-                trackTimeMillis = it.trackTimeMillis, // преобразую и пеоедам время сразу
-                artworkUrl100 = it.artworkUrl100,
+                trackTimeMillis = it.trackTimeMillis?:"", // преобразую и пеоедам время сразу
+                artworkUrl100 = it.artworkUrl100?:"",
                 trackId = it.trackId,
-                collectionName = it.collectionName,
+                collectionName = it.collectionName ?: "", // Обработать null
                 releaseDate = it.releaseDate ?: "", // Обработать null
-                primaryGenreName = it.primaryGenreName,
-                country = it.country,
-                previewUrl = it.previewUrl,
+                primaryGenreName = it.primaryGenreName ?: "", // Обработать null
+                country = it.country ?: "", // Обработать null
+                previewUrl = it.previewUrl ?: "", // Обработать null
                 isLike = it.isLike
 
             )
