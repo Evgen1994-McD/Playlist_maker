@@ -89,7 +89,19 @@ class SearchFragment : Fragment(), OnTrackClickListener {
             setContent {
                 val themeMode = themeViewModel.themeMode.observeAsState()
                 PlaylistMakerTheme(themeMode as State<Boolean>) {
-                    SearchScreen(viewModel)
+                    SearchScreen(viewModel,
+                        onSearchTextChanged = { text->
+                            if (text.isNotEmpty()){
+                                searchDebounce(text)
+                            }
+                        },
+                        onRetryClick = { text ->
+                            // При retry вызываем поиск напрямую без debounce
+                            if (text.isNotEmpty()) {
+                                viewModel.searchTracks(text)
+                            }
+                        }
+                    )
                 }
             }
 
@@ -107,8 +119,8 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 //            }
         }
         searchDebounce =
-            debounce(2000L, viewLifecycleOwner.lifecycleScope, true) { txtForSearch ->
-                viewModel.searchTracks(txtForSearch)
+            debounce(2000L, viewLifecycleOwner.lifecycleScope, true) { text ->
+                viewModel.searchTracks(text)
             }
 
         trackClickDebounce =

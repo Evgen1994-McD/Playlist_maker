@@ -1,9 +1,6 @@
 package com.example.playlistmaker.presentation.search.fragment
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +38,18 @@ fun TrackItem(
     track: Track,
 //    onClick:()-> Unit
 ){
+
+    val context = LocalContext.current
+    // Использовать remember для тяжелых вычислений
+    val imageRequest = remember(track.artworkUrl100) {
+        ImageRequest.Builder(context)
+            .data(track.artworkUrl100)
+            .memoryCacheKey(track.artworkUrl100)
+            .diskCacheKey(track.artworkUrl100)
+            .crossfade(true) // Плавная анимация
+            .build()
+    }
+
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(61.dp)
@@ -51,12 +58,11 @@ fun TrackItem(
 
     )
     {
+
+
+
         SubcomposeAsyncImage(
-model = ImageRequest.Builder(LocalContext.current)
-    .data(track.artworkUrl100)
-    .memoryCacheKey(track.artworkUrl100)
-    .diskCacheKey(track.artworkUrl100)
-    .build(),
+model = imageRequest,
             contentDescription = track.trackName,
             modifier = Modifier
                 .padding(start = 13.dp)

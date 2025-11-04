@@ -8,7 +8,7 @@ data class TrackDto(
     val trackTimeMillis: String, // Продолжительность трека
     val artworkUrl100: String, // Ссылка на изображение обложки
     val collectionName: String, // Добавляем поля в класс трак для показа на экране аудиоплеера
-    val releaseDate: String,
+    val releaseDate: String?, // Может быть null от API
     val primaryGenreName: String,
     val country: String,
     val previewUrl: String,

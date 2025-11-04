@@ -2,6 +2,8 @@ package com.example.playlistmaker.presentation.search.fragment
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,17 +37,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.viewModel.SearchScreenState
-import com.example.playlistmaker.ui.PlaylistMakerTheme
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.style.TextAlign
 import com.example.playlistmaker.presentation.search.viewModel.SearchViewModel
 import com.example.playlistmaker.ui.Black_1A1B22
 import com.example.playlistmaker.ui.Blue_3772E7
@@ -53,7 +55,9 @@ import com.example.playlistmaker.ui.Blue_3772E7
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    viewModel: SearchViewModel
+    viewModel: SearchViewModel,
+    onSearchTextChanged: (String)-> Unit,
+    onRetryClick:(String)-> Unit
 ) {
     var text by remember { mutableStateOf("") }
     val state = viewModel.getLiveData.observeAsState()
@@ -75,7 +79,7 @@ fun SearchScreen(
                     )
                 },
 
-                colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
@@ -92,7 +96,10 @@ fun SearchScreen(
         ) {
             BasicTextField(
                 value = text,
-                onValueChange = { newText -> text = newText },
+                onValueChange = { newText -> text = newText
+                                onSearchTextChanged(newText)
+
+                                },
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .padding(top = 8.dp)
@@ -154,8 +161,11 @@ fun SearchScreen(
                 is SearchScreenState.SearchResults -> DisplayTracks(((state.value) as SearchScreenState.SearchResults).data)
                 is SearchScreenState.History -> DisplayTracks(((state.value) as SearchScreenState.History).history)
                 is SearchScreenState.ErrorNotFound -> DisplayPhNotFound()
-                is SearchScreenState.ErrorNoEnternet -> DisplayPhNotFound()
-                else -> DisplayPhNotFound()
+                is SearchScreenState.ErrorNoEnternet -> DisplayPhNotEnternet(
+                    onRetryClick = onRetryClick,
+                    searchText = text,
+                )
+                else -> null
             }
 
 
@@ -183,7 +193,9 @@ fun DisplayTracks(trackList: List<Track>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 16.dp)
+            .padding(top = 16.dp),
+
+
     ) {
         items(trackList) { track ->
             TrackItem(track)
@@ -223,6 +235,84 @@ fun DisplayPhNotFound() {
             ),
             color = MaterialTheme.colorScheme.onSurface
         )
+
+    }
+}
+
+
+@Composable
+fun DisplayPhNotEnternet(searchText: String,
+                         onRetryClick: (String) -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(
+                R.drawable.ph_no_internet_120
+
+            ), null,
+            modifier = Modifier
+                .padding(
+                    top = 102.dp,
+                    bottom = 16.dp
+                )
+                .size(120.dp)
+        )
+        Text(
+            text = stringResource(R.string.msg_no_internet_top),
+            modifier = Modifier,
+            fontSize = 19.sp,
+            fontFamily = FontFamily(
+                Font(
+                    R.font.ys_display_medium,
+                    weight = FontWeight.Normal
+                )
+            ),
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
+        Text(
+            text = stringResource(R.string.msg_no_internet_bottom),
+            modifier = Modifier
+                .padding(top = 28.dp,
+                    bottom = 24.dp),
+            fontSize = 19.sp,
+            fontFamily = FontFamily(
+                Font(
+                    R.font.ys_display_medium,
+                    weight = FontWeight.Normal
+                )
+            ),
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center
+        )
+
+            Box(modifier = Modifier
+                .size(width = 91.dp,
+                    height = 36.dp)
+                .background(color = MaterialTheme.colorScheme.onSurface,
+                    shape = RoundedCornerShape(54.dp))
+
+                .clickable(onClick = { onRetryClick(searchText) },
+                    indication = null, // Без визуального эффекта
+                    interactionSource = remember { MutableInteractionSource() }
+                )
+
+                ,
+                contentAlignment = Alignment.Center,
+
+            ){
+                Text(text = stringResource(R.string.txt_nointernet_button),
+                    color = MaterialTheme.colorScheme.background,
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily(
+                        Font(
+                            R.font.ys_display_medium,
+                            weight = FontWeight.Normal
+                        )
+                    ))
+            }
+
 
     }
 }
