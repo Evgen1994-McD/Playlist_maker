@@ -40,10 +40,11 @@ import com.example.playlistmaker.ui.PlaylistMakerTheme
 import com.example.playlistmaker.utils.debounce
 import com.example.playlistmaker.presentation.theme.ThemeViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment(), OnTrackClickListener {
-    private val viewModel: SearchViewModel by activityViewModel()
-    private val themeViewModel: ThemeViewModel by activityViewModel()
+    private val viewModel: SearchViewModel by viewModel()
+    private val themeViewModel: ThemeViewModel by viewModel()
     private lateinit var searchEditText: AppCompatEditText
     private lateinit var txtForSearch: String
     private var textFromInput: String = null.toString()
@@ -100,6 +101,9 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                             if (text.isNotEmpty()) {
                                 viewModel.searchTracks(text)
                             }
+                        },
+                        loadSearchHistory = {
+                            viewModel.getAllTracks()
                         }
                     )
                 }
@@ -130,18 +134,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
             }
 
 
-//        searchEditText =  // инициализирую эдиттекст
-//            binding.searchStroke
 
-//        searchEditText.setOnFocusChangeListener { _, hasFocus ->
-//            if (hasFocus && searchEditText.text.isNullOrEmpty()) {
-//                viewModel.getAllTracks()
-//            }
-//            observeTrackSearchResults(hasFocus)
-//
-//
-//            // Наблюдаем сразу за обоими источниками данных
-//
         }
 
 
@@ -149,54 +142,6 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
 
 
-//        pbs = binding.pbs
-//
-//        tvMsgSearch =
-//            binding.tvMsgSearch
-//
-//        btCleanHistory =
-//            binding.btCleanHistory
-//
-//
-//
-//
-//        phForNothingToShow =
-//            binding.phNtsh120
-//
-//
-//
-//        msgTopTxt =
-//            binding.msgNointTopTxt
-//
-//        msgBotTxt =
-//            binding.msgNointBottomTxt
-//
-//        buttonNoInternet =
-//            binding.buttonNointernet
-//
-//        recyclerView =
-//            binding.trackList
-
-
-
-//
-//        buttonNoInternet.setOnClickListener { // Кнопка поиска при отсутствии интернета
-//            phForNothingToShow.makeGone()
-//            recyclerView.makeGone()
-//            msgTopTxt.makeGone()
-//            msgBotTxt.makeGone()
-//            buttonNoInternet.makeGone()
-//            txtForSearch = searchEditText.text.toString() // текст для поиска
-//            viewModel.searchTracks(txtForSearch)
-//
-//        }
-//
-//        btCleanHistory.setOnClickListener {  // кнопка очистки истории
-//            viewModel.clearHistory()
-//            recyclerView.makeInvisible() // делаю ресайклер вью невидимым
-//            tvMsgSearch.makeInvisible() //делаем сообщение "Вы искали" невидимым
-//            btCleanHistory.makeInvisible() // делаем саму кнопку невидимой при выполнении логики
-//        }
 
 //
 //        val inputMethodManager =

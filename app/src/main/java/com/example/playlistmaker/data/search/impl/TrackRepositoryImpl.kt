@@ -24,13 +24,13 @@ val data = results.map{ it ->
         it.trackId,
         it.trackName,
         it.artistName,
-        formatMillisecondsAsMinSec(it.trackTimeMillis.toLong()), // преобразую и пеоедам время сразу
-        getCoverArtwork(it.artworkUrl100)?.toString() ?: "",
-        it.collectionName,
+        it.trackTimeMillis?.let { time -> formatMillisecondsAsMinSec(time.toLong()) } ?: "0:00", // Обработать null
+        it.artworkUrl100?.let { url -> getCoverArtwork(url)?.toString() ?: "" } ?: "", // Обработать null
+        it.collectionName ?: "",
         formattedYear(it.releaseDate),
-        it.primaryGenreName,
-        it.country,
-        it.previewUrl,
+        it.primaryGenreName ?: "",
+        it.country ?: "",
+        it.previewUrl ?: "", // Обработать null
         it.isLike
     )
 }
@@ -68,7 +68,7 @@ val data = results.map{ it ->
         }
     }
 
-    fun getCoverArtwork(artworkUrl100: String) =
+    fun getCoverArtwork(artworkUrl100: String?): String? =
         artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
 
 
