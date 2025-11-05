@@ -1,5 +1,6 @@
 package com.example.playlistmaker.presentation.media.fragments
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -55,7 +58,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MediaScreen(
-
+    onAddPlayListClick:()-> Unit,
     onTrackClick: (Track) -> Unit,
     onPlayListClick: (PlayList) -> Unit,
     favoriteFragmentViewModel: FavoriteFragmentViewModel,
@@ -172,7 +175,36 @@ fun PlaylistFragmentScreen(
     playListList: List<PlayList>,
     onPlayListClick: (PlayList) -> Unit
 ) {
-    LazyColumn(
+
+    Box(modifier = Modifier
+        .size(width = 133.dp,
+            height = 36.dp)
+        .background(color = MaterialTheme.colorScheme.onSurface,
+            shape = RoundedCornerShape(54.dp))
+
+        .clickable(onClick = {  },
+            indication = null, // Без визуального эффекта
+            interactionSource = remember { MutableInteractionSource() }
+        )
+
+        ,
+        contentAlignment = Alignment.Center,
+
+        )
+    {
+        Text(text = stringResource(R.string.txt_nointernet_button),
+            color = MaterialTheme.colorScheme.background,
+            fontSize = 14.sp,
+            fontFamily = FontFamily(
+                Font(
+                    R.font.ys_display_medium,
+                    weight = FontWeight.Normal
+                )
+            ))
+    }
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 16.dp)
@@ -180,11 +212,16 @@ fun PlaylistFragmentScreen(
 
 
         ) {
-        items(playListList) { playlist ->
-            PlayListItem(
-                playlist,
-                onPlayListClick
-            )
+        items(playListList.size,
+            key = {index -> "playList$index"},
+            contentType = {"playList"}) { index ->
+            val playlist = playListList[index]
+            if (playlist!=null) {
+                PlayListItem(
+                    playlist,
+                    onPlayListClick
+                )
+            }
 
         }
 
@@ -194,7 +231,9 @@ fun PlaylistFragmentScreen(
 
 
 @Composable
-fun PlayListItem(playList: PlayList, onPlayListClick: (PlayList) -> Unit) {
+fun PlayListItem(playList: PlayList,
+                 onPlayListClick: (PlayList) -> Unit,
+                 o) {
     val context = LocalContext.current
     // Использовать remember для тяжелых вычислений
     val imageRequest = remember(playList.image) {

@@ -387,7 +387,8 @@ fun DisplayPhNotEnternet(searchText: String,
                 ,
                 contentAlignment = Alignment.Center,
 
-            ){
+            )
+            {
                 Text(text = stringResource(R.string.txt_nointernet_button),
                     color = MaterialTheme.colorScheme.background,
                     fontSize = 14.sp,
