@@ -22,6 +22,9 @@ class SearchViewModel(
 
     }
 
+    // Добавляем поле для хранения текущего поискового запроса
+    private val _currentSearchQuery = MutableLiveData<String>("")
+    val currentSearchQuery: LiveData<String> = _currentSearchQuery
 
     private val mutableScreenState = MutableLiveData<SearchScreenState>()
     val getLiveData: LiveData<SearchScreenState> get() = mutableScreenState
@@ -51,10 +54,17 @@ class SearchViewModel(
 
     }
 
+    // Метод для обновления поискового запроса без выполнения поиска
+    fun updateSearchQuery(query: String) {
+        _currentSearchQuery.value = query
+    }
+
 
 
 
     fun searchTracks( txtForSearch:String){
+        // Сохраняем текущий запрос
+        _currentSearchQuery.value = txtForSearch
         viewModelScope.launch(Dispatchers.IO){
             mutableScreenState.postValue(SearchScreenState.Loading) // при начале запроса - выставляем лоадинг в тру
             trackInteractor.searchTracks(txtForSearch)

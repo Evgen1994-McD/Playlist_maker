@@ -43,37 +43,10 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment(), OnTrackClickListener {
-    private val viewModel: SearchViewModel by viewModel()
-    private val themeViewModel: ThemeViewModel by viewModel()
-    private lateinit var searchEditText: AppCompatEditText
-    private lateinit var txtForSearch: String
-    private var textFromInput: String = null.toString()
-    private val keyForWatcher: String =
-        "keyForWatcherSearch"  // Константа для ватчера
-    private lateinit var phForNothingToShow: ImageView
-    private lateinit var msgTopTxt: TextView
-    private lateinit var msgBotTxt: TextView
-    private lateinit var buttonNoInternet: TextView
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var tvMsgSearch: TextView
-    private lateinit var btCleanHistory: TextView
-    private lateinit var pbs: ProgressBar
-//    private lateinit var binding: FragmentSearchBinding
-
-    private var lastState: List<Track> = emptyList()
-
+    private val viewModel: SearchViewModel by activityViewModel()
+    private val themeViewModel: ThemeViewModel by activityViewModel()
     private lateinit var searchDebounce: (String) -> Unit
     private lateinit var trackClickDebounce: (Track) -> Unit
-    private var oldText: CharSequence = ""
-
-
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,9 +63,10 @@ class SearchFragment : Fragment(), OnTrackClickListener {
             setContent {
                 val themeMode = themeViewModel.themeMode.observeAsState()
                 PlaylistMakerTheme(themeMode as State<Boolean>) {
-                    SearchScreen(viewModel,
-                        onSearchTextChanged = { text->
-                            if (text.isNotEmpty()){
+                    SearchScreen(
+                        viewModel,
+                        onSearchTextChanged = { text ->
+                            if (text.isNotEmpty()) {
                                 searchDebounce(text)
                             }
                         },
@@ -104,7 +78,8 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                         },
                         loadSearchHistory = {
                             viewModel.getAllTracks()
-                        }
+                        },
+                        onTrackClick = { onTrackClicked(track = it)}
                     )
                 }
             }
@@ -113,288 +88,17 @@ class SearchFragment : Fragment(), OnTrackClickListener {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState?.getString(keyForWatcher) != null) {
-//            var clearEditText: EditText =  // инициализирую эдиттекст
-//                binding.searchStroke
-            // Извлечение данных из Bundle
-            val savedText = savedInstanceState.getString(keyForWatcher)
-//            if (savedText != null) {
-//                clearEditText.setText(savedText)
-//            }
-        }
         searchDebounce =
             debounce(2000L, viewLifecycleOwner.lifecycleScope, true) { text ->
                 viewModel.searchTracks(text)
             }
-
         trackClickDebounce =
             debounce(100L, viewLifecycleOwner.lifecycleScope, false) { track ->
                 viewModel.addTrackToFavorite(track)
 
             }
 
-
-
         }
-
-
-
-
-
-
-
-//
-//        val inputMethodManager =
-//            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // Для того чтобы спрятать клаву
-//
-//        savedInstanceState?.let {     // Проверяем, есть ли сохранённый текст в эдит тексте
-//            val savedText = it.getString(keyForWatcher)
-//            if (savedText != null) {
-//                searchEditText.setText(savedText)
-//            }
-//        }
-//        searchEditText.setOnClickListener {
-//            searchEditText.requestFocus() // установка фокуса на эдиттекст
-//            inputMethodManager.showSoftInput(
-//                searchEditText,
-//                0
-//            )  // Появление клавиатуры при нажатии на эдиттекст
-//        }
-//
-//        searchEditText.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//
-//
-//            }
-//
-//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                logicClearIc(p0)
-//
-//                if (!p0.isNullOrEmpty()) {
-//                    // инициализ переменную таск в текст ватчере, иначе происходит вылет
-//                    txtForSearch = p0.toString()
-//                    if (oldText == txtForSearch) {
-//                        searchEditText.requestFocus()
-//                        /*
-//                        передаю фокус на эдит текст, чтобы при возврате на экран если зашел посмотерть песню,
-//                        не приходилось выбирать строку чтобы отобразить результаты поиска, а сразу перебирать
-//                        уже песни в RecyclerView
-//                         */
-//
-//                    }
-//                    tvMsgSearch.makeGone()
-//                    btCleanHistory.makeGone()
-//                    recyclerView.makeInvisible()
-//                    if (oldText != txtForSearch && txtForSearch.isNotEmpty()) {
-//                        oldText = txtForSearch
-//                        viewModel.clearSearchHistory()
-//                        /*
-//                        C помощью текст ватчера проверяю изменился ли текст после возвращения через popBackStack()
-//                        и выполняю поисковый запрос только при наличии изменений ( убрал неприятный прогресс бар при возврате на экран -
-//                        - появлялся на пару секунд выполняя повторный запрос)
-//                         */
-//                        searchDebounce(txtForSearch)
-//
-//                    }
-//                    phForNothingToShow.makeGone()
-//
-//                    msgTopTxt.makeGone()
-//                    msgBotTxt.makeGone()
-//                    buttonNoInternet.makeGone()
-//
-//                }
-//            }
-
-            // функция логики отображения иконок
-
-//            override fun afterTextChanged(p0: Editable?) {
-//                //empty
-//            }
-//        }
-//        )
-
-
-//        clearTextFromEditText()  //Логика очистки текста
-//    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(keyForWatcher, textFromInput)
-    }
-
-//
-//    private fun logicClearIc(s: CharSequence?) {
-//        searchEditText =  // инициализирую эдиттекст
-//            binding.searchStroke
-//        if (!s.isNullOrBlank()) {  // Перенести в функцию
-//            searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
-//                ContextCompat.getDrawable(requireContext(), R.drawable.ic_hintsearch_16),
-//                null,
-//                ContextCompat.getDrawable(requireContext(), R.drawable.ic_clear_16),
-//                null
-//            )
-//            textFromInput = s.toString()
-//
-//        } else {
-//            searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
-//                ContextCompat.getDrawable(requireContext(), R.drawable.ic_hintsearch_16),
-//                null,
-//                null,
-//                null
-//            )
-//        }
-//
-//    }
-
-//    @SuppressLint("ClickableViewAccessibility")
-//    private fun clearTextFromEditText() { // метод очистки текста в эдиттексте
-//        searchEditText =
-//            binding.searchStroke
-//        val inputMethodManager =
-//            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//        searchEditText.setOnTouchListener { view, event ->
-//            if (event.action == MotionEvent.ACTION_UP) {
-//                val drawableEndBounds = searchEditText.compoundDrawables[2]?.bounds
-//                if (drawableEndBounds != null) {
-//                    val x = event.x.toInt()
-//                    val y = event.y.toInt()
-//                    if (x >= (view.width - (drawableEndBounds.width() + view.paddingRight)) &&
-//                        x <= view.width - view.paddingRight && y >= 0 && y <= view.height
-//                    ) {
-//                        searchEditText.text?.clear()
-//                        inputMethodManager.hideSoftInputFromWindow(
-//                            view?.windowToken,
-//                            0
-//                        ) // Прячем клаву
-//                        // чистим эдит текст
-//                        searchEditText.clearFocus()
-//
-//
-//                        recyclerView.makeInvisible() // убрали список треков при очистке эдиттекста
-//
-//                        msgTopTxt.makeGone()  //Убрали сообщение топ
-//                        msgBotTxt.makeGone() // убрали сообщение бот
-//                        phForNothingToShow.makeGone() // убрали плейсхолдер
-//                        buttonNoInternet.makeGone() // убрали кнопку
-//                        btCleanHistory.makeInvisible()
-//                        tvMsgSearch.makeInvisible()
-//                        searchEditText.clearFocus()
-//                        // убираем фокус с эдиттекста чтобы при нажатии снова появился фокус + история поиска
-////                        return@setOnTouchListener true
-////                    }
-//                }
-//            }
-//            false
-//        }
-//    }
-
-//    private fun observeTrackSearchResults(hasFocus: Boolean) {
-//        viewModel.getLiveData.observe(viewLifecycleOwner) { newState ->
-//
-//            when (newState) {
-//                is SearchScreenState.Loading -> {
-////                    pbs.makeVisible()
-//                }
-//
-//                is SearchScreenState.ErrorNoEnternet -> {
-////                    if (newState.message == "Exception") {
-////                        handleNoInternetConnection()
-////                        pbs.makeGone()
-////                    }
-//                }
-//
-//                is SearchScreenState.ErrorNotFound -> {
-////                    if (newState.message == "retry") {
-////                        pbs.makeGone()
-////                        phForNothingToShow.makeGone()
-////                    } else if (newState.message == null) {
-////                        pbs.makeGone()
-////                        handleNoResults()
-////                    }
-//                }
-//
-//                is SearchScreenState.History -> {
-////                    pbs.makeGone()
-////                    val tracksToDisplay = newState.history
-////                     = newState.history
-////                    tracksToDisplay?.let { displayTracks(it) }
-////                    btCleanHistory.makeVisible()
-////                    if (!tracksToDisplay.isNullOrEmpty()) {
-////                        btCleanHistory.makeVisible()
-////                    } else btCleanHistory.makeGone()
-//
-//
-//                }
-//
-//                is SearchScreenState.SearchResults -> {
-////                    pbs.makeGone()
-////                    val tracksToDisplay = newState.data
-////                    if (tracksToDisplay != null) {
-////                        lastState = tracksToDisplay
-////                    }
-////                    tracksToDisplay?.let { displayTracks(it) }
-//
-//                }
-//
-//
-//            }
-//
-//
-//
-//        }
-//    }
-
-
-    // Вспомогательные методы
-    private fun handleNoResults() {
-        val phNts = ContextCompat.getDrawable(requireContext(), R.drawable.ph_nothing_to_show_120)
-        phForNothingToShow.setImageDrawable(phNts)
-        phForNothingToShow.makeVisible()
-        msgTopTxt.makeVisible()
-        msgTopTxt.text = getString(R.string.msg_nothing_to_show)
-        tvMsgSearch.makeGone()
-        btCleanHistory.makeGone()
-    }
-//
-
-
-    private fun displayTracks(tracks: List<Track>) {
-        tvMsgSearch.makeGone()
-        btCleanHistory.makeGone()
-        phForNothingToShow.makeGone()
-        msgBotTxt.makeGone()
-        msgTopTxt.makeGone()
-        buttonNoInternet.makeGone()
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = TrackAdapter(tracks, this)
-        recyclerView.makeVisible()
-    }
-
-    private fun handleNoInternetConnection() {
-        val phNts = ContextCompat.getDrawable(requireContext(), R.drawable.ph_no_internet_120)
-        phForNothingToShow.setImageDrawable(phNts)
-        phForNothingToShow.makeVisible()
-        msgTopTxt.makeVisible()
-        msgTopTxt.text = getString(R.string.msg_no_internet_top)
-        msgBotTxt.makeVisible()
-        msgBotTxt.text = getString(R.string.msg_no_internet_bottom)
-        buttonNoInternet.makeVisible()
-        tvMsgSearch.makeGone()
-        btCleanHistory.makeGone()
-        recyclerView.makeInvisible()
-    }
-
-    private fun View.makeGone() {
-        this.visibility = View.GONE // функция для вью гон
-    }
-
-    private fun View.makeVisible() {
-        this.visibility = View.VISIBLE // функция для вью визибл
-    }
-
-    private fun View.makeInvisible() {
-        this.visibility = View.INVISIBLE // функция для вью инвизибл
-    }
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек
@@ -404,13 +108,6 @@ class SearchFragment : Fragment(), OnTrackClickListener {
         viewModel.addTrackToFavorite(track)
 
     }
-
-    override fun onResume() {
-        super.onResume()
-
-
-    }
-
 
     override fun onDestroy() {
         super.onDestroy()
@@ -426,7 +123,6 @@ class SearchFragment : Fragment(), OnTrackClickListener {
         findNavController().navigate(R.id.action_searchFragment_to_playerFragment, bundle)
 
     }
-
 
 }
 

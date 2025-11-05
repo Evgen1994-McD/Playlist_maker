@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,7 +45,6 @@ import com.example.playlistmaker.presentation.search.viewModel.SearchScreenState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -58,7 +57,6 @@ import androidx.compose.ui.text.style.TextAlign
 import com.example.playlistmaker.presentation.search.viewModel.SearchViewModel
 import com.example.playlistmaker.ui.Black_1A1B22
 import com.example.playlistmaker.ui.Blue_3772E7
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,9 +64,31 @@ fun SearchScreen(
     viewModel: SearchViewModel,
     onSearchTextChanged: (String)-> Unit,
     onRetryClick:(String)-> Unit,
-    loadSearchHistory:()-> Unit
+    loadSearchHistory:()-> Unit,
+    onTrackClick: (Track) -> Unit
 ) {
-    var text by remember { mutableStateOf("") }
+    // Получаем сохраненный поисковый запрос из ViewModel
+    val savedQuery = viewModel.currentSearchQuery.observeAsState(initial = "")
+    
+    // Используем сохраненный запрос как начальное значение
+    var text by remember { mutableStateOf(savedQuery.value) }
+    
+    // Синхронизируем локальное состояние с состоянием ViewModel при возврате на экран
+    // Обновляем только если локальное значение пустое, а сохраненное - нет (сигнал возврата)
+    LaunchedEffect(Unit) {
+        // Синхронизируем при первом монтировании композиции
+        if (text.isEmpty() && savedQuery.value.isNotEmpty()) {
+            text = savedQuery.value
+        }
+    }
+    
+    // Также отслеживаем изменения savedQuery (например, при восстановлении из savedInstanceState)
+    LaunchedEffect(savedQuery.value) {
+        if (text.isEmpty() && savedQuery.value.isNotEmpty()) {
+            text = savedQuery.value
+        }
+    }
+    
     val focusRequester = remember { FocusRequester() }
     val coroutineScope = rememberCoroutineScope()
     val state = viewModel.getLiveData.observeAsState()
@@ -114,6 +134,8 @@ fun SearchScreen(
                 value = text,
                 onValueChange = { newText -> 
                     text = newText
+                    // Обновляем запрос в ViewModel
+                    viewModel.updateSearchQuery(newText)
                     onSearchTextChanged(newText)
                 },
                 modifier = Modifier
@@ -129,6 +151,9 @@ fun SearchScreen(
                     .onFocusChanged { focus ->
                         if (focus.isFocused && text.isEmpty()) {
                             loadSearchHistory()
+                        }
+                        if(focus.isFocused){
+                            keyboardController?.show()
                         }
                     },
                 decorationBox = { innerTextField ->
@@ -169,6 +194,7 @@ fun SearchScreen(
                                     .clickable(
                                         onClick = {
                                             text = ""
+                                            viewModel.updateSearchQuery("")
                                             onSearchTextChanged("")
                                             focusManager.clearFocus() // Убрать фокус
                                             keyboardController?.hide() // Скрыть клавиатуру
@@ -195,10 +221,16 @@ fun SearchScreen(
             when (state.value) {
                 is SearchScreenState.Loading ->if (text.isNotEmpty()){DisplayProgressBar()}
                 is SearchScreenState.SearchResults -> if (text.isNotEmpty()){
-                    DisplayTracks(((state.value) as SearchScreenState.SearchResults).data)
+                    DisplayTracks(
+                        ((state.value) as SearchScreenState.SearchResults).data,
+                        onTrackClick = onTrackClick
+                    )
                 }
                 is SearchScreenState.History -> if (text.isEmpty()){
-                    DisplayTracks(((state.value) as SearchScreenState.History).history)}
+                    DisplayTracks(
+                        ((state.value) as SearchScreenState.History).history,
+                        onTrackClick = onTrackClick)
+                    }
                 is SearchScreenState.ErrorNotFound -> if (text.isNotEmpty()){DisplayPhNotFound()}
                 is SearchScreenState.ErrorNoEnternet ->if (text.isNotEmpty()) {
                     DisplayPhNotEnternet(
@@ -230,7 +262,8 @@ fun DisplayProgressBar() {
 
 
 @Composable
-fun DisplayTracks(trackList: List<Track>) {
+fun DisplayTracks(trackList: List<Track>,
+                  onTrackClick:(Track)->Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -239,7 +272,8 @@ fun DisplayTracks(trackList: List<Track>) {
 
     ) {
         items(trackList) { track ->
-            TrackItem(track)
+            TrackItem(track,
+                onTrackClick)
 
         }
 

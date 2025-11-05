@@ -1,6 +1,8 @@
 package com.example.playlistmaker.presentation.search.fragment
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +15,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,19 +25,17 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.PlaylistMakerTheme
 
 @Composable
 fun TrackItem(
     track: Track,
-//    onClick:()-> Unit
+    onTrackClick:(Track)-> Unit
 ){
 
     val context = LocalContext.current
@@ -53,7 +52,12 @@ fun TrackItem(
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(61.dp)
-        .background(color = MaterialTheme.colorScheme.background),
+        .background(color = MaterialTheme.colorScheme.background)
+        .clickable(
+            onClick = {onTrackClick(track)},
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null
+        ),
         verticalAlignment = Alignment.CenterVertically,
 
     )
@@ -168,27 +172,3 @@ color = MaterialTheme.colorScheme.onSurface
 
 
 
-@Preview(showSystemUi = false, showBackground = true)
-@Composable
-fun PreviewTrackItem(){
-val testTrack = Track(
-    "112211",
-    "Fill Nawe dsadasd  asda sd aasd asd asd asd asd ",
-    "Jason",
-    "3:54",
-    "",
-    "",
-    "2025",
-    "Rock",
-    "Usa",
-    "21",
-    false
-)
-    val testState = remember { mutableStateOf(true) }
-    PlaylistMakerTheme(testState) {
-        TrackItem(testTrack)
-
-    }
-
-
-}
