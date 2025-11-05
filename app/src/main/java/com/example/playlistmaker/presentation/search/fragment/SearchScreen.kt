@@ -47,6 +47,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -88,12 +89,14 @@ fun SearchScreen(
             text = savedQuery.value
         }
     }
+
     
     val focusRequester = remember { FocusRequester() }
     val coroutineScope = rememberCoroutineScope()
     val state = viewModel.getLiveData.observeAsState()
     val focusManager = LocalFocusManager.current // Добавить
     val keyboardController = LocalSoftwareKeyboardController.current // Добавить
+    var focused by remember { mutableStateOf(false) }
 
 
 
@@ -149,10 +152,18 @@ fun SearchScreen(
                     .height(36.dp)
                     .focusRequester(focusRequester)
                     .onFocusChanged { focus ->
-                        if (focus.isFocused && text.isEmpty()) {
-                            loadSearchHistory()
+                        if (focus.isFocused) {
+                            focused = true
                         }
-                        if(focus.isFocused){
+                        if (!focus.isFocused){
+                            focused=false
+                        }
+                            if (focused && text.isEmpty()){
+                                loadSearchHistory()
+
+                            }
+
+                        if(focused){
                             keyboardController?.show()
                         }
                     },
@@ -226,7 +237,7 @@ fun SearchScreen(
                         onTrackClick = onTrackClick
                     )
                 }
-                is SearchScreenState.History -> if (text.isEmpty()){
+                is SearchScreenState.History -> if (text.isEmpty()&& focused){
                     DisplayTracks(
                         ((state.value) as SearchScreenState.History).history,
                         onTrackClick = onTrackClick)
