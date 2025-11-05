@@ -1,12 +1,21 @@
 package com.example.playlistmaker.presentation.media.fragments
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -15,20 +24,47 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.PlayList
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.media.viewmodel.FavoriteFragmentViewModel
+import com.example.playlistmaker.presentation.media.viewmodel.PlaylistFragmentViewModel
+import com.example.playlistmaker.presentation.search.fragment.TrackItem
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MediaScreen() {
+fun MediaScreen(
+
+    onTrackClick: (Track) -> Unit,
+    onPlayListClick: (PlayList) -> Unit,
+    favoriteFragmentViewModel: FavoriteFragmentViewModel,
+    playlistFragmentViewModel: PlaylistFragmentViewModel
+) {
+
+    val trackList = favoriteFragmentViewModel.favoriteTracks.observeAsState()
+    val playListList = playlistFragmentViewModel.getLiveData.observeAsState()
+
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { 2 })
     // Используем pagerState.currentPage напрямую, так как это уже State<Int>
@@ -88,7 +124,7 @@ fun MediaScreen() {
                             pagerState.animateScrollToPage(1)
                         }
                     },
-                    text = { Text(text = stringResource(R.string.tab2txt))  },
+                    text = { Text(text = stringResource(R.string.tab2txt)) },
                 )
             }
 
@@ -98,9 +134,9 @@ fun MediaScreen() {
                     .fillMaxWidth()
                     .weight(1f)
             ) { page ->
-                when(page) {
-                    0 -> FirstScreen()
-                    1 -> SecondScreen()
+                when (page) {
+                    0 -> trackList.value?.let { FavoriteFragmentScreen(trackList = it, onTrackClick) }
+                    1 -> playListList.value?.let { PlaylistFragmentScreen(it, onPlayListClick) }
                 }
             }
         }
@@ -108,19 +144,171 @@ fun MediaScreen() {
 }
 
 @Composable
-fun FirstScreen() {
-    // Контент первого экрана
+fun FavoriteFragmentScreen(
+    trackList: List<Track>,
+    onTrackClick: (Track) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 16.dp),
+
+
+        ) {
+        items(trackList) { track ->
+            TrackItem(
+                track,
+                onTrackClick
+            )
+
+        }
+
+
+    }
 }
 
 @Composable
-fun SecondScreen() {
-    // Контент второго экрана
+fun PlaylistFragmentScreen(
+    playListList: List<PlayList>,
+    onPlayListClick: (PlayList) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 16.dp)
+            .padding(horizontal = 8.dp),
+
+
+        ) {
+        items(playListList) { playlist ->
+            PlayListItem(
+                playlist,
+                onPlayListClick
+            )
+
+        }
+
+
+    }
 }
 
 
-
-@Preview(showSystemUi = true)
 @Composable
-fun MediaPreview(){
-    MediaScreen()
+fun PlayListItem(playList: PlayList, onPlayListClick: (PlayList) -> Unit) {
+    val context = LocalContext.current
+    // Использовать remember для тяжелых вычислений
+    val imageRequest = remember(playList.image) {
+        ImageRequest.Builder(context)
+            .data(playList.image)
+            .memoryCacheKey(playList.image)
+            .diskCacheKey(playList.image)
+            .crossfade(true) // Плавная анимация
+            .build()
+    }
+
+
+
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 8.dp)
+            .width(160.dp)
+            .clickable(onClick =
+                {},
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() })
+    ) {
+        SubcomposeAsyncImage(
+            model = imageRequest,
+            contentDescription = null,
+            modifier = Modifier
+
+                .padding(bottom = 4.dp)
+                .size(160.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.Crop,
+            loading = {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ph_media_312),
+                        contentDescription = null,
+                        modifier = Modifier.size(160.dp),
+                        tint = MaterialTheme.colorScheme.surfaceBright
+                    )
+                }
+            },
+            error = {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ph_media_312),
+                        contentDescription = "Planet placeholder",
+                        modifier = Modifier.size(160.dp),
+                        tint = MaterialTheme.colorScheme.surfaceBright
+
+                    )
+                }
+            }
+        )
+
+      Box(modifier = Modifier
+          .width(160.dp),
+          contentAlignment = Alignment.CenterStart
+
+      ){
+          Text(text = playList.name,
+              fontFamily = FontFamily(Font(
+                  R.font.ys_display_regular,
+                  weight = FontWeight.Normal
+              )),
+              fontSize = 12.sp,
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis
+
+          )
+      }
+
+        Box(modifier = Modifier
+            .width(160.dp),
+            contentAlignment = Alignment.CenterStart
+
+        ){
+            Text(text = playList.size.toString(),
+                    fontFamily = FontFamily(Font(
+                R.font.ys_display_regular,
+                weight = FontWeight.Normal
+            )),
+                fontSize = 12.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+
+            )
+
+
+        }
+
+
+    }
+
 }
+//
+//
+//@Preview(showSystemUi = false)
+//@Composable
+//fun ItemPreview(onPlayListClick: (PlayList) -> Unit) {
+//    val testPlayList = PlayList(
+//        listId = 1,
+//        name = "Autumns",
+//        about = "Testing features",
+//        image = null,
+//        tracksId = "",
+//        size = 0
+//    )
+//
+//    PlayListItem(testPlayList)
+//}
+//
