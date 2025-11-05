@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -111,7 +112,7 @@ fun MediaScreen(
                 indicator = {tabPos ->
                     TabRowDefaults.PrimaryIndicator(
                         modifier = Modifier
-                        .tabIndicatorOffset(tabPositions[selectedTabIndex])
+                        .tabIndicatorOffset(tabPos[selectedTabIndex]),
                         color = MaterialTheme.colorScheme.onSurface,
                         height = 2.dp,
                         width = 148.dp
@@ -331,7 +332,8 @@ fun PlayListItem(
                     .padding(bottom = 4.dp)
                     .size(160.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surfaceBright),
+
+                ,
                 contentAlignment = Alignment.Center
             ) {
                 androidx.compose.foundation.Image(
@@ -354,7 +356,7 @@ fun PlayListItem(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.surfaceBright),
+                        ,
                         contentAlignment = Alignment.Center
                     ) {
                         androidx.compose.foundation.Image(
@@ -369,7 +371,7 @@ fun PlayListItem(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.surfaceBright),
+                        ,
                         contentAlignment = Alignment.Center
                     ) {
                         androidx.compose.foundation.Image(
