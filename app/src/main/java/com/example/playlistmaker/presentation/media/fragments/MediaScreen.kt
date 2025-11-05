@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -53,6 +54,7 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.media.viewmodel.FavoriteFragmentViewModel
 import com.example.playlistmaker.presentation.media.viewmodel.PlaylistFragmentViewModel
 import com.example.playlistmaker.presentation.search.fragment.TrackItem
+import com.example.playlistmaker.utils.declineNoun
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,7 +106,17 @@ fun MediaScreen(
         ) {
             TabRow(
                 selectedTabIndex = selectedTabIndex,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                containerColor = MaterialTheme.colorScheme.background,
+                indicator = {tabPos ->
+                    TabRowDefaults.PrimaryIndicator(
+                        modifier = Modifier
+                        .tabIndicatorOffset(tabPositions[selectedTabIndex])
+                        color = MaterialTheme.colorScheme.onSurface,
+                        height = 2.dp,
+                        width = 148.dp
+                    )
+                }
             ) {
                 Tab(
                     selected = selectedTabIndex == 0,
@@ -115,7 +127,14 @@ fun MediaScreen(
                             pagerState.animateScrollToPage(0)
                         }
                     },
-                    text = { Text(text = stringResource(R.string.tab1txt)) },
+                    text = { Text(text = stringResource(R.string.tab1txt),
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontFamily = FontFamily(Font(
+                            R.font.ys_display_medium,
+                            weight = FontWeight.Normal
+                        ))
+                        ) },
                 )
 
                 Tab(
@@ -127,7 +146,14 @@ fun MediaScreen(
                             pagerState.animateScrollToPage(1)
                         }
                     },
-                    text = { Text(text = stringResource(R.string.tab2txt)) },
+                    text = { Text(text = stringResource(R.string.tab2txt),
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontFamily = FontFamily(Font(
+                            R.font.ys_display_medium,
+                            weight = FontWeight.Normal
+                        ))
+                        ) },
                 )
             }
 
@@ -262,6 +288,12 @@ fun PlayListItem(
     playList: PlayList,
     onPlayListClick: (PlayList) -> Unit,
 ) {
+    val oneForm = stringResource(R.string.track1)
+    val twoForm = stringResource(R.string.track3)
+    val fiveAndMoreForm = stringResource(R.string.track2)
+
+    val playListSize = declineNoun(playList.size, oneForm, twoForm, fiveAndMoreForm)
+
     val context = LocalContext.current
 
     // Проверяем, есть ли изображение
@@ -379,7 +411,7 @@ fun PlayListItem(
 
         ) {
             Text(
-                text = playList.size.toString(),
+                text = playListSize,
                 fontFamily = FontFamily(
                     Font(
                         R.font.ys_display_regular,
