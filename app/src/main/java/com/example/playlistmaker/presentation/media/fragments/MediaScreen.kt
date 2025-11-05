@@ -433,20 +433,3 @@ fun PlayListItem(
     }
 
 }
-//
-//
-//@Preview(showSystemUi = false)
-//@Composable
-//fun ItemPreview(onPlayListClick: (PlayList) -> Unit) {
-//    val testPlayList = PlayList(
-//        listId = 1,
-//        name = "Autumns",
-//        about = "Testing features",
-//        image = null,
-//        tracksId = "",
-//        size = 0
-//    )
-//
-//    PlayListItem(testPlayList)
-//}
-//
