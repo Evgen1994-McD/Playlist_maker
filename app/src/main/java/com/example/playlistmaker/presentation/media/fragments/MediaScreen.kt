@@ -58,7 +58,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MediaScreen(
-    onAddPlayListClick:()-> Unit,
+    onAddPlayListClick: () -> Unit,
     onTrackClick: (Track) -> Unit,
     onPlayListClick: (PlayList) -> Unit,
     favoriteFragmentViewModel: FavoriteFragmentViewModel,
@@ -138,8 +138,20 @@ fun MediaScreen(
                     .weight(1f)
             ) { page ->
                 when (page) {
-                    0 -> trackList.value?.let { FavoriteFragmentScreen(trackList = it, onTrackClick) }
-                    1 -> playListList.value?.let { PlaylistFragmentScreen(it, onPlayListClick) }
+                    0 ->
+                        FavoriteFragmentScreen(
+                            trackList = trackList.value ?: emptyList<Track>(),
+                            onTrackClick
+                        )
+
+
+                    1 ->
+                        PlaylistFragmentScreen(
+                            playListList.value ?: emptyList(),
+                            onPlayListClick,
+                            onAddPlayListClick
+                        )
+
                 }
             }
         }
@@ -173,154 +185,207 @@ fun FavoriteFragmentScreen(
 @Composable
 fun PlaylistFragmentScreen(
     playListList: List<PlayList>,
-    onPlayListClick: (PlayList) -> Unit
+    onPlayListClick: (PlayList) -> Unit,
+    onAddPlayListClick: () -> Unit
 ) {
-
-    Box(modifier = Modifier
-        .size(width = 133.dp,
-            height = 36.dp)
-        .background(color = MaterialTheme.colorScheme.onSurface,
-            shape = RoundedCornerShape(54.dp))
-
-        .clickable(onClick = {  },
-            indication = null, // Без визуального эффекта
-            interactionSource = remember { MutableInteractionSource() }
-        )
-
-        ,
-        contentAlignment = Alignment.Center,
-
-        )
-    {
-        Text(text = stringResource(R.string.txt_nointernet_button),
-            color = MaterialTheme.colorScheme.background,
-            fontSize = 14.sp,
-            fontFamily = FontFamily(
-                Font(
-                    R.font.ys_display_medium,
-                    weight = FontWeight.Normal
-                )
-            ))
-    }
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 16.dp)
-            .padding(horizontal = 8.dp),
+    ) {
 
-
-        ) {
-        items(playListList.size,
-            key = {index -> "playList$index"},
-            contentType = {"playList"}) { index ->
-            val playlist = playListList[index]
-            if (playlist!=null) {
-                PlayListItem(
-                    playlist,
-                    onPlayListClick
+        Box(
+            modifier = Modifier
+                .padding(top = 24.dp)
+                .size(
+                    width = 133.dp,
+                    height = 36.dp
                 )
-            }
+                .background(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    shape = RoundedCornerShape(54.dp)
+                )
 
+                .clickable(
+                    onClick = { onAddPlayListClick() },
+                    indication = null, // Без визуального эффекта
+                    interactionSource = remember { MutableInteractionSource() }
+                ),
+            contentAlignment = Alignment.Center,
+
+            )
+        {
+            Text(
+                text = stringResource(R.string.new_playlist),
+                color = MaterialTheme.colorScheme.background,
+                fontSize = 14.sp,
+                fontFamily = FontFamily(
+                    Font(
+                        R.font.ys_display_medium,
+                        weight = FontWeight.Normal
+                    )
+                )
+            )
         }
 
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 16.dp)
+                .padding(horizontal = 8.dp),
 
+
+            ) {
+            items(
+                playListList.size,
+                key = { index -> "playList$index" },
+                contentType = { "playList" }) { index ->
+                val playlist = playListList[index]
+                if (playlist != null) {
+                    PlayListItem(
+                        playlist,
+                        onPlayListClick
+                    )
+                }
+
+            }
+
+
+        }
     }
 }
 
 
 @Composable
-fun PlayListItem(playList: PlayList,
-                 onPlayListClick: (PlayList) -> Unit,
-                 o) {
+fun PlayListItem(
+    playList: PlayList,
+    onPlayListClick: (PlayList) -> Unit,
+) {
     val context = LocalContext.current
-    // Использовать remember для тяжелых вычислений
+
+    // Проверяем, есть ли изображение
+    val hasImage = !playList.image.isNullOrEmpty()
+
+    // Создаем ImageRequest только если есть изображение
     val imageRequest = remember(playList.image) {
-        ImageRequest.Builder(context)
-            .data(playList.image)
-            .memoryCacheKey(playList.image)
-            .diskCacheKey(playList.image)
-            .crossfade(true) // Плавная анимация
-            .build()
+        if (hasImage) {
+            ImageRequest.Builder(context)
+                .data(playList.image)
+                .memoryCacheKey(playList.image)
+                .diskCacheKey(playList.image)
+                .crossfade(true)
+                .placeholder(R.drawable.ph_media_312) // Добавляем placeholder в ImageRequest
+                .error(R.drawable.ph_media_312) // Добавляем error в ImageRequest
+                .build()
+        } else {
+            null
+        }
     }
-
-
 
     Column(
         modifier = Modifier
             .padding(horizontal = 8.dp)
             .width(160.dp)
-            .clickable(onClick =
-                {},
+            .clickable(
+                onClick = { onPlayListClick(playList) },
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() })
     ) {
-        SubcomposeAsyncImage(
-            model = imageRequest,
-            contentDescription = null,
-            modifier = Modifier
-
-                .padding(bottom = 4.dp)
-                .size(160.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.Crop,
-            loading = {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ph_media_312),
-                        contentDescription = null,
-                        modifier = Modifier.size(160.dp),
-                        tint = MaterialTheme.colorScheme.surfaceBright
-                    )
-                }
-            },
-            error = {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ph_media_312),
-                        contentDescription = "Planet placeholder",
-                        modifier = Modifier.size(160.dp),
-                        tint = MaterialTheme.colorScheme.surfaceBright
-
-                    )
-                }
+        // Если нет изображения, показываем плейсхолдер напрямую
+        if (!hasImage || imageRequest == null) {
+            Box(
+                modifier = Modifier
+                    .padding(bottom = 4.dp)
+                    .size(160.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.surfaceBright),
+                contentAlignment = Alignment.Center
+            ) {
+                androidx.compose.foundation.Image(
+                    painter = painterResource(id = R.drawable.ph_media_312),
+                    contentDescription = null,
+                    modifier = Modifier.size(160.dp),
+                    contentScale = ContentScale.Fit
+                )
             }
-        )
+        } else {
+            SubcomposeAsyncImage(
+                model = imageRequest,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(bottom = 4.dp)
+                    .size(160.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop,
+                loading = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surfaceBright),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        androidx.compose.foundation.Image(
+                            painter = painterResource(id = R.drawable.ph_media_312),
+                            contentDescription = null,
+                            modifier = Modifier.size(160.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                },
+                error = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surfaceBright),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        androidx.compose.foundation.Image(
+                            painter = painterResource(id = R.drawable.ph_media_312),
+                            contentDescription = "Playlist placeholder",
+                            modifier = Modifier.size(160.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                }
+            )
+        }
 
-      Box(modifier = Modifier
-          .width(160.dp),
-          contentAlignment = Alignment.CenterStart
-
-      ){
-          Text(text = playList.name,
-              fontFamily = FontFamily(Font(
-                  R.font.ys_display_regular,
-                  weight = FontWeight.Normal
-              )),
-              fontSize = 12.sp,
-              maxLines = 1,
-              overflow = TextOverflow.Ellipsis
-
-          )
-      }
-
-        Box(modifier = Modifier
-            .width(160.dp),
+        Box(
+            modifier = Modifier
+                .width(160.dp),
             contentAlignment = Alignment.CenterStart
 
-        ){
-            Text(text = playList.size.toString(),
-                    fontFamily = FontFamily(Font(
-                R.font.ys_display_regular,
-                weight = FontWeight.Normal
-            )),
+        ) {
+            Text(
+                text = playList.name,
+                fontFamily = FontFamily(
+                    Font(
+                        R.font.ys_display_regular,
+                        weight = FontWeight.Normal
+                    )
+                ),
+                fontSize = 12.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .width(160.dp),
+            contentAlignment = Alignment.CenterStart
+
+        ) {
+            Text(
+                text = playList.size.toString(),
+                fontFamily = FontFamily(
+                    Font(
+                        R.font.ys_display_regular,
+                        weight = FontWeight.Normal
+                    )
+                ),
                 fontSize = 12.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

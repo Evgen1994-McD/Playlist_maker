@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediaBinding
@@ -49,7 +50,12 @@ class MediaFragment : Fragment() {
                     onTrackClick = { },
                     onPlayListClick = {},
                     favoriteFragmentViewModel = favoriteFragmentViewModel,
-                    playlistFragmentViewModel = playlistFragmentViewModel
+                    playlistFragmentViewModel = playlistFragmentViewModel,
+                    onAddPlayListClick = {
+                        findNavController().navigate(R.id.action_mediaFragment_to_addPlayListFragment)
+
+
+                    }
                 )
 
             }
@@ -60,6 +66,7 @@ class MediaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        playlistFragmentViewModel.getAllPlaylists()
 //        observeCurrentTabs()
 //
 //        val tabs = binding.tabLayout
