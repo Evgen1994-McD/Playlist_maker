@@ -43,14 +43,13 @@ class SearchViewModel(
 
 
     fun clearSearchHistory(){
-//        mutableScreenState.postValue(SearchScreenState.SearchResults(null))
         mutableScreenState.postValue(SearchScreenState.ErrorNotFound(retryStateString))
     }
 
 
     fun clearHistory(){
         favoriteTrackInteractor.clearHistory()
-//        mutableScreenState.postValue(SearchScreenState.History(null))
+        getAllTracks()
 
     }
 

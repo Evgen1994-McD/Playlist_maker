@@ -66,7 +66,8 @@ fun SearchScreen(
     onSearchTextChanged: (String) -> Unit,
     onRetryClick: (String) -> Unit,
     loadSearchHistory: () -> Unit,
-    onTrackClick: (Track) -> Unit
+    onTrackClick: (Track) -> Unit,
+    onClearHistoryClick:()->Unit
 ) {
     // Получаем сохраненный поисковый запрос из ViewModel
     val savedQuery = viewModel.currentSearchQuery.observeAsState(initial = "")
@@ -244,10 +245,89 @@ fun SearchScreen(
                 }
 
                 is SearchScreenState.History -> if (text.isEmpty() && focused) {
-                    DisplayTracks(
-                        ((state.value) as SearchScreenState.History).history,
-                        onTrackClick = onTrackClick
-                    )
+                 Column(
+                     modifier = Modifier
+                         .fillMaxSize()
+                 ) {
+                     if (((state.value) as SearchScreenState.History).history.isNotEmpty()) {
+                         Box(
+                             modifier = Modifier
+                                 .padding(
+                                     top = 24.dp,
+                                     bottom = 8.dp
+                                 )
+                                 .fillMaxWidth(),
+                             contentAlignment = Alignment.Center
+                         ) {
+                             Text(
+                                 text = stringResource(R.string.msg_youHasSearch),
+                                 fontFamily = FontFamily(
+                                     Font(
+                                         R.font.ys_display_medium,
+                                         weight = FontWeight.Medium
+                                     )
+                                 ),
+                                 fontSize = 22.sp,
+                                 color = MaterialTheme.colorScheme.onSurface
+                             )
+                         }
+                     }
+                             LazyColumn(
+                                 modifier = Modifier
+                                     .fillMaxSize()
+                                     .padding(top = 16.dp, bottom = 10.dp),
+                                 horizontalAlignment = Alignment.CenterHorizontally
+                                 ) {
+                                 items(((state.value) as SearchScreenState.History).history) { track ->
+                                     TrackItem(
+                                         track,
+                                         onTrackClick
+                                     )
+
+                                 }
+                                 if (((state.value) as SearchScreenState.History).history.isNotEmpty()) {
+                                 item {
+                                     Box(
+                                         modifier = Modifier
+                                             .padding(top = 24.dp)
+                                             .size(
+                                                 width = 148.dp,
+                                                 height = 36.dp
+                                             )
+                                             .background(
+                                                 color = MaterialTheme.colorScheme.onSurface,
+                                                 shape = RoundedCornerShape(54.dp)
+                                             )
+
+                                             .clickable(
+                                                 onClick = { onClearHistoryClick() },
+                                                 indication = null, // Без визуального эффекта
+                                                 interactionSource = remember { MutableInteractionSource() }
+                                             ),
+                                         contentAlignment = Alignment.Center,
+
+                                         )
+                                     {
+                                         Text(
+                                             text = stringResource(R.string.msg_cleanHistory),
+                                             color = MaterialTheme.colorScheme.background,
+                                             fontSize = 14.sp,
+                                             fontFamily = FontFamily(
+                                                 Font(
+                                                     R.font.ys_display_medium,
+                                                     weight = FontWeight.Normal
+                                                 )
+                                             )
+                                         )
+                                     }
+                                 }
+
+                                 }
+
+                             }
+
+                 }
+
                 }
 
                 is SearchScreenState.ErrorNotFound -> if (text.isNotEmpty()) {

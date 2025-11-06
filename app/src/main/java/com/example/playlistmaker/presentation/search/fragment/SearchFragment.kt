@@ -58,7 +58,10 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                         loadSearchHistory = {
                             viewModel.getAllTracks()
                         },
-                        onTrackClick = { onTrackClicked(track = it)}
+                        onTrackClick = { onTrackClicked(track = it)},
+                        onClearHistoryClick = {
+                            viewModel.clearHistory()
+                        }
                     )
                 }
             }

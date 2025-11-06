@@ -88,37 +88,24 @@ implementation(libs.gson)
     implementation(libs.gson.converter)
     implementation(libs.logger.interceptor)
 implementation(libs.recycler.view)
-
-
     /***
      * Ниже все зависимости на Compose
      */
 
     // ViewModel and Compose integration
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
-
-
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-
-
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-
-
-
-    implementation("androidx.compose.runtime:runtime:1.5.9")
-
+    implementation(libs.androidx.runtime)
     // Compose UI
-    implementation("androidx.compose.ui:ui:1.5.9")
+    implementation(libs.androidx.ui)
 // Material 3
-    implementation("androidx.compose.material3:material3:1.2.0")
+    implementation(libs.androidx.material3)
 // Интеграция Compose с View-системами
-    implementation("androidx.compose.ui:ui-viewbinding:1.5.9")
-    implementation ("androidx.compose.runtime:runtime-livedata:1.5.9")
-
-
+    implementation(libs.androidx.ui.viewbinding)
+    implementation (libs.androidx.runtime.livedata)
     implementation(libs.coil.compose)
 
 

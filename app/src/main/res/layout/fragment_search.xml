@@ -126,13 +126,12 @@
             style="@style/msg_searchHistory_button"
             android:layout_width="148dp"
             android:layout_height="36dp"
-            android:visibility="gone"
-            android:background="@drawable/round_texview_backgr"
             android:layout_marginTop="@dimen/size_dp_24"
             android:layout_marginBottom="10dp"
+            android:background="@drawable/round_texview_backgr"
+            android:visibility="gone"
 
-            >
-        </TextView>
+            tools:visibility="visible"></TextView>
 
     </LinearLayout>
 

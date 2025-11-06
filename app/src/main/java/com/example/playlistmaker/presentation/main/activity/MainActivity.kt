@@ -64,7 +64,9 @@ R.id.addPlayListFragment -> bottomNavigationView.isVisible = false
 R.id.playlistTracksFragment -> bottomNavigationView.isVisible = false
 R.id.action_playlistTracksFragment_to_replacePlayListFragment -> bottomNavigationView.isVisible = false
                 R.id.replacePlayListFragment->bottomNavigationView.isVisible = false
+                R.id.playerFragment->bottomNavigationView.isVisible = false
                 else-> bottomNavigationView.isVisible = true
+
             }
 
 
