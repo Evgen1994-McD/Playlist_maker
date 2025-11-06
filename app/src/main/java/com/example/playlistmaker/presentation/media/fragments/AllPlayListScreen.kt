@@ -35,12 +35,13 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.PlayList
+import com.example.playlistmaker.presentation.media.viewmodel.PlayListItemUi
 import com.example.playlistmaker.utils.declineNoun
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun PlaylistFragmentScreen(
-    playListList: ImmutableList<PlayList>,
+    playListList: ImmutableList<PlayListItemUi>,
     onPlayListClick: (PlayList) -> Unit,
     onAddPlayListClick: () -> Unit
 ) {
@@ -92,21 +93,17 @@ fun PlaylistFragmentScreen(
                     .fillMaxSize()
                     .padding(top = 16.dp)
                     .padding(horizontal = 8.dp),
-
-
                 ) {
                 items(
-                    playListList.size,
-                    key = { index -> "playList$index" },
-                    contentType = { "playList" }) { index ->
-                    val playlist = playListList[index]
-                    if (playlist != null) {
-                        PlayListItem(
-                            playlist,
-                            onPlayListClick
-                        )
-                    }
-
+                    count = playListList.size,
+                    key = { index -> playListList[index].key },
+                    contentType = { index -> playListList[index].contentType }
+                ) { index ->
+                    val item = playListList[index]
+                    PlayListItem(
+                        playList = item.playlist,
+                        onPlayListClick = onPlayListClick
+                    )
                 }
 
 
