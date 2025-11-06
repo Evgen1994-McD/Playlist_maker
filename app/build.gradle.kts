@@ -2,24 +2,27 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id ("kotlin-kapt")
+    alias(libs.plugins.kotlin.compose)
+
 //    id("com.google.devtools.ksp") version "2.2.0-2.0.2"  // для KSP
 
 }
 
 android {
     namespace = "com.example.playlistmaker"
-    compileSdk = 35
+    compileSdk = 36
 
     android {
         buildFeatures {
             viewBinding = true // Включаю вьюбайдинг
+            compose = true
         }
     }
 
     defaultConfig {
         applicationId = "com.example.playlistmaker"
         minSdk = 29
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -85,6 +88,28 @@ implementation(libs.gson)
     implementation(libs.gson.converter)
     implementation(libs.logger.interceptor)
 implementation(libs.recycler.view)
+    /***
+     * Ниже все зависимости на Compose
+     */
+
+    // ViewModel and Compose integration
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.runtime)
+    // Compose UI
+    implementation(libs.androidx.ui)
+// Material 3
+    implementation(libs.androidx.material3)
+// Интеграция Compose с View-системами
+    implementation(libs.androidx.ui.viewbinding)
+    implementation (libs.androidx.runtime.livedata)
+    implementation(libs.coil.compose)
+    implementation(libs.kotlinx.collections.immutable)
+
+
 
 
 

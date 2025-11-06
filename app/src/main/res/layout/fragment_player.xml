@@ -9,9 +9,13 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     >
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     style="@style/Settings_Day_night_style"
     android:orientation="vertical"
 >
@@ -117,13 +121,14 @@
         android:id="@+id/imMine"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="8dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="24dp"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/guideline4"
-        app:layout_constraintDimensionRatio="W,1:1"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="@+id/guideline7"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:srcCompat="@drawable/ic_launcher_background"
 
         />
@@ -132,47 +137,50 @@
         style="@style/media_tv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:gravity="left|center_vertical"
         android:textSize="@dimen/st_head_text_size_22sp"
-        app:layout_constraintVertical_bias="0.26"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="@+id/imMine"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/imMine"
         app:layout_constraintTop_toBottomOf="@+id/imMine"
-        tools:text="Название трека" />
+        tools:text="Название трека"
+
+        />
     <TextView
         tools:text = "Исполнитель"
         style="@style/media_tv_title"
         android:id="@+id/tvGroup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:textSize="@dimen/tv_size_14"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="@+id/tvTrackName"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tvTrackName"
         app:layout_constraintTop_toBottomOf="@+id/tvTrackName"
-        app:layout_constraintVertical_bias="0.64"
         />
+
     <ImageView
         android:id="@+id/add_on_playlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintBottom_toBottomOf="@+id/play"
-        app:layout_constraintStart_toStartOf="@+id/imMine"
-        app:layout_constraintTop_toTopOf="@+id/play"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGroup"
         app:srcCompat="@drawable/ic_plus_51dp" />
 
-    <com.example.playlistmaker.ui.player.utils.PlaybackButtonView
+    <com.example.playlistmaker.presentation.player.utils.PlaybackButtonView
         android:id="@+id/play"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline6"
         app:layout_constraintEnd_toStartOf="@+id/like"
-
         app:layout_constraintStart_toEndOf="@+id/add_on_playlist"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        app:layout_constraintTop_toBottomOf="@+id/tvGroup"
         app:pauseImage="@drawable/ic_pause_100"
         app:playImage="@drawable/ic_play_100" />
 
@@ -180,8 +188,9 @@
         android:id="@+id/like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
         app:layout_constraintBottom_toBottomOf="@+id/play"
-        app:layout_constraintEnd_toEndOf="@+id/imMine"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/play"
         app:srcCompat="@drawable/ic_like_51dp" />
 
@@ -196,19 +205,19 @@
         app:srcCompat="@drawable/ic_like_red_51dp" />
 
     <TextView
-        style="@style/media_tv_left"
         android:id="@+id/textView3"
+        style="@style/media_tv_left"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
+        android:layout_marginTop="30dp"
         android:paddingVertical="8dp"
         android:text="@string/txt_time_media"
         app:layout_constraintBottom_toTopOf="@id/tv_album_left"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@+id/guideline6"
-        app:layout_constraintVertical_bias="0.5"
 
-        app:layout_constraintVertical_chainStyle="spread_inside"
-        />
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <TextView
         android:id="@+id/textView8"
@@ -229,23 +238,25 @@ android:layout_marginBottom="8dp"
         style="@style/media_tv_right"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
+        android:layout_marginTop="30dp"
         android:gravity="end"
         android:paddingVertical="8dp"
         app:layout_constraintBottom_toTopOf="@+id/tvAlbum"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toTopOf="@+id/guideline6"
         app:layout_constraintVertical_bias="0.5"
-        app:layout_constraintHorizontal_bias="1"
+
+
         app:layout_constraintVertical_chainStyle="spread_inside"
-
-
         tools:text="5:35" />
 
     <TextView
         android:id="@+id/progress_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:text="00:00"
         app:layout_constraintEnd_toEndOf="@+id/play"
         app:layout_constraintStart_toStartOf="@+id/play"
@@ -291,7 +302,7 @@ android:layout_marginBottom="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.73176205" />
+        app:layout_constraintGuide_percent="0.75" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline7"
@@ -300,6 +311,7 @@ android:layout_marginBottom="8dp"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.09203143" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
 
     <View android:id="@+id/overlay"
         android:layout_width="match_parent"

@@ -1,0 +1,76 @@
+package com.example.playlistmaker.ui
+
+import android.os.Build
+import android.util.Log
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import com.example.playlistmaker.presentation.settings.viewModel.SettingsViewModel
+import com.example.playlistmaker.ui.Black_1A1B22
+
+private val DarkColorScheme = darkColorScheme(
+
+    background = Color(0xFF1A1B22),
+    onSurface = Color(0xFFE6E1E5),
+    surface = Black_1A1B22, // тинт для поиска
+    onSurfaceVariant = White_FFFFFF,
+    surfaceTint = White_FFFFFF,
+    primary = White_FFFFFF,
+    surfaceBright = Grey_AEAFB4
+
+)
+
+private val LightColorScheme = lightColorScheme(
+    background = Color(0xFFFFFFFF),
+    onSurface = Color(0xFF1A1B22),
+    surface = Grey_AEAFB4,  //Тинт для поиска
+    surfaceTint = LightGrey_E6E8EB,
+    primary = LightGrey_E6E8EB,
+    onSurfaceVariant = Grey_AEAFB4,
+    surfaceBright = Grey_AEAFB4
+
+
+
+)
+
+
+@Composable
+fun PlaylistMakerTheme(
+themeMode: State<Boolean>,
+    content: @Composable () -> Unit
+) {
+
+    val context = LocalContext.current
+
+
+//    val themeMode = viewModel.getLiveData.observeAsState()
+    Log.d("theme", "theme in mode $themeMode")
+
+
+
+
+
+    val colorScheme = when {
+
+
+        themeMode.value==true -> DarkColorScheme
+        else -> LightColorScheme
+    }
+
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
+}

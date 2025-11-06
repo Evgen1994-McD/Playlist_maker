@@ -24,13 +24,13 @@ val data = results.map{ it ->
         it.trackId,
         it.trackName,
         it.artistName,
-        formatMillisecondsAsMinSec(it.trackTimeMillis.toLong()), // преобразую и пеоедам время сразу
-        getCoverArtwork(it.artworkUrl100).toString(),
-        it.collectionName,
+        it.trackTimeMillis?.let { time -> formatMillisecondsAsMinSec(time.toLong()) } ?: "0:00", // Обработать null
+        it.artworkUrl100?.let { url -> getCoverArtwork(url)?.toString() ?: "" } ?: "", // Обработать null
+        it.collectionName ?: "",
         formattedYear(it.releaseDate),
-        it.primaryGenreName,
-        it.country,
-        it.previewUrl,
+        it.primaryGenreName ?: "",
+        it.country ?: "",
+        it.previewUrl ?: "", // Обработать null
         it.isLike
     )
 }
@@ -55,14 +55,20 @@ val data = results.map{ it ->
         return localTime.format(formatter)
     }
 
-    fun formattedYear(date: String): String {
-        val formatter = DateTimeFormatter.ISO_DATE_TIME
-        val localDateTime = LocalDateTime.parse(date, formatter)
-        val year = localDateTime.year
-        return year.toString()
+    fun formattedYear(date: String?): String {
+        if (date.isNullOrBlank()) {
+            return "" // Возвращаем пустую строку если дата отсутствует
+        }
+        return try {
+            val formatter = DateTimeFormatter.ISO_DATE_TIME
+            val localDateTime = LocalDateTime.parse(date, formatter)
+            localDateTime.year.toString()
+        } catch (e: Exception) {
+            "" // В случае ошибки парсинга возвращаем пустую строку
+        }
     }
 
-    fun getCoverArtwork(artworkUrl100: String) =
+    fun getCoverArtwork(artworkUrl100: String?): String? =
         artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
 
 

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mediaFragment"
-        android:name="com.example.playlistmaker.ui.media.fragments.MediaFragment"
+        android:name="com.example.playlistmaker.presentation.media.fragments.MediaFragment"
         android:label="MediaFragment"
         tools:layout="@layout/fragment_media"
 
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/playerFragment"
-        android:name="com.example.playlistmaker.ui.player.fragments.PlayerFragment"
+        android:name="com.example.playlistmaker.presentation.player.fragments.PlayerFragment"
         android:label="PlayerFragment"
         tools:layout="@layout/fragment_player"
 
@@ -48,7 +48,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.playlistmaker.ui.search.fragment.SearchFragment"
+        android:name="com.example.playlistmaker.presentation.search.fragment.SearchFragment"
         android:label="SearchFragment"
         tools:layout="@layout/fragment_search"
 
@@ -59,19 +59,19 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.playlistmaker.ui.settings.fragments.SettingsFragment"
+        android:name="com.example.playlistmaker.presentation.settings.fragments.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings"
 
         />
     <fragment
         android:id="@+id/addPlayListFragment"
-        android:name="com.example.playlistmaker.ui.media.fragments.AddPlayListFragment"
+        android:name="com.example.playlistmaker.presentation.media.fragments.AddPlayListFragment"
         android:label="fragment_add_play_list"
         tools:layout="@layout/fragment_add_play_list" />
     <fragment
         android:id="@+id/playlistTracksFragment"
-        android:name="com.example.playlistmaker.ui.media.fragments.PlaylistTracksFragment"
+        android:name="com.example.playlistmaker.presentation.media.fragments.PlaylistTracksFragment"
         android:label="fragment_playlist_tracks"
         tools:layout="@layout/fragment_playlist_tracks" >
         <action
@@ -80,6 +80,6 @@
     </fragment>
     <fragment
         android:id="@+id/replacePlayListFragment"
-        android:name="com.example.playlistmaker.ui.media.fragments.ReplacePlayListFragment"
+        android:name="com.example.playlistmaker.presentation.media.fragments.ReplacePlayListFragment"
         android:label="ReplacePlayListFragment" />
 </navigation>

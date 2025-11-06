@@ -1,8 +1,10 @@
 package com.example.playlistmaker.domain.models
 
+import androidx.compose.runtime.Immutable
 import java.io.Serializable
 
 
+@Immutable
 data class Track(
     val trackId: String,
     val trackName: String, // Название композиции
