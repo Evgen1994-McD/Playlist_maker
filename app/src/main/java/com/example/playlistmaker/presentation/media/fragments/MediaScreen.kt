@@ -1,5 +1,6 @@
 package com.example.playlistmaker.presentation.media.fragments
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -43,6 +44,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,6 +55,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.media.viewmodel.FavoriteFragmentViewModel
+import com.example.playlistmaker.presentation.media.viewmodel.MediaFragmentViewModel
 import com.example.playlistmaker.presentation.media.viewmodel.PlaylistFragmentViewModel
 import com.example.playlistmaker.presentation.search.fragment.TrackItem
 import com.example.playlistmaker.utils.declineNoun
@@ -65,16 +68,20 @@ fun MediaScreen(
     onTrackClick: (Track) -> Unit,
     onPlayListClick: (PlayList) -> Unit,
     favoriteFragmentViewModel: FavoriteFragmentViewModel,
-    playlistFragmentViewModel: PlaylistFragmentViewModel
+    playlistFragmentViewModel: PlaylistFragmentViewModel,
+    mediaFragmentViewModel: MediaFragmentViewModel
 ) {
 
     val trackList = favoriteFragmentViewModel.favoriteTracks.observeAsState()
     val playListList = playlistFragmentViewModel.getLiveData.observeAsState()
 
     val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(pageCount = { 2 })
+
     // Используем pagerState.currentPage напрямую, так как это уже State<Int>
-    val selectedTabIndex = pagerState.currentPage
+    val selectedTabIndex = mediaFragmentViewModel.currentTabPosition.observeAsState(0)
+    val pagerState = rememberPagerState(pageCount = { 2 },
+        initialPage = selectedTabIndex.value)
+//    val selectedTabIndex = pagerState.currentPage
 
     Scaffold(
         topBar = {
@@ -106,13 +113,13 @@ fun MediaScreen(
                 .padding(paddingValues)
         ) {
             TabRow(
-                selectedTabIndex = selectedTabIndex,
+                selectedTabIndex = selectedTabIndex.value,
                 modifier = Modifier.fillMaxWidth(),
                 containerColor = MaterialTheme.colorScheme.background,
                 indicator = {tabPos ->
                     TabRowDefaults.PrimaryIndicator(
                         modifier = Modifier
-                        .tabIndicatorOffset(tabPos[selectedTabIndex]),
+                        .tabIndicatorOffset(tabPos[selectedTabIndex.value]),
                         color = MaterialTheme.colorScheme.onSurface,
                         height = 2.dp,
                         width = 148.dp
@@ -120,11 +127,12 @@ fun MediaScreen(
                 }
             ) {
                 Tab(
-                    selected = selectedTabIndex == 0,
+                    selected = selectedTabIndex.value == 0,
                     selectedContentColor = MaterialTheme.colorScheme.primary,
                     unselectedContentColor = MaterialTheme.colorScheme.outline,
                     onClick = {
                         scope.launch {
+                            mediaFragmentViewModel.setCurrentTabPosition(0)
                             pagerState.animateScrollToPage(0)
                         }
                     },
@@ -139,11 +147,13 @@ fun MediaScreen(
                 )
 
                 Tab(
-                    selected = selectedTabIndex == 1,
+                    selected = selectedTabIndex.value == 1,
                     selectedContentColor = MaterialTheme.colorScheme.primary,
                     unselectedContentColor = MaterialTheme.colorScheme.outline,
                     onClick = {
                         scope.launch {
+                            mediaFragmentViewModel.setCurrentTabPosition(1)
+
                             pagerState.animateScrollToPage(1)
                         }
                     },
@@ -190,22 +200,52 @@ fun FavoriteFragmentScreen(
     trackList: List<Track>,
     onTrackClick: (Track) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 16.dp),
+    if (trackList.isNotEmpty()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 16.dp),
 
 
-        ) {
-        items(trackList) { track ->
-            TrackItem(
-                track,
-                onTrackClick
-            )
+            ) {
+            items(trackList) { track ->
+                TrackItem(
+                    track,
+                    onTrackClick
+                )
+
+            }
+
 
         }
+    }else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ph_nothing_to_show_120), null,
+                modifier = Modifier
+                    .padding(
+                        top = 106.dp,
+                        bottom = 16.dp)
+                            .size(120.dp,)
 
+            )
 
+            Text(
+                text = stringResource(R.string.no_media),
+                fontSize = 19.sp,
+                fontFamily = FontFamily(
+                    Font(
+                        R.font.ys_display_medium,
+                        weight = FontWeight.Medium,
+                    )
+                ),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }
 
@@ -255,30 +295,61 @@ fun PlaylistFragmentScreen(
             )
         }
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 16.dp)
-                .padding(horizontal = 8.dp),
+        if (playListList.isNotEmpty()) {
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 16.dp)
+                    .padding(horizontal = 8.dp),
 
 
-            ) {
-            items(
-                playListList.size,
-                key = { index -> "playList$index" },
-                contentType = { "playList" }) { index ->
-                val playlist = playListList[index]
-                if (playlist != null) {
-                    PlayListItem(
-                        playlist,
-                        onPlayListClick
-                    )
+                ) {
+                items(
+                    playListList.size,
+                    key = { index -> "playList$index" },
+                    contentType = { "playList" }) { index ->
+                    val playlist = playListList[index]
+                    if (playlist != null) {
+                        PlayListItem(
+                            playlist,
+                            onPlayListClick
+                        )
+                    }
+
                 }
 
+
             }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ph_nothing_to_show_120), null,
+                    modifier = Modifier
+                        .padding(
+                            top = 106.dp,
+                            bottom = 16.dp)
+                        .size(120.dp,)
 
+                )
 
+                Text(textAlign = TextAlign.Center,
+                    text = stringResource(R.string.no_playlist),
+                    fontSize = 19.sp,
+                    fontFamily = FontFamily(
+                        Font(
+                            R.font.ys_display_medium,
+                            weight = FontWeight.Medium,
+                        )
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
     }
 }
