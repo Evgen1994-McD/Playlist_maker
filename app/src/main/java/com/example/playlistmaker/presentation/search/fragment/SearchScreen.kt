@@ -63,17 +63,17 @@ import com.example.playlistmaker.ui.Blue_3772E7
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
-    onSearchTextChanged: (String)-> Unit,
-    onRetryClick:(String)-> Unit,
-    loadSearchHistory:()-> Unit,
+    onSearchTextChanged: (String) -> Unit,
+    onRetryClick: (String) -> Unit,
+    loadSearchHistory: () -> Unit,
     onTrackClick: (Track) -> Unit
 ) {
     // Получаем сохраненный поисковый запрос из ViewModel
     val savedQuery = viewModel.currentSearchQuery.observeAsState(initial = "")
-    
+
     // Используем сохраненный запрос как начальное значение
     var text by remember { mutableStateOf(savedQuery.value) }
-    
+
     // Синхронизируем локальное состояние с состоянием ViewModel при возврате на экран
     // Обновляем только если локальное значение пустое, а сохраненное - нет (сигнал возврата)
     LaunchedEffect(Unit) {
@@ -82,7 +82,7 @@ fun SearchScreen(
             text = savedQuery.value
         }
     }
-    
+
     // Также отслеживаем изменения savedQuery (например, при восстановлении из savedInstanceState)
     LaunchedEffect(savedQuery.value) {
         if (text.isEmpty() && savedQuery.value.isNotEmpty()) {
@@ -90,7 +90,7 @@ fun SearchScreen(
         }
     }
 
-    
+
     val focusRequester = remember { FocusRequester() }
     val coroutineScope = rememberCoroutineScope()
     val state = viewModel.getLiveData.observeAsState()
@@ -135,7 +135,7 @@ fun SearchScreen(
 
             BasicTextField(
                 value = text,
-                onValueChange = { newText -> 
+                onValueChange = { newText ->
                     text = newText
                     // Обновляем запрос в ViewModel
                     viewModel.updateSearchQuery(newText)
@@ -155,15 +155,15 @@ fun SearchScreen(
                         if (focus.isFocused) {
                             focused = true
                         }
-                        if (!focus.isFocused){
-                            focused=false
+                        if (!focus.isFocused) {
+                            focused = false
                         }
-                            if (focused && text.isEmpty()){
-                                loadSearchHistory()
+                        if (focused && text.isEmpty()) {
+                            loadSearchHistory()
 
-                            }
+                        }
 
-                        if(focused){
+                        if (focused) {
                             keyboardController?.show()
                         }
                     },
@@ -221,34 +221,46 @@ fun SearchScreen(
                 textStyle = TextStyle(
                     color = Black_1A1B22,
                     fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(
-                        R.font.ys_display_regular
-                    ))
+                    fontFamily = FontFamily(
+                        Font(
+                            R.font.ys_display_regular
+                        )
+                    )
                 ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
                 singleLine = true
             )
 
             when (state.value) {
-                is SearchScreenState.Loading ->if (text.isNotEmpty()){DisplayProgressBar()}
-                is SearchScreenState.SearchResults -> if (text.isNotEmpty()){
+                is SearchScreenState.Loading -> if (text.isNotEmpty()) {
+                    DisplayProgressBar()
+                }
+
+                is SearchScreenState.SearchResults -> if (text.isNotEmpty()) {
                     DisplayTracks(
                         ((state.value) as SearchScreenState.SearchResults).data,
                         onTrackClick = onTrackClick
                     )
                 }
-                is SearchScreenState.History -> if (text.isEmpty()&& focused){
+
+                is SearchScreenState.History -> if (text.isEmpty() && focused) {
                     DisplayTracks(
                         ((state.value) as SearchScreenState.History).history,
-                        onTrackClick = onTrackClick)
-                    }
-                is SearchScreenState.ErrorNotFound -> if (text.isNotEmpty()){DisplayPhNotFound()}
-                is SearchScreenState.ErrorNoEnternet ->if (text.isNotEmpty()) {
+                        onTrackClick = onTrackClick
+                    )
+                }
+
+                is SearchScreenState.ErrorNotFound -> if (text.isNotEmpty()) {
+                    DisplayPhNotFound()
+                }
+
+                is SearchScreenState.ErrorNoEnternet -> if (text.isNotEmpty()) {
                     DisplayPhNotEnternet(
                         onRetryClick = onRetryClick,
                         searchText = text,
                     )
                 }
+
                 else -> null
             }
 
@@ -273,18 +285,22 @@ fun DisplayProgressBar() {
 
 
 @Composable
-fun DisplayTracks(trackList: List<Track>,
-                  onTrackClick:(Track)->Unit) {
+fun DisplayTracks(
+    trackList: List<Track>,
+    onTrackClick: (Track) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 16.dp),
 
 
-    ) {
+        ) {
         items(trackList) { track ->
-            TrackItem(track,
-                onTrackClick)
+            TrackItem(
+                track,
+                onTrackClick
+            )
 
         }
 
@@ -327,8 +343,10 @@ fun DisplayPhNotFound() {
 
 
 @Composable
-fun DisplayPhNotEnternet(searchText: String,
-                         onRetryClick: (String) -> Unit) {
+fun DisplayPhNotEnternet(
+    searchText: String,
+    onRetryClick: (String) -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -360,8 +378,10 @@ fun DisplayPhNotEnternet(searchText: String,
         Text(
             text = stringResource(R.string.msg_no_internet_bottom),
             modifier = Modifier
-                .padding(top = 28.dp,
-                    bottom = 24.dp),
+                .padding(
+                    top = 28.dp,
+                    bottom = 24.dp
+                ),
             fontSize = 19.sp,
             fontFamily = FontFamily(
                 Font(
@@ -373,32 +393,38 @@ fun DisplayPhNotEnternet(searchText: String,
             textAlign = TextAlign.Center
         )
 
-            Box(modifier = Modifier
-                .size(width = 91.dp,
-                    height = 36.dp)
-                .background(color = MaterialTheme.colorScheme.onSurface,
-                    shape = RoundedCornerShape(54.dp))
-
-                .clickable(onClick = { onRetryClick(searchText) },
-                    indication = null, // Без визуального эффекта
-                    interactionSource = remember { MutableInteractionSource() }
+        Box(
+            modifier = Modifier
+                .size(
+                    width = 91.dp,
+                    height = 36.dp
+                )
+                .background(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    shape = RoundedCornerShape(54.dp)
                 )
 
-                ,
-                contentAlignment = Alignment.Center,
+                .clickable(
+                    onClick = { onRetryClick(searchText) },
+                    indication = null, // Без визуального эффекта
+                    interactionSource = remember { MutableInteractionSource() }
+                ),
+            contentAlignment = Alignment.Center,
 
             )
-            {
-                Text(text = stringResource(R.string.txt_nointernet_button),
-                    color = MaterialTheme.colorScheme.background,
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily(
-                        Font(
-                            R.font.ys_display_medium,
-                            weight = FontWeight.Normal
-                        )
-                    ))
-            }
+        {
+            Text(
+                text = stringResource(R.string.txt_nointernet_button),
+                color = MaterialTheme.colorScheme.background,
+                fontSize = 14.sp,
+                fontFamily = FontFamily(
+                    Font(
+                        R.font.ys_display_medium,
+                        weight = FontWeight.Normal
+                    )
+                )
+            )
+        }
 
 
     }

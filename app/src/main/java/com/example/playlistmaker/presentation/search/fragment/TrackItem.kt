@@ -35,8 +35,8 @@ import com.example.playlistmaker.domain.models.Track
 @Composable
 fun TrackItem(
     track: Track,
-    onTrackClick:(Track)-> Unit
-){
+    onTrackClick: (Track) -> Unit
+) {
 
     val context = LocalContext.current
     // Использовать remember для тяжелых вычислений
@@ -49,24 +49,24 @@ fun TrackItem(
             .build()
     }
 
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .height(61.dp)
-        .background(color = MaterialTheme.colorScheme.background)
-        .clickable(
-            onClick = {onTrackClick(track)},
-            interactionSource = remember { MutableInteractionSource() },
-            indication = null
-        ),
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(61.dp)
+            .background(color = MaterialTheme.colorScheme.background)
+            .clickable(
+                onClick = { onTrackClick(track) },
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ),
         verticalAlignment = Alignment.CenterVertically,
 
-    )
+        )
     {
 
 
-
         SubcomposeAsyncImage(
-model = imageRequest,
+            model = imageRequest,
             contentDescription = track.trackName,
             modifier = Modifier
                 .padding(start = 13.dp)
@@ -109,62 +109,70 @@ model = imageRequest,
             horizontalAlignment = Alignment.Start
 
         ) {
-            Text(text = track.trackName,
+            Text(
+                text = track.trackName,
 
                 fontSize = 16.sp,
 
-                fontFamily = FontFamily(Font(
-                    R.font.ys_display_regular,
-                    weight = FontWeight.Bold
-                )),
-              overflow = TextOverflow.Ellipsis,
+                fontFamily = FontFamily(
+                    Font(
+                        R.font.ys_display_regular,
+                        weight = FontWeight.Bold
+                    )
+                ),
+                overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-color = MaterialTheme.colorScheme.onSurface
-                )
+                color = MaterialTheme.colorScheme.onSurface
+            )
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = track.artistName,
+                Text(
+                    text = track.artistName,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
 
-                    fontFamily = FontFamily(Font(
-                        R.font.ys_display_regular,
-                        weight = FontWeight.Normal
-                    )),
+                    fontFamily = FontFamily(
+                        Font(
+                            R.font.ys_display_regular,
+                            weight = FontWeight.Normal
+                        )
+                    ),
                     fontSize = 11.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
 
 
                 )
-                Icon(painter = painterResource(R.drawable.ic_dot_13), null,
+                Icon(
+                    painter = painterResource(R.drawable.ic_dot_13), null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                Text(text = track.trackTimeMillis,
+                )
+                Text(
+                    text = track.trackTimeMillis,
                     maxLines = 1,
-                    fontFamily = FontFamily(Font(
-                        R.font.ys_display_regular,
-                        weight = FontWeight.Normal
-                    )),
+                    fontFamily = FontFamily(
+                        Font(
+                            R.font.ys_display_regular,
+                            weight = FontWeight.Normal
+                        )
+                    ),
                     fontSize = 11.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
 
-
         }
 
-        Icon(painter = painterResource(R.drawable.ic_userasset_24), null,
+        Icon(
+            painter = painterResource(R.drawable.ic_userasset_24), null,
             modifier = Modifier
                 .padding(end = 12.dp),
             tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
+        )
 
 
     }
-
 
 
 }

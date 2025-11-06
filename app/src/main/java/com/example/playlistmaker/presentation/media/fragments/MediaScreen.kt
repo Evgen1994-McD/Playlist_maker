@@ -71,17 +71,16 @@ fun MediaScreen(
     playlistFragmentViewModel: PlaylistFragmentViewModel,
     mediaFragmentViewModel: MediaFragmentViewModel
 ) {
-
     val trackList = favoriteFragmentViewModel.favoriteTracks.observeAsState()
     val playListList = playlistFragmentViewModel.getLiveData.observeAsState()
 
     val scope = rememberCoroutineScope()
 
-    // Используем pagerState.currentPage напрямую, так как это уже State<Int>
     val selectedTabIndex = mediaFragmentViewModel.currentTabPosition.observeAsState(0)
-    val pagerState = rememberPagerState(pageCount = { 2 },
-        initialPage = selectedTabIndex.value)
-//    val selectedTabIndex = pagerState.currentPage
+    val pagerState = rememberPagerState(
+        pageCount = { 2 },
+        initialPage = selectedTabIndex.value
+    )
 
     Scaffold(
         topBar = {
@@ -116,10 +115,10 @@ fun MediaScreen(
                 selectedTabIndex = selectedTabIndex.value,
                 modifier = Modifier.fillMaxWidth(),
                 containerColor = MaterialTheme.colorScheme.background,
-                indicator = {tabPos ->
+                indicator = { tabPos ->
                     TabRowDefaults.PrimaryIndicator(
                         modifier = Modifier
-                        .tabIndicatorOffset(tabPos[selectedTabIndex.value]),
+                            .tabIndicatorOffset(tabPos[selectedTabIndex.value]),
                         color = MaterialTheme.colorScheme.onSurface,
                         height = 2.dp,
                         width = 148.dp
@@ -136,14 +135,19 @@ fun MediaScreen(
                             pagerState.animateScrollToPage(0)
                         }
                     },
-                    text = { Text(text = stringResource(R.string.tab1txt),
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontFamily = FontFamily(Font(
-                            R.font.ys_display_medium,
-                            weight = FontWeight.Normal
-                        ))
-                        ) },
+                    text = {
+                        Text(
+                            text = stringResource(R.string.tab1txt),
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontFamily = FontFamily(
+                                Font(
+                                    R.font.ys_display_medium,
+                                    weight = FontWeight.Normal
+                                )
+                            )
+                        )
+                    },
                 )
 
                 Tab(
@@ -157,14 +161,19 @@ fun MediaScreen(
                             pagerState.animateScrollToPage(1)
                         }
                     },
-                    text = { Text(text = stringResource(R.string.tab2txt),
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontFamily = FontFamily(Font(
-                            R.font.ys_display_medium,
-                            weight = FontWeight.Normal
-                        ))
-                        ) },
+                    text = {
+                        Text(
+                            text = stringResource(R.string.tab2txt),
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontFamily = FontFamily(
+                                Font(
+                                    R.font.ys_display_medium,
+                                    weight = FontWeight.Normal
+                                )
+                            )
+                        )
+                    },
                 )
             }
 
@@ -218,7 +227,7 @@ fun FavoriteFragmentScreen(
 
 
         }
-    }else {
+    } else {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
@@ -229,8 +238,9 @@ fun FavoriteFragmentScreen(
                 modifier = Modifier
                     .padding(
                         top = 106.dp,
-                        bottom = 16.dp)
-                            .size(120.dp,)
+                        bottom = 16.dp
+                    )
+                    .size(120.dp)
 
             )
 
@@ -333,12 +343,14 @@ fun PlaylistFragmentScreen(
                     modifier = Modifier
                         .padding(
                             top = 106.dp,
-                            bottom = 16.dp)
-                        .size(120.dp,)
+                            bottom = 16.dp
+                        )
+                        .size(120.dp)
 
                 )
 
-                Text(textAlign = TextAlign.Center,
+                Text(
+                    textAlign = TextAlign.Center,
                     text = stringResource(R.string.no_playlist),
                     fontSize = 19.sp,
                     fontFamily = FontFamily(
@@ -402,9 +414,7 @@ fun PlayListItem(
                 modifier = Modifier
                     .padding(bottom = 4.dp)
                     .size(160.dp)
-                    .clip(RoundedCornerShape(8.dp))
-
-                ,
+                    .clip(RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 androidx.compose.foundation.Image(
@@ -426,8 +436,7 @@ fun PlayListItem(
                 loading = {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                        ,
+                            .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         androidx.compose.foundation.Image(
@@ -441,8 +450,7 @@ fun PlayListItem(
                 error = {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                        ,
+                            .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         androidx.compose.foundation.Image(
