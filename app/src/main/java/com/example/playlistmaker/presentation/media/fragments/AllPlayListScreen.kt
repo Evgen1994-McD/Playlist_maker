@@ -227,10 +227,10 @@ fun PlayListItem(
                         modifier = Modifier
                             .fillMaxSize(),
                         contentAlignment = Alignment.Center
-                    ) {
+                    )                     {
                         androidx.compose.foundation.Image(
                             painter = painterResource(id = R.drawable.ph_media_312),
-                            contentDescription = "Playlist placeholder",
+                            contentDescription = stringResource(R.string.playlist_placeholder_content_description),
                             modifier = Modifier.size(160.dp),
                             contentScale = ContentScale.Fit
                         )

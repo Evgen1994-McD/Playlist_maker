@@ -22,6 +22,10 @@ import com.example.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SearchFragment : Fragment(), OnTrackClickListener {
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY_MS = 2000L
+    }
+
     private val viewModel: SearchViewModel by activityViewModel()
     private val themeViewModel: ThemeViewModel by activityViewModel()
     private lateinit var searchDebounce: (String) -> Unit
@@ -58,7 +62,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
                         loadSearchHistory = {
                             viewModel.getAllTracks()
                         },
-                        onTrackClick = { onTrackClicked(track = it)},
+                        onTrackClick = { onTrackClicked(track = it) },
                         onClearHistoryClick = {
                             viewModel.clearHistory()
                         }
@@ -68,10 +72,11 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
         }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         searchDebounce =
-            debounce(2000L, viewLifecycleOwner.lifecycleScope, true) { text ->
+            debounce(SEARCH_DEBOUNCE_DELAY_MS, viewLifecycleOwner.lifecycleScope, true) { text ->
                 viewModel.searchTracks(text)
             }
         trackClickDebounce =
@@ -80,7 +85,7 @@ class SearchFragment : Fragment(), OnTrackClickListener {
 
             }
 
-        }
+    }
 
     override fun onTrackClicked(track: Track) { // переопределили метод onTrackClicked из интерфейса
         // Логика обработки нажатия на конкретный трек

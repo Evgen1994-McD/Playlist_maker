@@ -78,6 +78,7 @@
     <string name="new_playlist" translatable="false">Новый плейлист</string>
     <string name="no_media" translatable="false">Ваша медиатека пуста</string>
     <string name="no_playlist" translatable="false">Вы не создали \n ни одного плейлиста</string>
+    <string name="playlist_placeholder_content_description">Плейсхолдер плейлиста</string>
 
 
 

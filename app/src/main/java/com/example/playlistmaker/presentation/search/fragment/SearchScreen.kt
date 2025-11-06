@@ -267,7 +267,7 @@ fun SearchScreen(
                                          weight = FontWeight.Medium
                                      )
                                  ),
-                                 fontSize = 22.sp,
+                                 fontSize = 19.sp,
                                  color = MaterialTheme.colorScheme.onSurface
                              )
                          }
