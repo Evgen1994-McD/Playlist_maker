@@ -32,6 +32,7 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.media.viewmodel.FavoriteFragmentViewModel
 import com.example.playlistmaker.presentation.media.viewmodel.MediaFragmentViewModel
 import com.example.playlistmaker.presentation.media.viewmodel.PlaylistFragmentViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -160,14 +161,14 @@ fun MediaScreen(
                 when (page) {
                     0 ->
                         FavoriteFragmentScreen(
-                            trackList = trackList.value ?: emptyList<Track>(),
+                            trackList = (trackList.value ?: emptyList<Track>()).toImmutableList(),
                             onTrackClick
                         )
 
 
                     1 ->
                         PlaylistFragmentScreen(
-                            playListList.value ?: emptyList(),
+                            playListList = (playListList.value ?: emptyList()).toImmutableList(),
                             onPlayListClick,
                             onAddPlayListClick
                         )

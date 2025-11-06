@@ -22,10 +22,11 @@ import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.fragment.TrackItem
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun FavoriteFragmentScreen(
-    trackList: List<Track>,
+    trackList: ImmutableList<Track>,
     onTrackClick: (Track) -> Unit
 ) {
     if (trackList.isNotEmpty()) {

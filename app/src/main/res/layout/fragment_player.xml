@@ -117,7 +117,6 @@
         android:id="@+id/imMine"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="8dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintDimensionRatio="W,1:1"
@@ -134,13 +133,15 @@
         android:layout_height="wrap_content"
         android:gravity="left|center_vertical"
         android:textSize="@dimen/st_head_text_size_22sp"
-        app:layout_constraintVertical_bias="0.26"
+        app:layout_constraintVertical_bias="0.24"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="@+id/imMine"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/imMine"
         app:layout_constraintTop_toBottomOf="@+id/imMine"
-        tools:text="Название трека" />
+        tools:text="Название трека"
+
+        />
     <TextView
         tools:text = "Исполнитель"
         style="@style/media_tv_title"
@@ -153,7 +154,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tvTrackName"
         app:layout_constraintTop_toBottomOf="@+id/tvTrackName"
-        app:layout_constraintVertical_bias="0.64"
+        app:layout_constraintVertical_bias="0.62"
         />
     <ImageView
         android:id="@+id/add_on_playlist"
@@ -166,8 +167,8 @@
 
     <com.example.playlistmaker.presentation.player.utils.PlaybackButtonView
         android:id="@+id/play"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline6"
         app:layout_constraintEnd_toStartOf="@+id/like"
 

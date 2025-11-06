@@ -33,6 +33,7 @@ coil = "2.7.0"
 runtime = "1.5.9"
 ui = "1.5.9"
 uiViewbinding = "1.5.9"
+kotlinxCollectionsImmutable = "0.3.7"
 
 [libraries]
 
@@ -80,6 +81,7 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 
 
 [plugins]

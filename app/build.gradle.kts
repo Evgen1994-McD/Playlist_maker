@@ -107,6 +107,7 @@ implementation(libs.recycler.view)
     implementation(libs.androidx.ui.viewbinding)
     implementation (libs.androidx.runtime.livedata)
     implementation(libs.coil.compose)
+    implementation(libs.kotlinx.collections.immutable)
 
 
 

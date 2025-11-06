@@ -36,10 +36,11 @@ import coil.request.ImageRequest
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.PlayList
 import com.example.playlistmaker.utils.declineNoun
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun PlaylistFragmentScreen(
-    playListList: List<PlayList>,
+    playListList: ImmutableList<PlayList>,
     onPlayListClick: (PlayList) -> Unit,
     onAddPlayListClick: () -> Unit
 ) {
